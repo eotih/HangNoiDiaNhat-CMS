@@ -1,7 +1,7 @@
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
 import { sentenceCase } from 'change-case';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import { Link as RouterLink } from 'react-router-dom';
 // material
@@ -21,22 +21,22 @@ import {
   TablePagination
 } from '@mui/material';
 // components
+import axios from 'axios';
 import Page from '../components/Page';
 import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../components/_dashboard/user';
-//
-import USERLIST from '../_mocks_/user';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'FullName', label: 'FullName', alignRight: false },
+  { id: 'Email', label: 'Email', alignRight: false },
+  { id: 'Password', label: 'Password', alignRight: false },
+  { id: 'Phone', label: 'Phone', alignRight: false },
+  { id: 'Address', label: 'Address', alignRight: false },
+  { id: 'Role', label: 'Role', alignRight: false },
   { id: '' }
 ];
 
@@ -85,15 +85,6 @@ export default function User() {
     setOrderBy(property);
   };
 
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.name);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
@@ -125,18 +116,53 @@ export default function User() {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
+  const [account, setUsers] = useState([]);
+  const getAllAccount = () => {
+    axios
+      .get('http://localhost:33333/API/Organization/SelectAllAccount')
+      .then((response) => {
+        setUsers(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    getAllAccount();
+  }, []);
 
-  const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+      const newSelecteds = account.map((n) => n.name);
+      setSelected(newSelecteds);
+      return;
+    }
+    setSelected([]);
+  };
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - account.length) : 0;
 
+  const filteredUsers = applySortFilter(account, getComparator(order, orderBy), filterName);
+
+  const convertRoles = (RoleID) => {
+    switch (RoleID) {
+      case 1:
+        return 'Admin';
+      case 2:
+        return 'Manager';
+      case 3:
+        return 'Staff';
+      default:
+        return 'Staff';
+    }
+  };
   const isUserNotFound = filteredUsers.length === 0;
-
+  console.log(filteredUsers);
   return (
-    <Page title="User | Minimal-UI">
+    <Page title="Account | HangnoidiaNhat">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            User
+            Account
           </Typography>
           <Button
             variant="contained"
@@ -144,7 +170,7 @@ export default function User() {
             to="#"
             startIcon={<Icon icon={plusFill} />}
           >
-            New User
+            New Account
           </Button>
         </Stack>
 
@@ -162,59 +188,60 @@ export default function User() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={USERLIST.length}
+                  rowCount={account.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      const { id, name, role, status, company, avatarUrl, isVerified } = row;
-                      const isItemSelected = selected.indexOf(name) !== -1;
+                  {filteredUsers.map((row) => {
+                    const {
+                      AccountID,
+                      Image,
+                      Address,
+                      FullName,
+                      Email,
+                      RoleID,
+                      CreatedAt,
+                      Password,
+                      Phone
+                    } = row;
+                    const isItemSelected = selected.indexOf(FullName) !== -1;
 
-                      return (
-                        <TableRow
-                          hover
-                          key={id}
-                          tabIndex={-1}
-                          role="checkbox"
-                          selected={isItemSelected}
-                          aria-checked={isItemSelected}
-                        >
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              checked={isItemSelected}
-                              onChange={(event) => handleClick(event, name)}
-                            />
-                          </TableCell>
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <Avatar alt={name} src={avatarUrl} />
-                              <Typography variant="subtitle2" noWrap>
-                                {name}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
-                          <TableCell align="left">{company}</TableCell>
-                          <TableCell align="left">{role}</TableCell>
-                          <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-                          <TableCell align="left">
-                            <Label
-                              variant="ghost"
-                              color={(status === 'banned' && 'error') || 'success'}
-                            >
-                              {sentenceCase(status)}
-                            </Label>
-                          </TableCell>
-
-                          <TableCell align="right">
-                            <UserMoreMenu />
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
+                    return (
+                      <TableRow
+                        hover
+                        key={AccountID}
+                        tabIndex={-1}
+                        role="checkbox"
+                        selected={isItemSelected}
+                        aria-checked={isItemSelected}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            checked={isItemSelected}
+                            onChange={(event) => handleClick(event, FullName)}
+                          />
+                        </TableCell>
+                        <TableCell component="th" scope="row" padding="none">
+                          <Stack direction="row" alignItems="center" spacing={2}>
+                            <Avatar alt={FullName} src={Image} />
+                            <Typography variant="subtitle2" noWrap>
+                              {FullName}
+                            </Typography>
+                          </Stack>
+                        </TableCell>
+                        <TableCell align="left">{Email}</TableCell>
+                        <TableCell align="left">{Password}</TableCell>
+                        <TableCell align="left">{Phone}</TableCell>
+                        <TableCell align="left">{Address}</TableCell>
+                        <TableCell align="left">{convertRoles(RoleID)}</TableCell>
+                        <TableCell align="right">
+                          <UserMoreMenu />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
@@ -237,7 +264,7 @@ export default function User() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={USERLIST.length}
+            count={account.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
