@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
 import { sentenceCase } from 'change-case';
@@ -21,7 +22,9 @@ import {
   TablePagination
 } from '@mui/material';
 // components
-import axios from 'axios';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
+import getAllAccount from 'src/Functions/Organization';
 import Page from '../components/Page';
 import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
@@ -72,6 +75,8 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function User() {
+  const [error, setError] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
@@ -117,18 +122,12 @@ export default function User() {
   };
 
   const [account, setUsers] = useState([]);
-  const getAllAccount = () => {
-    axios
-      .get('http://localhost:33333/API/Organization/SelectAllAccount')
-      .then((response) => {
-        setUsers(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+
   useEffect(() => {
-    getAllAccount();
+    getAllAccount().then((res) => {
+      setIsLoaded(true);
+      setUsers(res);
+    });
   }, []);
 
   const handleSelectAllClick = (event) => {
@@ -156,7 +155,16 @@ export default function User() {
     }
   };
   const isUserNotFound = filteredUsers.length === 0;
-  console.log(filteredUsers);
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+  if (!isLoaded) {
+    return (
+      <Box sx={{ display: 'flex' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
   return (
     <Page title="Account | HangnoidiaNhat">
       <Container>
