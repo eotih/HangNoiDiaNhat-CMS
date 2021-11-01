@@ -1,24 +1,15 @@
+/* eslint-disable prettier/prettier */
 import { Icon } from '@iconify/react';
 import pieChart2Fill from '@iconify/icons-eva/pie-chart-2-fill';
 import peopleFill from '@iconify/icons-eva/people-fill';
-import shoppingBagFill from '@iconify/icons-eva/shopping-bag-fill';
 import fileTextFill from '@iconify/icons-eva/file-text-fill';
-import lockFill from '@iconify/icons-eva/lock-fill';
-import personAddFill from '@iconify/icons-eva/person-add-fill';
-import alertTriangleFill from '@iconify/icons-eva/alert-triangle-fill';
 import keypadoutline from '@iconify/icons-eva/keypad-outline';
 import briefcasefill from '@iconify/icons-eva/briefcase-fill';
 import carfill from '@iconify/icons-eva/car-fill';
 
-// ----------------------------------------------------------------------
-
 const getIcon = (name) => <Icon icon={name} width={22} height={22} />;
 
 const sidebarConfig = [
-  {
-    Header: 'Quản lý',
-    path: false
-  },
   {
     title: 'dashboard',
     path: '/dashboard/app',
@@ -50,10 +41,6 @@ const sidebarConfig = [
         path: '/dashboard/category'
       },
       {
-        title: 'Field',
-        path: '/dashboard/field'
-      },
-      {
         title: 'Payment',
         path: '/dashboard/payment'
       },
@@ -64,18 +51,30 @@ const sidebarConfig = [
     ]
   },
   {
-    title: 'Product',
-    path: '/dashboard/products',
-    icon: getIcon(shoppingBagFill),
+    title: 'Management',
+    path: '/dashboard/management',
+    icon: getIcon(keypadoutline),
     children: [
       {
-        title: 'Quản Lý Product',
-        path: '/dashboard/manage-products'
+        title: 'Order',
+        path: '/dashboard/order'
       },
       {
-        title: 'Hình Ảnh Product',
-        path: '/dashboard/Album-products'
-      }
+        title: 'OrderDetails',
+        path: '/dashboard/order-details'
+      },
+      {
+        title: 'Customer',
+        path: '/dashboard/customer'
+      },
+      {
+        title: 'Product',
+        path: '/dashboard/product'
+      },
+      {
+        title: 'Product Images',
+        path: '/dashboard/product-images'
+      },
     ]
   },
   {
@@ -112,29 +111,15 @@ const sidebarConfig = [
       },
       {
         title: 'Tracking order',
-        path: '/dashboard/Tracking-order'
+        path: '/dashboard/tracking-order'
       },
       {
         title: 'Identity Card',
-        path: '/dashboard/indentity-card'
+        path: '/dashboard/identity-card'
       }
     ]
   },
-  {
-    title: 'Management',
-    path: '/dashboard/management',
-    icon: getIcon(keypadoutline),
-    children: [
-      {
-        title: 'Order',
-        path: '/dashboard/order'
-      },
-      {
-        title: 'OrderDetails',
-        path: '/dashboard/order-details'
-      }
-    ]
-  },
+  
   {
     title: 'Actical',
     path: '/dashboard/actical',
@@ -149,21 +134,6 @@ const sidebarConfig = [
         path: '/dashboard/field'
       }
     ]
-  },
-  {
-    title: 'login',
-    path: '/login',
-    icon: getIcon(lockFill)
-  },
-  {
-    title: 'register',
-    path: '/register',
-    icon: getIcon(personAddFill)
-  },
-  {
-    title: 'Not found',
-    path: '/404',
-    icon: getIcon(alertTriangleFill)
   }
 ];
 
