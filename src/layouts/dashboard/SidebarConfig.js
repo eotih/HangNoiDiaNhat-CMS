@@ -16,13 +16,14 @@ const getIcon = (name) => <Icon icon={name} width={22} height={22} />;
 
 const sidebarConfig = [
   {
-    Header: 'Quản lý',
-    path: false
-  },
-  {
     title: 'dashboard',
     path: '/dashboard/app',
     icon: getIcon(pieChart2Fill)
+  },
+  {
+    title: 'Quản lý',
+    path: false,
+    icon: false
   },
   {
     title: 'Component  ',
