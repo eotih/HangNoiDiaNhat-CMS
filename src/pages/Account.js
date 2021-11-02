@@ -154,7 +154,6 @@ export default function User() {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 600,
     bgcolor: 'background.paper',
     boxShadow: 24,
     p: 4
@@ -244,41 +243,49 @@ export default function User() {
         <FormikProvider value={formik}>
           <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
             <Box sx={style}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                Add Account
-              </Typography>
-              <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />
-              <TextField label="Phone" {...getFieldProps('Phone')} variant="outlined" />
-              <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
-              <TextField label="Password" {...getFieldProps('Password')} variant="outlined" />
-              <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
-              <Select label="Role" {...getFieldProps('RoleID')} variant="outlined">
-                {role.map((item) => (
-                  <MenuItem key={item.RoleID} value={item.RoleID}>
-                    {item.RoleName}
-                  </MenuItem>
-                ))}
-              </Select>
-              <Label htmlFor="contained-button-file">
-                <Input
-                  id="contained-button-file"
-                  type="file"
-                  onChange={(e) => {
-                    const { files } = e.target;
-                    const reader = new FileReader();
-                    reader.readAsDataURL(files[0]);
-                    reader.onload = (e) => {
-                      formik.setFieldValue('Image', e.target.result);
-                    };
-                  }}
-                />
-                <Button variant="contained" component="span">
-                  Upload Image
-                </Button>
-              </Label>
-              <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                Add Account
-              </LoadingButton>
+              <Stack spacing={3}>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  Add Account
+                </Typography>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />
+                  <TextField label="Phone" {...getFieldProps('Phone')} variant="outlined" />
+                </Stack>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
+                  <TextField label="Password" {...getFieldProps('Password')} variant="outlined" />
+                </Stack>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
+                  <Select label="Role" {...getFieldProps('RoleID')} variant="outlined">
+                    {role.map((item) => (
+                      <MenuItem key={item.RoleID} value={item.RoleID}>
+                        {item.RoleName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </Stack>
+                <label htmlFor="contained-button-file">
+                  <Input
+                    id="contained-button-file"
+                    type="file"
+                    onChange={(e) => {
+                      const { files } = e.target;
+                      const reader = new FileReader();
+                      reader.readAsDataURL(files[0]);
+                      reader.onload = (e) => {
+                        formik.setFieldValue('Image', e.target.result);
+                      };
+                    }}
+                  />
+                  <Button variant="contained" component="span">
+                    Upload Image
+                  </Button>
+                </label>
+                <LoadingButton fullWidth size="large" type="submit" variant="contained">
+                  Add Account
+                </LoadingButton>
+              </Stack>
             </Box>
           </Form>
         </FormikProvider>
