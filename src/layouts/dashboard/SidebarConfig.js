@@ -16,6 +16,25 @@ const sidebarConfig = [
     icon: getIcon(pieChart2Fill)
   },
   {
+    title: 'Organization',
+    path: '/dashboard/blog',
+    icon: getIcon(peopleFill),
+    children: [
+      {
+        title: 'Organization',
+        path: '/dashboard/organization'
+      },
+      {
+        title: 'Bank',
+        path: '/dashboard/bank'
+      },
+      {
+        title: 'Account',
+        path: '/dashboard/account'
+      }
+    ]
+  },
+  {
     title: 'Component  ',
     path: '/dashboard/user',
     icon: getIcon(briefcasefill),
@@ -75,25 +94,6 @@ const sidebarConfig = [
         title: 'Product Images',
         path: '/dashboard/product-images'
       },
-    ]
-  },
-  {
-    title: 'Organization',
-    path: '/dashboard/blog',
-    icon: getIcon(peopleFill),
-    children: [
-      {
-        title: 'Organization',
-        path: '/dashboard/organization'
-      },
-      {
-        title: 'Bank',
-        path: '/dashboard/bank'
-      },
-      {
-        title: 'Account',
-        path: '/dashboard/account'
-      }
     ]
   },
   {

@@ -1,8 +1,8 @@
 /* eslint-disable import/no-unresolved */
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
-import { sentenceCase } from 'change-case';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useFormik, Form, FormikProvider } from 'formik';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import { Link as RouterLink } from 'react-router-dom';
 // material
@@ -16,15 +16,22 @@ import {
   TableRow,
   TableBody,
   TableCell,
+  MenuItem,
   Container,
+  Modal,
+  TextField,
+  Alert,
+  Select,
   Typography,
   TableContainer,
   TablePagination
 } from '@mui/material';
 // components
+import { LoadingButton } from '@mui/lab';
 import CircularProgress from '@mui/material/CircularProgress';
+import axios from 'axios';
 import Box from '@mui/material/Box';
-import getAllAccount from 'src/Functions/Organization';
+import { getAllAccount, getAllRole } from 'src/Functions/Organization';
 import Page from '../components/Page';
 import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
@@ -36,7 +43,6 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../components/_dash
 const TABLE_HEAD = [
   { id: 'FullName', label: 'FullName', alignRight: false },
   { id: 'Email', label: 'Email', alignRight: false },
-  { id: 'Password', label: 'Password', alignRight: false },
   { id: 'Phone', label: 'Phone', alignRight: false },
   { id: 'Address', label: 'Address', alignRight: false },
   { id: 'Role', label: 'Role', alignRight: false },
@@ -83,6 +89,24 @@ export default function User() {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [account, setAccount] = useState([]);
+  const [role, setRole] = useState([]);
+  useEffect(() => {
+    getAllAccount().then((res) => {
+      setIsLoaded(true);
+      setAccount(res);
+    });
+    getAllRole().then((res) => {
+      setIsLoaded(true);
+      setRole(res);
+    });
+  }, []);
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - account.length) : 0;
+  const filteredUsers = applySortFilter(account, getComparator(order, orderBy), filterName);
+  const isUserNotFound = filteredUsers.length === 0;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -121,14 +145,16 @@ export default function User() {
     setFilterName(event.target.value);
   };
 
-  const [account, setUsers] = useState([]);
-
-  useEffect(() => {
-    getAllAccount().then((res) => {
-      setIsLoaded(true);
-      setUsers(res);
-    });
-  }, []);
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 600,
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4
+  };
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -138,23 +164,54 @@ export default function User() {
     }
     setSelected([]);
   };
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - account.length) : 0;
-
-  const filteredUsers = applySortFilter(account, getComparator(order, orderBy), filterName);
-
   const convertRoles = (RoleID) => {
     switch (RoleID) {
       case 1:
-        return 'Admin';
+        return 'Fullstack';
       case 2:
-        return 'Manager';
+        return 'Backend';
       case 3:
-        return 'Staff';
+        return 'Frontend';
       default:
-        return 'Staff';
+        return 'Slave';
     }
   };
-  const isUserNotFound = filteredUsers.length === 0;
+  const formik = useFormik({
+    initialValues: {
+      FullName: '',
+      Image: '',
+      Phone: '',
+      Email: '',
+      Password: '',
+      Address: '',
+      remember: true
+    },
+    onSubmit: () => {
+      axios
+        .post('http://localhost:33333/API/Organization/AddOrEditAccount', {
+          FullName: formik.values.FullName,
+          Image: formik.values.Image,
+          Phone: formik.values.Phone,
+          Email: formik.values.Email,
+          Password: formik.values.Password,
+          Address: formik.values.Address,
+          RoleID: formik.values.RoleID
+        })
+        .then((res) => {
+          if (res.data.Status === 'Success') {
+            alert('Thêm thành công');
+            window.location.reload();
+          } else {
+            alert('Thêm thất bại');
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  });
+
+  const { handleSubmit, getFieldProps } = formik;
   if (error) {
     return <div>Error: {error.message}</div>;
   }
@@ -167,12 +224,68 @@ export default function User() {
   }
   return (
     <Page title="Account | HangnoidiaNhat">
+      <Modal
+        open={open}
+        sx={{
+          '& .MuiTextField-root': { m: 1, width: '25ch' }
+        }}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <FormikProvider value={formik}>
+          <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+            <Box sx={style}>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Add Account
+              </Typography>
+              <TextField
+                id="FullName"
+                label="FullName"
+                {...getFieldProps('FullName')}
+                variant="outlined"
+              />
+              <TextField id="Phone" label="Phone" {...getFieldProps('Phone')} variant="outlined" />
+              <TextField id="Image" label="Image" {...getFieldProps('Image')} variant="outlined" />
+              <TextField id="Email" label="Email" {...getFieldProps('Email')} variant="outlined" />
+              <TextField
+                id="Password"
+                label="Password"
+                {...getFieldProps('Password')}
+                variant="outlined"
+              />
+              <TextField
+                id="Address"
+                label="Address"
+                {...getFieldProps('Address')}
+                variant="outlined"
+              />
+              <Select
+                labelId="demo-simple-select-outlined-label"
+                id="demo-simple-select-outlined"
+                {...getFieldProps('RoleID')}
+                label="Role"
+              >
+                {role.map((item) => (
+                  <MenuItem key={item.RoleID} value={item.RoleID}>
+                    {item.RoleName}
+                  </MenuItem>
+                ))}
+              </Select>
+              <LoadingButton fullWidth size="large" type="submit" variant="contained">
+                Add Account
+              </LoadingButton>
+            </Box>
+          </Form>
+        </FormikProvider>
+      </Modal>
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Account
           </Typography>
           <Button
+            onClick={handleOpen}
             variant="contained"
             component={RouterLink}
             to="#"
@@ -203,17 +316,7 @@ export default function User() {
                 />
                 <TableBody>
                   {filteredUsers.map((row) => {
-                    const {
-                      AccountID,
-                      Image,
-                      Address,
-                      FullName,
-                      Email,
-                      RoleID,
-                      CreatedAt,
-                      Password,
-                      Phone
-                    } = row;
+                    const { AccountID, Image, Address, FullName, Email, RoleID, Phone } = row;
                     const isItemSelected = selected.indexOf(FullName) !== -1;
 
                     return (
@@ -240,7 +343,6 @@ export default function User() {
                           </Stack>
                         </TableCell>
                         <TableCell align="left">{Email}</TableCell>
-                        <TableCell align="left">{Password}</TableCell>
                         <TableCell align="left">{Phone}</TableCell>
                         <TableCell align="left">{Address}</TableCell>
                         <TableCell align="left">{convertRoles(RoleID)}</TableCell>
