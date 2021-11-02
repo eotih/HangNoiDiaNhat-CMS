@@ -234,7 +234,8 @@ export default function User() {
       <Modal
         open={open}
         sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' }
+          '& .MuiTextField-root': { m: 1, width: '25ch' },
+          '& .MuiSelect-root': { m: 1, width: '25ch' }
         }}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
@@ -251,14 +252,14 @@ export default function User() {
               <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
               <TextField label="Password" {...getFieldProps('Password')} variant="outlined" />
               <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
-              <Select label="Role" {...getFieldProps('RoleID')}>
+              <Select label="Role" {...getFieldProps('RoleID')} variant="outlined">
                 {role.map((item) => (
                   <MenuItem key={item.RoleID} value={item.RoleID}>
                     {item.RoleName}
                   </MenuItem>
                 ))}
               </Select>
-              <label htmlFor="contained-button-file">
+              <Label htmlFor="contained-button-file">
                 <Input
                   id="contained-button-file"
                   type="file"
@@ -274,7 +275,7 @@ export default function User() {
                 <Button variant="contained" component="span">
                   Upload Image
                 </Button>
-              </label>
+              </Label>
               <LoadingButton fullWidth size="large" type="submit" variant="contained">
                 Add Account
               </LoadingButton>
