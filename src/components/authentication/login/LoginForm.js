@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { Icon } from '@iconify/react';
+import axios from 'axios';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 // material
@@ -36,7 +37,20 @@ export default function LoginForm() {
     },
     validationSchema: LoginSchema,
     onSubmit: () => {
-      navigate('/dashboard', { replace: true });
+      axios
+        .post(`${process.env.REACT_APP_WEB_API}Organization/Login`, formik.values)
+        .then((res) => {
+          if (res.data.Status === 'Success') {
+            alert('Đăng nhập thành công');
+            localStorage.setItem('token', res.data.Message);
+            navigate('/');
+          } else {
+            alert('Đăng nhập thất bại, vui lòng thử lại sau');
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   });
 
