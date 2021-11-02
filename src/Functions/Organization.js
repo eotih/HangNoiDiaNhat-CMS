@@ -1,5 +1,12 @@
+/* eslint-disable prettier/prettier */
 import axios from 'axios';
+import JWTDecode from "jwt-decode";
 
+const token = JWTDecode(localStorage.getItem('token'));
+export async function infoUserLogin(){
+    const res = await axios.get(`${REACT_APP_WEB_API}Organization/GetAccountById?AccountID=${token.nameid[0]}`);
+    return res.data;
+}
 const { REACT_APP_WEB_API } = process.env;
 export async function getAllAccount() {
   const res = await axios.get(`${REACT_APP_WEB_API}Organization/SelectAllAccount`);
@@ -9,3 +16,4 @@ export async function getAllRole() {
   const res = await axios.get(`${REACT_APP_WEB_API}Component/SelectAllRole`);
   return res.data;
 }
+
