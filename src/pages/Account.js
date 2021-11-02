@@ -1,10 +1,15 @@
+/* eslint-disable react/style-prop-object */
+/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable import/no-unresolved */
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import { Link as RouterLink } from 'react-router-dom';
+import trash2Outline from '@iconify/icons-eva/trash-2-outline';
+import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
+import editFill from '@iconify/icons-eva/edit-fill';
 // material
 import {
   Card,
@@ -19,14 +24,20 @@ import {
   MenuItem,
   Container,
   Modal,
+  Input,
   TextField,
   Alert,
   Select,
+  ListItemText,
   Typography,
+  IconButton,
+  Menu,
+  ListItemIcon,
   TableContainer,
   TablePagination
 } from '@mui/material';
 // components
+import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
@@ -94,6 +105,9 @@ export default function User() {
   const handleClose = () => setOpen(false);
   const [account, setAccount] = useState([]);
   const [role, setRole] = useState([]);
+  const ref = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
+
   useEffect(() => {
     getAllAccount().then((res) => {
       setIsLoaded(true);
@@ -176,6 +190,9 @@ export default function User() {
         return 'Slave';
     }
   };
+  const Input = styled('input')({
+    display: 'none'
+  });
   const formik = useFormik({
     initialValues: {
       FullName: '',
@@ -239,39 +256,35 @@ export default function User() {
               <Typography id="modal-modal-title" variant="h6" component="h2">
                 Add Account
               </Typography>
-              <TextField
-                id="FullName"
-                label="FullName"
-                {...getFieldProps('FullName')}
-                variant="outlined"
-              />
-              <TextField id="Phone" label="Phone" {...getFieldProps('Phone')} variant="outlined" />
-              <TextField id="Image" label="Image" {...getFieldProps('Image')} variant="outlined" />
-              <TextField id="Email" label="Email" {...getFieldProps('Email')} variant="outlined" />
-              <TextField
-                id="Password"
-                label="Password"
-                {...getFieldProps('Password')}
-                variant="outlined"
-              />
-              <TextField
-                id="Address"
-                label="Address"
-                {...getFieldProps('Address')}
-                variant="outlined"
-              />
-              <Select
-                labelId="demo-simple-select-outlined-label"
-                id="demo-simple-select-outlined"
-                {...getFieldProps('RoleID')}
-                label="Role"
-              >
+              <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />
+              <TextField label="Phone" {...getFieldProps('Phone')} variant="outlined" />
+              <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
+              <TextField label="Password" {...getFieldProps('Password')} variant="outlined" />
+              <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
+              <Select label="Role" {...getFieldProps('RoleID')}>
                 {role.map((item) => (
                   <MenuItem key={item.RoleID} value={item.RoleID}>
                     {item.RoleName}
                   </MenuItem>
                 ))}
               </Select>
+              <label htmlFor="contained-button-file">
+                <Input
+                  id="contained-button-file"
+                  type="file"
+                  onChange={(e) => {
+                    const { files } = e.target;
+                    const reader = new FileReader();
+                    reader.readAsDataURL(files[0]);
+                    reader.onload = (e) => {
+                      formik.setFieldValue('Image', e.target.result);
+                    };
+                  }}
+                />
+                <Button variant="contained" component="span">
+                  Upload Image
+                </Button>
+              </label>
               <LoadingButton fullWidth size="large" type="submit" variant="contained">
                 Add Account
               </LoadingButton>
@@ -315,43 +328,84 @@ export default function User() {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers.map((row) => {
-                    const { AccountID, Image, Address, FullName, Email, RoleID, Phone } = row;
-                    const isItemSelected = selected.indexOf(FullName) !== -1;
+                  {filteredUsers
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => {
+                      const { AccountID, Image, Address, FullName, Email, RoleID, Phone } = row;
+                      const isItemSelected = selected.indexOf(FullName) !== -1;
 
-                    return (
-                      <TableRow
-                        hover
-                        key={AccountID}
-                        tabIndex={-1}
-                        role="checkbox"
-                        selected={isItemSelected}
-                        aria-checked={isItemSelected}
-                      >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            checked={isItemSelected}
-                            onChange={(event) => handleClick(event, FullName)}
-                          />
-                        </TableCell>
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={FullName} src={Image} />
-                            <Typography variant="subtitle2" noWrap>
-                              {FullName}
-                            </Typography>
-                          </Stack>
-                        </TableCell>
-                        <TableCell align="left">{Email}</TableCell>
-                        <TableCell align="left">{Phone}</TableCell>
-                        <TableCell align="left">{Address}</TableCell>
-                        <TableCell align="left">{convertRoles(RoleID)}</TableCell>
-                        <TableCell align="right">
-                          <UserMoreMenu />
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                      return (
+                        <TableRow
+                          hover
+                          key={AccountID}
+                          tabIndex={-1}
+                          role="checkbox"
+                          selected={isItemSelected}
+                          aria-checked={isItemSelected}
+                        >
+                          <TableCell padding="checkbox">
+                            <Checkbox
+                              checked={isItemSelected}
+                              onChange={(event) => handleClick(event, FullName)}
+                            />
+                          </TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack direction="row" alignItems="center" spacing={2}>
+                              <Avatar alt={FullName} src={Image} />
+                              <Typography variant="subtitle2" noWrap>
+                                {FullName}
+                              </Typography>
+                            </Stack>
+                          </TableCell>
+                          <TableCell align="left">{Email}</TableCell>
+                          <TableCell align="left">{Phone}</TableCell>
+                          <TableCell align="left">{Address}</TableCell>
+                          <TableCell align="left">{convertRoles(RoleID)}</TableCell>
+                          <TableCell align="right">
+                            <>
+                              <IconButton ref={ref} onClick={() => setIsOpen(true)}>
+                                <Icon icon={moreVerticalFill} width={20} height={20} />
+                              </IconButton>
+
+                              <Menu
+                                open={isOpen}
+                                anchorEl={ref.current}
+                                onClose={() => setIsOpen(false)}
+                                PaperProps={{
+                                  sx: { width: 200, maxWidth: '100%' }
+                                }}
+                                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                              >
+                                <MenuItem sx={{ color: 'text.secondary' }}>
+                                  <ListItemIcon>
+                                    <Icon icon={trash2Outline} width={24} height={24} />
+                                  </ListItemIcon>
+                                  <ListItemText
+                                    primary="Delete"
+                                    primaryTypographyProps={{ variant: 'body2' }}
+                                  />
+                                </MenuItem>
+
+                                <MenuItem
+                                  component={RouterLink}
+                                  to="#"
+                                  sx={{ color: 'text.secondary' }}
+                                >
+                                  <ListItemIcon>
+                                    <Icon icon={editFill} width={24} height={24} />
+                                  </ListItemIcon>
+                                  <ListItemText
+                                    primary="Edit"
+                                    primaryTypographyProps={{ variant: 'body2' }}
+                                  />
+                                </MenuItem>
+                              </Menu>
+                            </>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
