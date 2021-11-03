@@ -1,129 +1,133 @@
-/* eslint-disable react/style-prop-object */
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable import/no-unresolved */
-import { filter } from 'lodash';
-import { Icon } from '@iconify/react';
-import React, { useState, useEffect } from 'react';
+import { useState, handleChange } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
-import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink } from 'react-router-dom';
-// material
 import {
   Stack,
-  Button,
-  MenuItem,
   Container,
-  TextField,
-  Select,
-  Grid,
+  Typography,
   Card,
-  CardHeader,
-  Typography
+  Button,
+  TextField,
+  Avatar,
+  Input,
+  Select,
+  FormControl,
+  MenuItem,
+  InputLabel
 } from '@mui/material';
-// components
-import { styled } from '@mui/material/styles';
-import { LoadingButton } from '@mui/lab';
-import axios from 'axios';
-import Box from '@mui/material/Box';
-import { infoUserLogin } from 'src/Functions/Organization';
 import Page from '../components/Page';
-import Label from '../components/Label';
 
-// ----------------------------------------------------------------------
-
-// ----------------------------------------------------------------------
-
-export default function User() {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [account, setAccount] = useState([]);
-  useEffect(() => {
-    infoUserLogin().then((res) => {
-      setAccount(res);
-      setIsLoaded(true);
-    });
-  }, []);
-
-  const style = {
-    marginBottom: '10px',
-    marginTop: '10px'
-  };
+export default function EditAccount() {
+  const [showPassword, setShowPassword] = useState(false);
   const formik = useFormik({
     initialValues: {
-      FullName: '',
-      Image: '',
-      Phone: '',
-      Email: '',
-      Password: '',
-      Address: '',
-      remember: true
-    },
-    onSubmit: () => {
-      alert(123);
+      Name: '',
+      username: '',
+      password: '',
+      email: '',
+      phone: '',
+      address: ''
     }
   });
+  const { errors, touched } = formik;
 
-  const { handleSubmit, getFieldProps } = formik;
+  const [role, setRole] = useState('');
+  const handleChange = (event) => {
+    setRole(event.target.value);
+  };
   return (
-    <Page title="Account | HangnoidiaNhat">
-      <Box sx={{ pb: 5 }}>
-        <Typography variant="h4">Profile</Typography>
-      </Box>
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6} lg={4}>
-          <Card>
-            <FormikProvider value={formik}>
-              <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-                <Stack spacing={3}>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                    <TextField fullWidth label="First name" {...getFieldProps('firstName')} />
-
-                    <TextField fullWidth label="Last name" {...getFieldProps('lastName')} />
-                  </Stack>
-
-                  <TextField
-                    fullWidth
-                    autoComplete="username"
-                    type="email"
-                    label="Email address"
-                    {...getFieldProps('email')}
-                  />
-
-                  <LoadingButton size="large" type="submit" variant="contained">
-                    Add Account
-                  </LoadingButton>
-                </Stack>
-              </Form>
-            </FormikProvider>
+    <Page title="Profile">
+      <Container>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Typography variant="h4" gutterBottom>
+            Edit Account
+          </Typography>
+        </Stack>
+        <Stack
+          direction="row"
+          spacing={3}
+          alignItems="center"
+          justifyContent="center"
+          sx={{ mb: 5, mx: 2 }}
+        >
+          <Card sx={{ maxWidth: 345 }}>
+            <Avatar src="" sx={{ mx: 15, mt: 5, width: 100, height: 100 }} />
+            <Input type="file" />
+            <Typography variant="h3" sx={{ px: 5, my: 5 }}>
+              Edit Account
+            </Typography>
           </Card>
-        </Grid>
-        <Grid item xs={12} md={6} lg={8}>
-          <Card>
-            <FormikProvider value={formik}>
-              <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-                <Stack spacing={3}>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                    <TextField fullWidth label="First name" {...getFieldProps('firstName')} />
-
-                    <TextField fullWidth label="Last name" {...getFieldProps('lastName')} />
-                  </Stack>
-
-                  <TextField
-                    fullWidth
-                    autoComplete="username"
-                    type="email"
-                    label="Email address"
-                    {...getFieldProps('email')}
-                  />
-
-                  <LoadingButton size="large" type="submit" variant="contained">
-                    Add Account
-                  </LoadingButton>
-                </Stack>
-              </Form>
-            </FormikProvider>
-          </Card>
-        </Grid>
-      </Grid>
+          <Stack spacing={1}>
+            <Card>
+              <Stack direction="row" spacing={1} sx={{ px: 1, mt: 1, mx: 3 }}>
+                <TextField
+                  fullWidth
+                  autoComplete="fullname"
+                  type="text"
+                  label="Name"
+                  error={Boolean(touched.Name && errors.Name)}
+                  helperText={touched.Name && errors.Name}
+                />
+                <FormControl fullWidth>
+                  <InputLabel id="select-label">Role</InputLabel>
+                  <Select labelId="select-label" label="Role" value={role} onChange={handleChange}>
+                    <MenuItem value={1}>Admin</MenuItem>
+                  </Select>
+                </FormControl>
+              </Stack>
+              <Stack direction="row" spacing={1} sx={{ px: 1, mt: 1, mx: 3 }}>
+                <TextField
+                  fullWidth
+                  autoComplete="username"
+                  type="text"
+                  label="Username"
+                  error={Boolean(touched.username && errors.username)}
+                  helperText={touched.username && errors.username}
+                />
+                <TextField
+                  fullWidth
+                  type={showPassword ? 'text' : 'password'}
+                  label="Password"
+                  error={Boolean(touched.password && errors.password)}
+                  helperText={touched.password && errors.password}
+                />
+              </Stack>
+              <Stack direction="row" spacing={1} sx={{ px: 1, mt: 1, mx: 3 }}>
+                <TextField
+                  fullWidth
+                  autoComplete="email"
+                  type="email"
+                  label="Email address"
+                  error={Boolean(touched.email && errors.email)}
+                  helperText={touched.email && errors.email}
+                />
+                <TextField
+                  fullWidth
+                  autoComplete="phone"
+                  type="text"
+                  label="Phone"
+                  error={Boolean(touched.phone && errors.phone)}
+                  helperText={touched.phone && errors.phone}
+                />
+              </Stack>
+              <Stack direction="row" spacing={1} sx={{ px: 1, mt: 1, mx: 3 }}>
+                <TextField
+                  fullWidth
+                  autoComplete="address"
+                  type="text"
+                  label="Address"
+                  error={Boolean(touched.address && errors.address)}
+                  helperText={touched.address && errors.address}
+                />
+              </Stack>
+              <Stack spacing={1} sx={{ p: 1, mb: 2, mx: 3 }}>
+                <Button fullWidth size="large" type="submit" variant="contained">
+                  Edit
+                </Button>
+              </Stack>
+            </Card>
+          </Stack>
+        </Stack>
+      </Container>
     </Page>
   );
 }

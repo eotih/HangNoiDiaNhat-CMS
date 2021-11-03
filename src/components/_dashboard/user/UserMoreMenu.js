@@ -3,26 +3,10 @@ import * as React from 'react';
 import { Icon } from '@iconify/react';
 import { useRef, useState } from 'react';
 import editFill from '@iconify/icons-eva/edit-fill';
-import { useFormik, Form, FormikProvider } from 'formik';
-import { Link as RouterLink } from 'react-router-dom';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 // material
-import {
-  Input,
-  Box,
-  Modal,
-  Menu,
-  MenuItem,
-  IconButton,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-  TextField,
-  Select,
-  Button
-} from '@mui/material';
-import { LoadingButton } from '@mui/lab';
+import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
@@ -82,46 +66,6 @@ export default function UserMoreMenu() {
           </ListItemIcon>
           <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
-        <Modal
-          open={open}
-          sx={{
-            '& .MuiTextField-root': { m: 1, width: '25ch' },
-            '& .MuiSelect-root': { m: 1, width: '10ch' }
-          }}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Edit Account
-            </Typography>
-            <TextField label="FullName" variant="outlined" />
-            <TextField label="Phone" variant="outlined" />
-            <TextField label="Email" variant="outlined" />
-            <TextField label="Password" variant="outlined" />
-            <TextField label="Address" variant="outlined" />
-            <Select label="Role" variant="outlined" />
-            <label htmlFor="contained-button-file">
-              <Input
-                id="contained-button-file"
-                type="file"
-                onChange={(e) => {
-                  const { files } = e.target;
-                  const reader = new FileReader();
-                  reader.readAsDataURL(files[0]);
-                  reader.onload = (e) => {};
-                }}
-              />
-              <Button variant="contained" component="span">
-                Upload Image
-              </Button>
-            </label>
-            <LoadingButton fullWidth size="large" type="submit" variant="contained">
-              Edit Account
-            </LoadingButton>
-          </Box>
-        </Modal>
       </Menu>
     </>
   );
