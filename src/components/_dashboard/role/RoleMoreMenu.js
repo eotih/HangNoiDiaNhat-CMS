@@ -95,7 +95,7 @@ export default function RoleMoreMenu(Role) {
       >
         <MenuItem
           onClick={() => {
-            if (confirm('Are you sure you want to delete this account?')) {
+            if (confirm('Are you sure you want to delete this Role?')) {
               axios
                 .delete(
                   `${process.env.REACT_APP_WEB_API}Component/DeleteRole?RoleID=${Role.dulieu.RoleID}`

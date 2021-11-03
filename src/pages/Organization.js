@@ -37,17 +37,16 @@ import { LoadingButton } from '@mui/lab';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 import Box from '@mui/material/Box';
-import { getAllAccount } from 'src/Functions/Organization';
-import { getAllRole } from 'src/Functions/Component';
+import { getAllOrganization } from 'src/Functions/Organization';
 import Page from '../components/Page';
 import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import {
-  AccountListHead,
-  AccountListToolbar,
-  AccountMoreMenu
-} from '../components/_dashboard/account';
+  OrganizationListHead,
+  OrganizationListToolbar,
+  OrganizationMoreMenu
+} from '../components/_dashboard/organization';
 
 // ----------------------------------------------------------------------
 
@@ -56,7 +55,6 @@ const TABLE_HEAD = [
   { id: 'Email', label: 'Email', alignRight: false },
   { id: 'Phone', label: 'Phone', alignRight: false },
   { id: 'Address', label: 'Address', alignRight: false },
-  { id: 'Role', label: 'Role', alignRight: false },
   { id: '' }
 ];
 
@@ -103,25 +101,24 @@ export default function User() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [account, setAccount] = useState([]);
   const [role, setRole] = useState([]);
-  const [roles, setRoles] = useState([]);
+  const [organization, setOrganization] = useState([]);
   useEffect(() => {
-    getAllAccount().then((res) => {
+    getAllOrganization().then((res) => {
       setIsLoaded(true);
-      setAccount(res);
-    });
-    getAllRole().then((res) => {
-      setIsLoaded(true);
-      setRoles(res);
+      setOrganization(res);
     });
   }, []);
   const handleChange = (event) => {
     setRole(event.target.value);
   };
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - account.length) : 0;
-  const filteredAccount = applySortFilter(account, getComparator(order, orderBy), filterName);
-  const isUserNotFound = filteredAccount.length === 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - organization.length) : 0;
+  const filteredOrganization = applySortFilter(
+    organization,
+    getComparator(order, orderBy),
+    filterName
+  );
+  const isUserNotFound = filteredOrganization.length === 0;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -172,55 +169,35 @@ export default function User() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = account.map((n) => n.name);
+      const newSelecteds = organization.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
-  const convertRoles = (RoleID) => {
-    switch (RoleID) {
-      case 1:
-        return 'Fullstack';
-      case 2:
-        return 'Backend';
-      case 3:
-        return 'Frontend';
-      default:
-        return 'Slave';
-    }
-  };
-  const Input = styled('input')({
-    display: 'none'
-  });
+
   const formik = useFormik({
     initialValues: {
       FullName: '',
-      Image: '',
       Phone: '',
       Email: '',
-      Password: '',
-      RoleID: '',
       Address: '',
       remember: true
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditAccount`, {
+        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditOrganization`, {
           FullName: formik.values.FullName,
-          Image: formik.values.Image,
           Phone: formik.values.Phone,
           Email: formik.values.Email,
-          Password: formik.values.Password,
-          Address: formik.values.Address,
-          RoleID: formik.values.RoleID
+          Address: formik.values.Address
         })
         .then((res) => {
           if (res.data.Status === 'Success') {
-            alert('Thêm thành công');
+            alert('Add Organization Successfully');
             window.location.reload();
           } else {
-            alert('Thêm thất bại');
+            alert('Add Failed');
           }
         })
         .catch((err) => {
@@ -241,7 +218,7 @@ export default function User() {
     );
   }
   return (
-    <Page title="Account | HangnoidiaNhat">
+    <Page title="Organization | HangnoidiaNhat">
       <Modal
         open={open}
         sx={{
@@ -257,7 +234,7 @@ export default function User() {
             <Box sx={style}>
               <Stack spacing={3}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add Account
+                  Add Organization
                 </Typography>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                   <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />
@@ -265,54 +242,10 @@ export default function User() {
                 </Stack>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                   <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
-                  <TextField label="Password" {...getFieldProps('Password')} variant="outlined" />
-                </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                   <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
-                  <FormControl>
-                    <InputLabel id="select-label">Role</InputLabel>
-                    <Select
-                      labelId="select-label"
-                      label="Role"
-                      {...getFieldProps('RoleID')}
-                      variant="outlined"
-                      value={role}
-                      onChange={handleChange}
-                    >
-                      {roles.map((item) => (
-                        <MenuItem key={item.RoleID} value={item.RoleID}>
-                          {item.RoleName}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Stack>
-                <Stack
-                  direction={{ xs: 'column', sm: 'row' }}
-                  spacing={2}
-                  justifyContent="flex-end"
-                >
-                  <Avatar src={formik.values.Image} sx={{ width: 50, height: 50 }} />
-                  <label htmlFor="contained-button-file">
-                    <Input
-                      id="contained-button-file"
-                      type="file"
-                      onChange={(e) => {
-                        const { files } = e.target;
-                        const reader = new FileReader();
-                        reader.readAsDataURL(files[0]);
-                        reader.onload = (e) => {
-                          formik.setFieldValue('Image', e.target.result);
-                        };
-                      }}
-                    />
-                    <Button variant="contained" component="span">
-                      Upload Image
-                    </Button>
-                  </label>
                 </Stack>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                  Add Account
+                  Add Organization
                 </LoadingButton>
               </Stack>
             </Box>
@@ -322,7 +255,7 @@ export default function User() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Account
+            Organization
           </Typography>
           <Button
             onClick={handleOpen}
@@ -331,12 +264,12 @@ export default function User() {
             to="#"
             startIcon={<Icon icon={plusFill} />}
           >
-            New Account
+            New Organization
           </Button>
         </Stack>
 
         <Card>
-          <AccountListToolbar
+          <OrganizationListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -345,26 +278,26 @@ export default function User() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <AccountListHead
+                <OrganizationListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={account.length}
+                  rowCount={organization.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredAccount
+                  {filteredOrganization
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { AccountID, Image, Address, FullName, Email, RoleID, Phone } = row;
+                      const { OrganizationID, Address, FullName, Email, Phone } = row;
                       const isItemSelected = selected.indexOf(FullName) !== -1;
 
                       return (
                         <TableRow
                           hover
-                          key={AccountID}
+                          key={OrganizationID}
                           tabIndex={-1}
                           role="checkbox"
                           selected={isItemSelected}
@@ -376,20 +309,12 @@ export default function User() {
                               onChange={(event) => handleClick(event, FullName)}
                             />
                           </TableCell>
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <Avatar alt={FullName} src={Image} />
-                              <Typography variant="subtitle2" noWrap>
-                                {FullName}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
+                          <TableCell align="left">{FullName}</TableCell>
                           <TableCell align="left">{Email}</TableCell>
                           <TableCell align="left">{Phone}</TableCell>
                           <TableCell align="left">{Address}</TableCell>
-                          <TableCell align="left">{convertRoles(RoleID)}</TableCell>
                           <TableCell align="right">
-                            <AccountMoreMenu dulieu={row} />
+                            <OrganizationMoreMenu dulieu={row} />
                           </TableCell>
                         </TableRow>
                       );
@@ -416,7 +341,7 @@ export default function User() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={account.length}
+            count={organization.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

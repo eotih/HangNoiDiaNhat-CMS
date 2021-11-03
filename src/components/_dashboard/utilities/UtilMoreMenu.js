@@ -95,7 +95,7 @@ export default function UtilMoreMenu(Utility) {
       >
         <MenuItem
           onClick={() => {
-            if (confirm('Are you sure you want to delete this account?')) {
+            if (confirm('Are you sure you want to delete this Utility?')) {
               axios
                 .delete(
                   `${process.env.REACT_APP_WEB_API}Component/DeleteUtil?UtilityID=${Utility.dulieu.UtilityID}`

@@ -95,7 +95,7 @@ export default function PaymentMoreMenu(Payment) {
       >
         <MenuItem
           onClick={() => {
-            if (confirm('Are you sure you want to delete this account?')) {
+            if (confirm('Are you sure you want to delete this Payment?')) {
               axios
                 .delete(
                   `${process.env.REACT_APP_WEB_API}Component/DeletePayment?PaymentID=${Payment.dulieu.PaymentID}`

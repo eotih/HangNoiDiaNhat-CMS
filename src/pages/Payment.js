@@ -107,8 +107,8 @@ export default function Payment() {
     });
   }, []);
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - Payment.length) : 0;
-  const filteredUsers = applySortFilter(Payment, getComparator(order, orderBy), filterName);
-  const isUserNotFound = filteredUsers.length === 0;
+  const filteredPayment = applySortFilter(Payment, getComparator(order, orderBy), filterName);
+  const isUserNotFound = filteredPayment.length === 0;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -264,8 +264,9 @@ export default function Payment() {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {Payment.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(
-                    (row) => {
+                  {filteredPayment
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => {
                       const { PaymentID, Name, CreatedAt, UpdatedAt } = row;
                       const isItemSelected = selected.indexOf(Name) !== -1;
 
@@ -293,8 +294,7 @@ export default function Payment() {
                           </TableCell>
                         </TableRow>
                       );
-                    }
-                  )}
+                    })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />

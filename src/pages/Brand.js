@@ -32,7 +32,7 @@ import { styled } from '@mui/material/styles';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 import Box from '@mui/material/Box';
-import { getAllCategory } from 'src/Functions/Component';
+import { getAllBrands } from 'src/Functions/Component';
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
@@ -92,16 +92,16 @@ export default function Category() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [category, setCategory] = useState([]);
+  const [brand, setBrand] = useState([]);
   useEffect(() => {
-    getAllCategory().then((res) => {
+    getAllBrands().then((res) => {
       setIsLoaded(true);
-      setCategory(res);
+      setBrand(res);
     });
   }, []);
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - category.length) : 0;
-  const filteredUsers = applySortFilter(category, getComparator(order, orderBy), filterName);
-  const isUserNotFound = filteredUsers.length === 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - brand.length) : 0;
+  const filteredBrands = applySortFilter(brand, getComparator(order, orderBy), filterName);
+  const isUserNotFound = filteredBrands.length === 0;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -154,7 +154,7 @@ export default function Category() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = category.map((n) => n.name);
+      const newSelecteds = brand.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -279,13 +279,13 @@ export default function Category() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={category.length}
+                  rowCount={brand.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {category
+                  {filteredBrands
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
                       const { CategoryID, Name, Slug, Thumbnail, CreatedAt, UpdatedAt } = row;
@@ -346,7 +346,7 @@ export default function Category() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={category.length}
+            count={brand.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

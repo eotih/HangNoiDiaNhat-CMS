@@ -25,8 +25,8 @@ const sidebarConfig = [
         path: '/organization/organization'
       },
       {
-        title: 'Bank',
-        path: '/organization/bank'
+        title: 'Banner',
+        path: '/organization/banner'
       },
       {
         title: 'Account',

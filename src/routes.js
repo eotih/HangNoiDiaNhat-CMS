@@ -19,6 +19,8 @@ import Category from './pages/Category';
 import Brand from './pages/Brand';
 import Utilities from './pages/Utilities';
 import State from './pages/State';
+import Banner from './pages/Banner';
+import Organization from './pages/Organization';
 import NotFound from './pages/Page404';
 
 // ----------------------------------------------------------------------
@@ -43,6 +45,8 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'account', element: <Account /> },
+        { path: 'banner', element: <Banner /> },
+        { path: 'organization', element: <Organization /> }
       ]
     },
     {

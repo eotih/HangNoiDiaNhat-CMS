@@ -94,7 +94,7 @@ export default function ServiceMoreMenu(Service) {
       >
         <MenuItem
           onClick={() => {
-            if (confirm('Are you sure you want to delete this account?')) {
+            if (confirm('Are you sure you want to delete this Service?')) {
               axios
                 .delete(
                   `${process.env.REACT_APP_WEB_API}Delivery/DeleteService?ServiceID=${Service.dulieu.ServiceID}`

@@ -29,27 +29,27 @@ import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
-export default function CategoryMoreMenu(Category) {
+export default function BannerMoreMenu(Banner) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = React.useState(false);
   const handleClose = () => setOpen(false);
   const formik = useFormik({
     initialValues: {
-      CategoryID: '',
+      BannerID: '',
       Name: '',
-      Thumbnail: ''
+      Image: ''
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditCategory`, {
+        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditBanner`, {
           Name: formik.values.Name,
-          CategoryID: formik.values.CategoryID,
-          Thumbnail: formik.values.Thumbnail
+          BannerID: formik.values.BannerID,
+          Image: formik.values.Image
         })
         .then((res) => {
           if (res.data.Status === 'Updated') {
-            alert('Edit Category Successfully');
+            alert('Edit Banner Successfully');
             window.location.reload();
           } else {
             alert('Edit Failed');
@@ -75,9 +75,9 @@ export default function CategoryMoreMenu(Category) {
     display: 'none'
   });
   const handleOpen = () => {
-    formik.setFieldValue('CategoryID', Category.dulieu.CategoryID);
-    formik.setFieldValue('Name', Category.dulieu.Name);
-    formik.setFieldValue('Thumbnail', Category.dulieu.Thumbnail);
+    formik.setFieldValue('BannerID', Banner.dulieu.BannerID);
+    formik.setFieldValue('Name', Banner.dulieu.Name);
+    formik.setFieldValue('Image', Banner.dulieu.Image);
     setOpen(true);
   };
   return (
@@ -98,14 +98,14 @@ export default function CategoryMoreMenu(Category) {
       >
         <MenuItem
           onClick={() => {
-            if (confirm('Are you sure you want to delete this Category?')) {
+            if (confirm('Are you sure you want to delete this banner?')) {
               axios
                 .delete(
-                  `${process.env.REACT_APP_WEB_API}Component/DeleteCategory?CategoryID=${Category.dulieu.CategoryID}`
+                  `${process.env.REACT_APP_WEB_API}Organization/DeleteBanner?BannerID=${Banner.dulieu.BannerID}`
                 )
                 .then((res) => {
                   if (res.data.Status === 'Deleted') {
-                    alert('Category Deleted');
+                    alert('Banner Deleted');
                     window.location.reload();
                   } else {
                     alert('Deleted Fail');
@@ -144,7 +144,7 @@ export default function CategoryMoreMenu(Category) {
               <Box sx={style}>
                 <Stack spacing={3}>
                   <Typography id="modal-modal-title" variant="h6" component="h2">
-                    Edit Category
+                    Edit Banner
                   </Typography>
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
                     <TextField label="Name" {...getFieldProps('Name')} variant="outlined" />
@@ -154,7 +154,7 @@ export default function CategoryMoreMenu(Category) {
                     spacing={2}
                     justifyContent="flex-end"
                   >
-                    <Avatar src={formik.values.Thumbnail} sx={{ width: 50, height: 50 }} />
+                    <Avatar src={formik.values.Image} sx={{ width: 50, height: 50 }} />
                     <label htmlFor="contained-button-file">
                       <Input
                         id="contained-button-file"
@@ -164,17 +164,17 @@ export default function CategoryMoreMenu(Category) {
                           const reader = new FileReader();
                           reader.readAsDataURL(files[0]);
                           reader.onload = (e) => {
-                            formik.setFieldValue('Thumbnail', e.target.result);
+                            formik.setFieldValue('Image', e.target.result);
                           };
                         }}
                       />
                       <Button variant="contained" component="span">
-                        Upload Thumbnail
+                        Upload Image
                       </Button>
                     </label>
                   </Stack>
                   <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                    Edit Category
+                    Edit Banner
                   </LoadingButton>
                 </Stack>
               </Box>

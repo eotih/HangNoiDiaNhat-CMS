@@ -29,27 +29,31 @@ import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
-export default function CategoryMoreMenu(Category) {
+export default function OrganizationMoreMenu(Organization) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = React.useState(false);
   const handleClose = () => setOpen(false);
   const formik = useFormik({
     initialValues: {
-      CategoryID: '',
-      Name: '',
-      Thumbnail: ''
+      FullName: '',
+      Phone: '',
+      Email: '',
+      Address: '',
+      OrganizationID: ''
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditCategory`, {
-          Name: formik.values.Name,
-          CategoryID: formik.values.CategoryID,
-          Thumbnail: formik.values.Thumbnail
+        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditOrganization`, {
+          FullName: formik.values.FullName,
+          OrganizationID: formik.values.OrganizationID,
+          Email: formik.values.Email,
+          Address: formik.values.Address,
+          Phone: formik.values.Phone
         })
         .then((res) => {
           if (res.data.Status === 'Updated') {
-            alert('Edit Category Successfully');
+            alert('Edit Organization Successfully');
             window.location.reload();
           } else {
             alert('Edit Failed');
@@ -75,9 +79,11 @@ export default function CategoryMoreMenu(Category) {
     display: 'none'
   });
   const handleOpen = () => {
-    formik.setFieldValue('CategoryID', Category.dulieu.CategoryID);
-    formik.setFieldValue('Name', Category.dulieu.Name);
-    formik.setFieldValue('Thumbnail', Category.dulieu.Thumbnail);
+    formik.setFieldValue('OrganizationID', Organization.dulieu.OrganizationID);
+    formik.setFieldValue('FullName', Organization.dulieu.FullName);
+    formik.setFieldValue('Phone', Organization.dulieu.Phone);
+    formik.setFieldValue('Email', Organization.dulieu.Email);
+    formik.setFieldValue('Address', Organization.dulieu.Address);
     setOpen(true);
   };
   return (
@@ -98,14 +104,14 @@ export default function CategoryMoreMenu(Category) {
       >
         <MenuItem
           onClick={() => {
-            if (confirm('Are you sure you want to delete this Category?')) {
+            if (confirm('Are you sure you want to delete this Organization?')) {
               axios
                 .delete(
-                  `${process.env.REACT_APP_WEB_API}Component/DeleteCategory?CategoryID=${Category.dulieu.CategoryID}`
+                  `${process.env.REACT_APP_WEB_API}Organization/DeleteOrganization?OrganizationID=${Organization.dulieu.OrganizationID}`
                 )
                 .then((res) => {
                   if (res.data.Status === 'Deleted') {
-                    alert('Category Deleted');
+                    alert('Organization Deleted');
                     window.location.reload();
                   } else {
                     alert('Deleted Fail');
@@ -144,37 +150,18 @@ export default function CategoryMoreMenu(Category) {
               <Box sx={style}>
                 <Stack spacing={3}>
                   <Typography id="modal-modal-title" variant="h6" component="h2">
-                    Edit Category
+                    Edit Organization
                   </Typography>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
-                    <TextField label="Name" {...getFieldProps('Name')} variant="outlined" />
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                    <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />
+                    <TextField label="Phone" {...getFieldProps('Phone')} variant="outlined" />
                   </Stack>
-                  <Stack
-                    direction={{ xs: 'column', sm: 'row' }}
-                    spacing={2}
-                    justifyContent="flex-end"
-                  >
-                    <Avatar src={formik.values.Thumbnail} sx={{ width: 50, height: 50 }} />
-                    <label htmlFor="contained-button-file">
-                      <Input
-                        id="contained-button-file"
-                        type="file"
-                        onChange={(e) => {
-                          const { files } = e.target;
-                          const reader = new FileReader();
-                          reader.readAsDataURL(files[0]);
-                          reader.onload = (e) => {
-                            formik.setFieldValue('Thumbnail', e.target.result);
-                          };
-                        }}
-                      />
-                      <Button variant="contained" component="span">
-                        Upload Thumbnail
-                      </Button>
-                    </label>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                    <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
+                    <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
                   </Stack>
                   <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                    Edit Category
+                    Edit Organization
                   </LoadingButton>
                 </Stack>
               </Box>

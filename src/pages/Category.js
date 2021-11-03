@@ -104,8 +104,8 @@ export default function Category() {
     });
   }, []);
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - category.length) : 0;
-  const filteredUsers = applySortFilter(category, getComparator(order, orderBy), filterName);
-  const isUserNotFound = filteredUsers.length === 0;
+  const filteredCategories = applySortFilter(category, getComparator(order, orderBy), filterName);
+  const isUserNotFound = filteredCategories.length === 0;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -289,7 +289,7 @@ export default function Category() {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {category
+                  {filteredCategories
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
                       const { CategoryID, Name, Slug, Thumbnail, CreatedAt, UpdatedAt } = row;
