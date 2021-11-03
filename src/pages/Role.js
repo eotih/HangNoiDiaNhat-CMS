@@ -41,20 +41,15 @@ import Page from '../components/Page';
 import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
-import {
-  AccountListHead,
-  AccountListToolbar,
-  AccountMoreMenu
-} from '../components/_dashboard/account';
+import { RoleListHead, RoleListToolbar, RoleMoreMenu } from '../components/_dashboard/role';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'FullName', label: 'FullName', alignRight: false },
-  { id: 'Email', label: 'Email', alignRight: false },
-  { id: 'Phone', label: 'Phone', alignRight: false },
-  { id: 'Address', label: 'Address', alignRight: false },
-  { id: 'Role', label: 'Role', alignRight: false },
+  { id: 'RoleID', label: 'RoleID', alignRight: false },
+  { id: 'RoleName', label: 'RoleName', alignRight: false },
+  { id: 'CreatedAt', label: 'CreatedAt', alignRight: false },
+  { id: 'UpdatedAt', label: 'UpdatedAt', alignRight: false },
   { id: '' }
 ];
 
@@ -89,7 +84,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function User() {
+export default function Role() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [page, setPage] = useState(0);
@@ -101,20 +96,15 @@ export default function User() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [account, setAccount] = useState([]);
   const [role, setRole] = useState([]);
   useEffect(() => {
-    getAllAccount().then((res) => {
-      setIsLoaded(true);
-      setAccount(res);
-    });
     getAllRole().then((res) => {
       setIsLoaded(true);
       setRole(res);
     });
   }, []);
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - account.length) : 0;
-  const filteredUsers = applySortFilter(account, getComparator(order, orderBy), filterName);
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - role.length) : 0;
+  const filteredUsers = applySortFilter(role, getComparator(order, orderBy), filterName);
   const isUserNotFound = filteredUsers.length === 0;
 
   const handleRequestSort = (event, property) => {
@@ -166,48 +156,20 @@ export default function User() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = account.map((n) => n.name);
+      const newSelecteds = role.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
-  const convertRoles = (RoleID) => {
-    switch (RoleID) {
-      case 1:
-        return 'Fullstack';
-      case 2:
-        return 'Backend';
-      case 3:
-        return 'Frontend';
-      default:
-        return 'Slave';
-    }
-  };
-  const Input = styled('input')({
-    display: 'none'
-  });
   const formik = useFormik({
     initialValues: {
-      FullName: '',
-      Image: '',
-      Phone: '',
-      Email: '',
-      Password: '',
-      RoleID: '',
-      Address: '',
-      remember: true
+      RoleName: ''
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditAccount`, {
-          FullName: formik.values.FullName,
-          Image: formik.values.Image,
-          Phone: formik.values.Phone,
-          Email: formik.values.Email,
-          Password: formik.values.Password,
-          Address: formik.values.Address,
-          RoleID: formik.values.RoleID
+        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditRole`, {
+          RoleName: formik.values.RoleName
         })
         .then((res) => {
           if (res.data.Status === 'Success') {
@@ -235,12 +197,11 @@ export default function User() {
     );
   }
   return (
-    <Page title="Account | HangnoidiaNhat">
+    <Page title="Role | HangnoidiaNhat">
       <Modal
         open={open}
         sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' },
-          '& .MuiSelect-root': { m: 1, width: '25ch' }
+          '& .MuiTextField-root': { m: 1, width: '25ch' }
         }}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
@@ -251,39 +212,13 @@ export default function User() {
             <Box sx={style}>
               <Stack spacing={3}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add Account
+                  Add Role
                 </Typography>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />
-                  <TextField label="Phone" {...getFieldProps('Phone')} variant="outlined" />
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+                  <TextField label="RoleName" {...getFieldProps('RoleName')} variant="outlined" />
                 </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
-                  <TextField label="Password" {...getFieldProps('Password')} variant="outlined" />
-                </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
-                  <TextField label="RoleID" {...getFieldProps('RoleID')} variant="outlined" />
-                </Stack>
-                <label htmlFor="contained-button-file">
-                  <Input
-                    id="contained-button-file"
-                    type="file"
-                    onChange={(e) => {
-                      const { files } = e.target;
-                      const reader = new FileReader();
-                      reader.readAsDataURL(files[0]);
-                      reader.onload = (e) => {
-                        formik.setFieldValue('Image', e.target.result);
-                      };
-                    }}
-                  />
-                  <Button variant="contained" component="span">
-                    Upload Image
-                  </Button>
-                </label>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                  Add Account
+                  Add Role
                 </LoadingButton>
               </Stack>
             </Box>
@@ -293,7 +228,7 @@ export default function User() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Account
+            Role
           </Typography>
           <Button
             onClick={handleOpen}
@@ -302,12 +237,12 @@ export default function User() {
             to="#"
             startIcon={<Icon icon={plusFill} />}
           >
-            New Account
+            New Role
           </Button>
         </Stack>
 
         <Card>
-          <AccountListToolbar
+          <RoleListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -316,55 +251,45 @@ export default function User() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <AccountListHead
+                <RoleListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={account.length}
+                  rowCount={role.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      const { AccountID, Image, Address, FullName, Email, RoleID, Phone } = row;
-                      const isItemSelected = selected.indexOf(FullName) !== -1;
+                  {role.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                    const { RoleID, RoleName, CreatedAt, UpdatedAt } = row;
+                    const isItemSelected = selected.indexOf(RoleName) !== -1;
 
-                      return (
-                        <TableRow
-                          hover
-                          key={AccountID}
-                          tabIndex={-1}
-                          role="checkbox"
-                          selected={isItemSelected}
-                          aria-checked={isItemSelected}
-                        >
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              checked={isItemSelected}
-                              onChange={(event) => handleClick(event, FullName)}
-                            />
-                          </TableCell>
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <Avatar alt={FullName} src={Image} />
-                              <Typography variant="subtitle2" noWrap>
-                                {FullName}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
-                          <TableCell align="left">{Email}</TableCell>
-                          <TableCell align="left">{Phone}</TableCell>
-                          <TableCell align="left">{Address}</TableCell>
-                          <TableCell align="left">{convertRoles(RoleID)}</TableCell>
-                          <TableCell align="right">
-                            <AccountMoreMenu dulieu={row} />
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
+                    return (
+                      <TableRow
+                        hover
+                        key={RoleID}
+                        tabIndex={-1}
+                        role="checkbox"
+                        selected={isItemSelected}
+                        aria-checked={isItemSelected}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            checked={isItemSelected}
+                            onChange={(event) => handleClick(event, RoleName)}
+                          />
+                        </TableCell>
+                        <TableCell align="left">{RoleID}</TableCell>
+                        <TableCell align="left">{RoleName}</TableCell>
+                        <TableCell align="left">{CreatedAt}</TableCell>
+                        <TableCell align="left">{UpdatedAt}</TableCell>
+                        <TableCell align="right">
+                          <RoleMoreMenu dulieu={row} />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
@@ -387,7 +312,7 @@ export default function User() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={account.length}
+            count={role.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

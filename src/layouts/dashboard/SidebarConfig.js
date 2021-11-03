@@ -17,55 +17,55 @@ const sidebarConfig = [
   },
   {
     title: 'Organization',
-    path: '/dashboard/blog',
+    path: '/dashboard/app',
     icon: getIcon(peopleFill),
     children: [
       {
         title: 'Organization',
-        path: '/dashboard/organization'
+        path: '/organization/organization'
       },
       {
         title: 'Bank',
-        path: '/dashboard/bank'
+        path: '/organization/bank'
       },
       {
         title: 'Account',
-        path: '/dashboard/account'
+        path: '/organization/account'
       }
     ]
   },
   {
     title: 'Component  ',
-    path: '/dashboard/user',
+    path: '/dashboard/app',
     icon: getIcon(briefcasefill),
     children: [
       {
         title: 'State',
-        path: '/dashboard/state'
+        path: '/component/state'
       },
       {
         title: 'Services',
-        path: '/dashboard/services'
+        path: '/component/services'
       },
       {
         title: 'Roles',
-        path: '/dashboard/Roles'
+        path: '/component/role'
       },
       {
         title: 'Utilities',
-        path: '/dashboard/utilities'
+        path: '/component/utilities'
       },
       {
         title: 'Category',
-        path: '/dashboard/category'
+        path: '/component/category'
       },
       {
         title: 'Payment',
-        path: '/dashboard/payment'
+        path: '/component/payment'
       },
       {
         title: 'Brands',
-        path: '/dashboard/brands'
+        path: '/component/brands'
       }
     ]
   },

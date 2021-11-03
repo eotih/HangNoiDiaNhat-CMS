@@ -35,26 +35,24 @@ import { LoadingButton } from '@mui/lab';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 import Box from '@mui/material/Box';
-import { getAllAccount } from 'src/Functions/Organization';
-import { getAllRole } from 'src/Functions/Component';
+import { getAllPayment } from 'src/Functions/Component';
 import Page from '../components/Page';
 import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import {
-  AccountListHead,
-  AccountListToolbar,
-  AccountMoreMenu
-} from '../components/_dashboard/account';
+  PaymentMoreMenu,
+  PaymentListToolbar,
+  PaymentListHead
+} from '../components/_dashboard/payment';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'FullName', label: 'FullName', alignRight: false },
-  { id: 'Email', label: 'Email', alignRight: false },
-  { id: 'Phone', label: 'Phone', alignRight: false },
-  { id: 'Address', label: 'Address', alignRight: false },
-  { id: 'Role', label: 'Role', alignRight: false },
+  { id: 'PaymentID', label: 'PaymentID', alignRight: false },
+  { id: 'Name', label: 'Name', alignRight: false },
+  { id: 'CreatedAt', label: 'CreatedAt', alignRight: false },
+  { id: 'UpdatedAt', label: 'UpdatedAt', alignRight: false },
   { id: '' }
 ];
 
@@ -89,7 +87,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function User() {
+export default function Payment() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [page, setPage] = useState(0);
@@ -101,20 +99,15 @@ export default function User() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [account, setAccount] = useState([]);
-  const [role, setRole] = useState([]);
+  const [Payment, setPayment] = useState([]);
   useEffect(() => {
-    getAllAccount().then((res) => {
+    getAllPayment().then((res) => {
       setIsLoaded(true);
-      setAccount(res);
-    });
-    getAllRole().then((res) => {
-      setIsLoaded(true);
-      setRole(res);
+      setPayment(res);
     });
   }, []);
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - account.length) : 0;
-  const filteredUsers = applySortFilter(account, getComparator(order, orderBy), filterName);
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - Payment.length) : 0;
+  const filteredUsers = applySortFilter(Payment, getComparator(order, orderBy), filterName);
   const isUserNotFound = filteredUsers.length === 0;
 
   const handleRequestSort = (event, property) => {
@@ -166,55 +159,27 @@ export default function User() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = account.map((n) => n.name);
+      const newSelecteds = Payment.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
-  const convertRoles = (RoleID) => {
-    switch (RoleID) {
-      case 1:
-        return 'Fullstack';
-      case 2:
-        return 'Backend';
-      case 3:
-        return 'Frontend';
-      default:
-        return 'Slave';
-    }
-  };
-  const Input = styled('input')({
-    display: 'none'
-  });
   const formik = useFormik({
     initialValues: {
-      FullName: '',
-      Image: '',
-      Phone: '',
-      Email: '',
-      Password: '',
-      RoleID: '',
-      Address: '',
-      remember: true
+      Name: ''
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditAccount`, {
-          FullName: formik.values.FullName,
-          Image: formik.values.Image,
-          Phone: formik.values.Phone,
-          Email: formik.values.Email,
-          Password: formik.values.Password,
-          Address: formik.values.Address,
-          RoleID: formik.values.RoleID
+        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditPayment`, {
+          Name: formik.values.Name
         })
         .then((res) => {
           if (res.data.Status === 'Success') {
-            alert('Thêm thành công');
+            alert('Add Payment Successfully');
             window.location.reload();
           } else {
-            alert('Thêm thất bại');
+            alert('Add Failed');
           }
         })
         .catch((err) => {
@@ -235,12 +200,11 @@ export default function User() {
     );
   }
   return (
-    <Page title="Account | HangnoidiaNhat">
+    <Page title="Payment | HangnoidiaNhat">
       <Modal
         open={open}
         sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' },
-          '& .MuiSelect-root': { m: 1, width: '25ch' }
+          '& .MuiTextField-root': { m: 1, width: '25ch' }
         }}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
@@ -251,39 +215,13 @@ export default function User() {
             <Box sx={style}>
               <Stack spacing={3}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add Account
+                  Add Payment
                 </Typography>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />
-                  <TextField label="Phone" {...getFieldProps('Phone')} variant="outlined" />
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+                  <TextField label="Name" {...getFieldProps('Name')} variant="outlined" />
                 </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
-                  <TextField label="Password" {...getFieldProps('Password')} variant="outlined" />
-                </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
-                  <TextField label="RoleID" {...getFieldProps('RoleID')} variant="outlined" />
-                </Stack>
-                <label htmlFor="contained-button-file">
-                  <Input
-                    id="contained-button-file"
-                    type="file"
-                    onChange={(e) => {
-                      const { files } = e.target;
-                      const reader = new FileReader();
-                      reader.readAsDataURL(files[0]);
-                      reader.onload = (e) => {
-                        formik.setFieldValue('Image', e.target.result);
-                      };
-                    }}
-                  />
-                  <Button variant="contained" component="span">
-                    Upload Image
-                  </Button>
-                </label>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                  Add Account
+                  Add Payment
                 </LoadingButton>
               </Stack>
             </Box>
@@ -293,7 +231,7 @@ export default function User() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Account
+            Payment
           </Typography>
           <Button
             onClick={handleOpen}
@@ -302,12 +240,12 @@ export default function User() {
             to="#"
             startIcon={<Icon icon={plusFill} />}
           >
-            New Account
+            New Payment
           </Button>
         </Stack>
 
         <Card>
-          <AccountListToolbar
+          <PaymentListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -316,26 +254,25 @@ export default function User() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <AccountListHead
+                <PaymentMoreMenu
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={account.length}
+                  rowCount={Payment.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      const { AccountID, Image, Address, FullName, Email, RoleID, Phone } = row;
-                      const isItemSelected = selected.indexOf(FullName) !== -1;
+                  {Payment.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(
+                    (row) => {
+                      const { PaymentID, Name, CreatedAt, UpdatedAt } = row;
+                      const isItemSelected = selected.indexOf(Name) !== -1;
 
                       return (
                         <TableRow
                           hover
-                          key={AccountID}
+                          key={PaymentID}
                           tabIndex={-1}
                           role="checkbox"
                           selected={isItemSelected}
@@ -344,27 +281,20 @@ export default function User() {
                           <TableCell padding="checkbox">
                             <Checkbox
                               checked={isItemSelected}
-                              onChange={(event) => handleClick(event, FullName)}
+                              onChange={(event) => handleClick(event, Name)}
                             />
                           </TableCell>
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <Avatar alt={FullName} src={Image} />
-                              <Typography variant="subtitle2" noWrap>
-                                {FullName}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
-                          <TableCell align="left">{Email}</TableCell>
-                          <TableCell align="left">{Phone}</TableCell>
-                          <TableCell align="left">{Address}</TableCell>
-                          <TableCell align="left">{convertRoles(RoleID)}</TableCell>
+                          <TableCell align="left">{PaymentID}</TableCell>
+                          <TableCell align="left">{Name}</TableCell>
+                          <TableCell align="left">{CreatedAt}</TableCell>
+                          <TableCell align="left">{UpdatedAt}</TableCell>
                           <TableCell align="right">
-                            <AccountMoreMenu dulieu={row} />
+                            <PaymentMoreMenu dulieu={row} />
                           </TableCell>
                         </TableRow>
                       );
-                    })}
+                    }
+                  )}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
@@ -387,7 +317,7 @@ export default function User() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={account.length}
+            count={Payment.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
