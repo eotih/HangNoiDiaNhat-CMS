@@ -17,3 +17,7 @@ export async function getAllBrands() {
   const res = await axios.get(`${REACT_APP_WEB_API}Component/SelectAllBrand`);
   return res.data;
 }
+export async function getAllUtilities() {
+  const res = await axios.get(`${REACT_APP_WEB_API}Component/SelectAllUtil`);
+  return res.data;
+}
