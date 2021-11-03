@@ -25,6 +25,7 @@ import Organization from './pages/Organization';
 import Customer from './pages/Customer';
 import Contact from './pages/Contact';
 import Shipper from './pages/Shipper';
+import ShippingDepartment from './pages/ShippingDepartment';
 import NotFound from './pages/Page404';
 
 // ----------------------------------------------------------------------
@@ -73,7 +74,8 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'services', element: <Service /> },
         { path: 'payment', element: <Payment /> },
-        { path: 'shipper', element: <Shipper /> }
+        { path: 'shipper', element: <Shipper /> },
+        { path: 'shipping-department', element: <ShippingDepartment /> }
       ]
     },
     {
