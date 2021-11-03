@@ -61,7 +61,7 @@ const sidebarConfig = [
       },
       {
         title: 'Brands',
-        path: '/component/brands'
+        path: '/component/brand'
       }
     ]
   },

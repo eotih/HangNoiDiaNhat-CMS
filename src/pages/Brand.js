@@ -32,20 +32,16 @@ import { styled } from '@mui/material/styles';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 import Box from '@mui/material/Box';
-import { getAllCategory } from 'src/Functions/Component';
+import { getAllBrands } from 'src/Functions/Component';
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
-import {
-  CategoryMoreMenu,
-  CategoryListToolbar,
-  CategoryListHead
-} from '../components/_dashboard/category';
+import { BrandMoreMenu, BrandListToolbar, BrandListHead } from '../components/_dashboard/brand';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'CategoryID', label: 'CategoryID', alignRight: false },
+  { id: 'BrandID', label: 'BrandID', alignRight: false },
   { id: 'Name', label: 'Name', alignRight: false },
   { id: 'Slug', label: 'Slug', alignRight: false },
   { id: 'CreatedAt', label: 'CreatedAt', alignRight: false },
@@ -96,15 +92,15 @@ export default function Category() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [category, setCategory] = useState([]);
+  const [brand, setBrand] = useState([]);
   useEffect(() => {
-    getAllCategory().then((res) => {
+    getAllBrands().then((res) => {
       setIsLoaded(true);
-      setCategory(res);
+      setBrand(res);
     });
   }, []);
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - category.length) : 0;
-  const filteredUsers = applySortFilter(category, getComparator(order, orderBy), filterName);
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - brand.length) : 0;
+  const filteredUsers = applySortFilter(brand, getComparator(order, orderBy), filterName);
   const isUserNotFound = filteredUsers.length === 0;
 
   const handleRequestSort = (event, property) => {
@@ -158,7 +154,7 @@ export default function Category() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = category.map((n) => n.name);
+      const newSelecteds = brand.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -171,13 +167,13 @@ export default function Category() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditCategory`, {
+        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditBrand`, {
           Name: formik.values.Name,
           Thumbnail: formik.values.Thumbnail
         })
         .then((res) => {
           if (res.data.Status === 'Success') {
-            alert('Add Category Successfully');
+            alert('Add Brand Successfully');
             window.location.reload();
           } else {
             alert('Add Failed');
@@ -201,7 +197,7 @@ export default function Category() {
     );
   }
   return (
-    <Page title="Category | HangnoidiaNhat">
+    <Page title="Brand | HangnoidiaNhat">
       <Modal
         open={open}
         sx={{
@@ -216,7 +212,7 @@ export default function Category() {
             <Box sx={style}>
               <Stack spacing={3}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add Category
+                  Add Brand
                 </Typography>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
                   <TextField label="Name" {...getFieldProps('Name')} variant="outlined" />
@@ -241,12 +237,12 @@ export default function Category() {
                       }}
                     />
                     <Button variant="contained" component="span">
-                      Upload Thumbnail
+                      Upload Brand
                     </Button>
                   </label>
                 </Stack>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                  Add Category
+                  Add Brand
                 </LoadingButton>
               </Stack>
             </Box>
@@ -256,7 +252,7 @@ export default function Category() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Category
+            Brand
           </Typography>
           <Button
             onClick={handleOpen}
@@ -265,12 +261,12 @@ export default function Category() {
             to="#"
             startIcon={<Icon icon={plusFill} />}
           >
-            New Category
+            New Brand
           </Button>
         </Stack>
 
         <Card>
-          <CategoryListToolbar
+          <BrandListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -279,55 +275,53 @@ export default function Category() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <CategoryListHead
+                <BrandListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={category.length}
+                  rowCount={brand.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {category
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      const { CategoryID, Name, Slug, Thumbnail, CreatedAt, UpdatedAt } = row;
-                      const isItemSelected = selected.indexOf(Name) !== -1;
+                  {brand.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                    const { BrandID, Name, Slug, Thumbnail, CreatedAt, UpdatedAt } = row;
+                    const isItemSelected = selected.indexOf(Name) !== -1;
 
-                      return (
-                        <TableRow
-                          hover
-                          key={CategoryID}
-                          tabIndex={-1}
-                          role="checkbox"
-                          selected={isItemSelected}
-                          aria-checked={isItemSelected}
-                        >
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              checked={isItemSelected}
-                              onChange={(event) => handleClick(event, Name)}
-                            />
-                          </TableCell>
-                          <TableCell align="left">{CategoryID}</TableCell>
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <Avatar alt={Name} src={Thumbnail} />
-                              <Typography variant="subtitle2" noWrap>
-                                {Name}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
-                          <TableCell align="left">{Slug}</TableCell>
-                          <TableCell align="left">{CreatedAt}</TableCell>
-                          <TableCell align="left">{UpdatedAt}</TableCell>
-                          <TableCell align="right">
-                            <CategoryMoreMenu dulieu={row} />
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
+                    return (
+                      <TableRow
+                        hover
+                        key={BrandID}
+                        tabIndex={-1}
+                        role="checkbox"
+                        selected={isItemSelected}
+                        aria-checked={isItemSelected}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            checked={isItemSelected}
+                            onChange={(event) => handleClick(event, Name)}
+                          />
+                        </TableCell>
+                        <TableCell align="left">{BrandID}</TableCell>
+                        <TableCell component="th" scope="row" padding="none">
+                          <Stack direction="row" alignItems="center" spacing={2}>
+                            <Avatar alt={Name} src={Thumbnail} />
+                            <Typography variant="subtitle2" noWrap>
+                              {Name}
+                            </Typography>
+                          </Stack>
+                        </TableCell>
+                        <TableCell align="left">{Slug}</TableCell>
+                        <TableCell align="left">{CreatedAt}</TableCell>
+                        <TableCell align="left">{UpdatedAt}</TableCell>
+                        <TableCell align="right">
+                          <BrandMoreMenu dulieu={row} />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
@@ -350,7 +344,7 @@ export default function Category() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={category.length}
+            count={brand.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
