@@ -39,10 +39,11 @@ export default function AccountMoreMenu(Account) {
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [role, setRole] = useState([]);
+  const [roles, setRoles] = useState([]);
   const handleClose = () => setOpen(false);
   useEffect(() => {
     getAllRole().then((res) => {
-      setRole(res);
+      setRoles(res);
     });
   }, []);
   const formik = useFormik({
@@ -108,6 +109,7 @@ export default function AccountMoreMenu(Account) {
     formik.setFieldValue('Password', Account.dulieu.Password);
     formik.setFieldValue('Address', Account.dulieu.Address);
     formik.setFieldValue('RoleID', Account.dulieu.RoleID);
+    setRole(Account.dulieu.RoleID);
     setOpen(true);
   };
   return (
@@ -161,7 +163,7 @@ export default function AccountMoreMenu(Account) {
           open={open}
           sx={{
             '& .MuiTextField-root': { m: 1, width: '25ch' },
-            '& .MuiSelect-root': { m: 1, width: '10ch' }
+            '& .MuiSelect-root': { m: 1, width: '25ch' }
           }}
           onClose={handleClose}
           aria-labelledby="modal-modal-title"
@@ -189,7 +191,7 @@ export default function AccountMoreMenu(Account) {
                   </Stack>
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                     <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
-                    <FormControl fullWidth>
+                    <FormControl>
                       <InputLabel id="select-label">Role</InputLabel>
                       <Select
                         labelId="select-label"
@@ -199,9 +201,11 @@ export default function AccountMoreMenu(Account) {
                         value={role}
                         onChange={handleChange}
                       >
-                        <MenuItem value={1}>Admin</MenuItem>
-                        <MenuItem value={2}>BackEnd</MenuItem>
-                        <MenuItem value={3}>FrontEnd</MenuItem>
+                        {roles.map((item) => (
+                          <MenuItem key={item.RoleID} value={item.RoleID}>
+                            {item.RoleName}
+                          </MenuItem>
+                        ))}
                       </Select>
                     </FormControl>
                   </Stack>
@@ -223,7 +227,7 @@ export default function AccountMoreMenu(Account) {
                         Upload Image
                       </Button>
                     </label>
-                    <Avatar src="" sx={{ width: 50, height: 50 }} />
+                    <Avatar src={formik.values.Image} sx={{ width: 50, height: 50 }} />
                   </Stack>
                   <LoadingButton fullWidth size="large" type="submit" variant="contained">
                     Edit Account
