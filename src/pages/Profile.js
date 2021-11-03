@@ -21,10 +21,12 @@ import {
 import { LoadingButton } from '@mui/lab';
 import { infoUserLogin } from 'src/Functions/Organization';
 import axios from 'axios';
+import { getAllRole } from 'src/Functions/Component';
 import Page from '../components/Page';
 
 export default function EditAccount() {
   const [role, setRole] = useState('');
+  const [roles, setRoles] = useState([]);
   const handleChange = (event) => {
     setRole(event.target.value);
   };
@@ -75,6 +77,9 @@ export default function EditAccount() {
   };
   const { handleSubmit, getFieldProps } = formik;
   useEffect(() => {
+    getAllRole().then((res) => {
+      setRoles(res);
+    });
     infoUserLogin().then((res) => {
       console.log(res);
       const data = res.map((item) => {
@@ -120,7 +125,7 @@ export default function EditAccount() {
               </Stack>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
-                <FormControl fullWidth>
+                <FormControl>
                   <InputLabel id="select-label">Role</InputLabel>
                   <Select
                     labelId="select-label"
@@ -130,9 +135,11 @@ export default function EditAccount() {
                     value={role}
                     onChange={handleChange}
                   >
-                    <MenuItem value={1}>Admin</MenuItem>
-                    <MenuItem value={2}>BackEnd</MenuItem>
-                    <MenuItem value={3}>FrontEnd</MenuItem>
+                    {roles.map((item) => (
+                      <MenuItem key={item.RoleID} value={item.RoleID}>
+                        {item.RoleName}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </Stack>

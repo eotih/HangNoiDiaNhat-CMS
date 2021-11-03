@@ -22,6 +22,7 @@ import State from './pages/State';
 import Banner from './pages/Banner';
 import Field from './pages/Field';
 import Organization from './pages/Organization';
+import Customer from './pages/Customer';
 import NotFound from './pages/Page404';
 
 // ----------------------------------------------------------------------
@@ -78,6 +79,15 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'post', element: <Service /> },
+        { path: 'field', element: <Field /> }
+      ]
+    },
+    {
+      path: '/management',
+      element: <DashboardLayout />,
+      children: [
+        { element: <Navigate to="/dashboard/app" replace /> },
+        { path: 'customer', element: <Customer /> },
         { path: 'field', element: <Field /> }
       ]
     },
