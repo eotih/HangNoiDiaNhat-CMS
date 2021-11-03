@@ -24,7 +24,8 @@ import {
   Typography,
   TextField,
   Select,
-  Button
+  Button,
+  Avatar
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
@@ -82,6 +83,9 @@ export default function AccountMoreMenu(Account) {
     }
   });
   const { handleSubmit, getFieldProps } = formik;
+  const handleChange = (event) => {
+    setRole(event.target.value);
+  };
   const style = {
     position: 'absolute',
     top: '50%',
@@ -168,7 +172,7 @@ export default function AccountMoreMenu(Account) {
               <Box sx={style}>
                 <Stack spacing={3}>
                   <Typography id="modal-modal-title" variant="h6" component="h2">
-                    Add Account
+                    Edit Account
                   </Typography>
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                     <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />
@@ -185,7 +189,21 @@ export default function AccountMoreMenu(Account) {
                   </Stack>
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                     <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
-                    <TextField label="RoleID" {...getFieldProps('RoleID')} variant="outlined" />
+                    <FormControl fullWidth>
+                      <InputLabel id="select-label">Role</InputLabel>
+                      <Select
+                        labelId="select-label"
+                        label="Role"
+                        {...getFieldProps('RoleID')}
+                        variant="outlined"
+                        value={role}
+                        onChange={handleChange}
+                      >
+                        <MenuItem value={1}>Admin</MenuItem>
+                        <MenuItem value={2}>BackEnd</MenuItem>
+                        <MenuItem value={3}>FrontEnd</MenuItem>
+                      </Select>
+                    </FormControl>
                   </Stack>
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                     <label htmlFor="contained-button-file">
@@ -205,6 +223,7 @@ export default function AccountMoreMenu(Account) {
                         Upload Image
                       </Button>
                     </label>
+                    <Avatar src="" sx={{ width: 50, height: 50 }} />
                   </Stack>
                   <LoadingButton fullWidth size="large" type="submit" variant="contained">
                     Edit Account

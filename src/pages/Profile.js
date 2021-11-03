@@ -120,7 +120,21 @@ export default function EditAccount() {
               </Stack>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
-                <TextField label="RoleID" {...getFieldProps('RoleID')} variant="outlined" />
+                <FormControl fullWidth>
+                  <InputLabel id="select-label">Role</InputLabel>
+                  <Select
+                    labelId="select-label"
+                    label="Role"
+                    {...getFieldProps('RoleID')}
+                    variant="outlined"
+                    value={role}
+                    onChange={handleChange}
+                  >
+                    <MenuItem value={1}>Admin</MenuItem>
+                    <MenuItem value={2}>BackEnd</MenuItem>
+                    <MenuItem value={3}>FrontEnd</MenuItem>
+                  </Select>
+                </FormControl>
               </Stack>
               <LoadingButton fullWidth size="large" type="submit" variant="contained">
                 Edit Profile
