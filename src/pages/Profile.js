@@ -1,4 +1,7 @@
-import { useState, handleChange } from 'react';
+/* eslint-disable jsx-a11y/label-has-associated-control */
+/* eslint-disable array-callback-return */
+/* eslint-disable import/no-unresolved */
+import { useState, useEffect } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import {
   Stack,
@@ -6,6 +9,7 @@ import {
   Typography,
   Card,
   Button,
+  Box,
   TextField,
   Avatar,
   Input,
@@ -14,120 +18,123 @@ import {
   MenuItem,
   InputLabel
 } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { infoUserLogin } from 'src/Functions/Organization';
+import axios from 'axios';
 import Page from '../components/Page';
 
 export default function EditAccount() {
-  const [showPassword, setShowPassword] = useState(false);
-  const formik = useFormik({
-    initialValues: {
-      Name: '',
-      username: '',
-      password: '',
-      email: '',
-      phone: '',
-      address: ''
-    }
-  });
-  const { errors, touched } = formik;
-
   const [role, setRole] = useState('');
   const handleChange = (event) => {
     setRole(event.target.value);
   };
+  const formik = useFormik({
+    initialValues: {
+      AccountID: '',
+      FullName: '',
+      Image: '',
+      Phone: '',
+      Email: '',
+      Password: '',
+      RoleID: '',
+      Address: '',
+      remember: true
+    },
+    onSubmit: () => {
+      axios
+        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditAccount`, {
+          FullName: formik.values.FullName,
+          Image: formik.values.Image,
+          Phone: formik.values.Phone,
+          Email: formik.values.Email,
+          Password: formik.values.Password,
+          Address: formik.values.Address,
+          RoleID: formik.values.RoleID
+        })
+        .then((res) => {
+          if (res.data.Status === 'Success') {
+            alert('Thêm thành công');
+            window.location.reload();
+          } else {
+            alert('Thêm thất bại');
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  });
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4
+  };
+  const { handleSubmit, getFieldProps } = formik;
+  useEffect(() => {
+    infoUserLogin().then((res) => {
+      const data = res.map((item) => {
+        formik.setFieldValue('AccountID', item.AccountID);
+        formik.setFieldValue('FullName', item.FullName);
+        formik.setFieldValue('Image', item.Image);
+        formik.setFieldValue('Phone', item.Phone);
+        formik.setFieldValue('Email', item.Email);
+        formik.setFieldValue('Password', item.Password);
+        formik.setFieldValue('Address', item.Address);
+      });
+    });
+  }, []);
   return (
     <Page title="Profile">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Edit Account
+            Edit Profile
           </Typography>
         </Stack>
-        <Stack
-          direction="row"
-          spacing={3}
-          alignItems="center"
-          justifyContent="center"
-          sx={{ mb: 5, mx: 2 }}
-        >
-          <Card sx={{ maxWidth: 345 }}>
-            <Avatar src="" sx={{ mx: 15, mt: 5, width: 100, height: 100 }} />
-            <Input type="file" />
-            <Typography variant="h3" sx={{ px: 5, my: 5 }}>
-              Edit Account
-            </Typography>
-          </Card>
-          <Stack spacing={1}>
-            <Card>
-              <Stack direction="row" spacing={1} sx={{ px: 1, mt: 1, mx: 3 }}>
-                <TextField
-                  fullWidth
-                  autoComplete="fullname"
-                  type="text"
-                  label="Name"
-                  error={Boolean(touched.Name && errors.Name)}
-                  helperText={touched.Name && errors.Name}
-                />
-                <FormControl fullWidth>
-                  <InputLabel id="select-label">Role</InputLabel>
-                  <Select labelId="select-label" label="Role" value={role} onChange={handleChange}>
-                    <MenuItem value={1}>Admin</MenuItem>
-                  </Select>
-                </FormControl>
-              </Stack>
-              <Stack direction="row" spacing={1} sx={{ px: 1, mt: 1, mx: 3 }}>
-                <TextField
-                  fullWidth
-                  autoComplete="username"
-                  type="text"
-                  label="Username"
-                  error={Boolean(touched.username && errors.username)}
-                  helperText={touched.username && errors.username}
-                />
-                <TextField
-                  fullWidth
-                  type={showPassword ? 'text' : 'password'}
-                  label="Password"
-                  error={Boolean(touched.password && errors.password)}
-                  helperText={touched.password && errors.password}
-                />
-              </Stack>
-              <Stack direction="row" spacing={1} sx={{ px: 1, mt: 1, mx: 3 }}>
-                <TextField
-                  fullWidth
-                  autoComplete="email"
-                  type="email"
-                  label="Email address"
-                  error={Boolean(touched.email && errors.email)}
-                  helperText={touched.email && errors.email}
-                />
-                <TextField
-                  fullWidth
-                  autoComplete="phone"
-                  type="text"
-                  label="Phone"
-                  error={Boolean(touched.phone && errors.phone)}
-                  helperText={touched.phone && errors.phone}
-                />
-              </Stack>
-              <Stack direction="row" spacing={1} sx={{ px: 1, mt: 1, mx: 3 }}>
-                <TextField
-                  fullWidth
-                  autoComplete="address"
-                  type="text"
-                  label="Address"
-                  error={Boolean(touched.address && errors.address)}
-                  helperText={touched.address && errors.address}
-                />
-              </Stack>
-              <Stack spacing={1} sx={{ p: 1, mb: 2, mx: 3 }}>
-                <Button fullWidth size="large" type="submit" variant="contained">
-                  Edit
-                </Button>
-              </Stack>
-            </Card>
-          </Stack>
-        </Stack>
       </Container>
+      <FormikProvider value={formik}>
+        <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+          <Box sx={style}>
+            <Stack spacing={3}>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Add Account
+              </Typography>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />
+                <TextField label="Phone" {...getFieldProps('Phone')} variant="outlined" />
+              </Stack>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
+                <TextField label="Password" {...getFieldProps('Password')} variant="outlined" />
+              </Stack>
+              <label htmlFor="contained-button-file">
+                <Input
+                  id="contained-button-file"
+                  type="file"
+                  onChange={(e) => {
+                    const { files } = e.target;
+                    const reader = new FileReader();
+                    reader.readAsDataURL(files[0]);
+                    reader.onload = (e) => {
+                      formik.setFieldValue('Image', e.target.result);
+                    };
+                  }}
+                />
+                <Button variant="contained" component="span">
+                  Upload Image
+                </Button>
+              </label>
+              <LoadingButton fullWidth size="large" type="submit" variant="contained">
+                Add Account
+              </LoadingButton>
+            </Stack>
+          </Box>
+        </Form>
+      </FormikProvider>
     </Page>
   );
 }

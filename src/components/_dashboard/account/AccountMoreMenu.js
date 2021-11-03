@@ -52,6 +52,7 @@ export default function AccountMoreMenu(Account) {
       Phone: '',
       Email: '',
       Password: '',
+      RoleID: '',
       Address: '',
       remember: true
     },
@@ -182,16 +183,6 @@ export default function AccountMoreMenu(Account) {
                     />
                   </Stack>
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                    <FormControl fullWidth>
-                      <InputLabel id="select-label">Role</InputLabel>
-                      <Select labelId="select-label" label="Role">
-                        {role.map((item) => (
-                          <MenuItem key={item.RoleID} value={item.RoleID}>
-                            {item.RoleName}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
                     <label htmlFor="contained-button-file">
                       <Input
                         id="contained-button-file"
