@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import * as React from 'react';
 import { Icon } from '@iconify/react';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import editFill from '@iconify/icons-eva/edit-fill';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { Link as RouterLink } from 'react-router-dom';
@@ -17,7 +17,10 @@ import {
   MenuItem,
   IconButton,
   ListItemIcon,
+  InputLabel,
+  FormControl,
   ListItemText,
+  Stack,
   Typography,
   TextField,
   Select,
@@ -25,16 +28,52 @@ import {
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
-export default function AccountMoreMenu(AccountID) {
+export default function AccountMoreMenu(Account) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
+  const formik = useFormik({
+    initialValues: {
+      AccountID: '',
+      FullName: '',
+      Image: '',
+      Phone: '',
+      Email: '',
+      Password: '',
+      Address: '',
+      remember: true
+    },
+    onSubmit: () => {
+      axios
+        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditAccount`, {
+          AccountID: formik.values.AccountID,
+          FullName: formik.values.FullName,
+          Image: formik.values.Image,
+          Phone: formik.values.Phone,
+          Email: formik.values.Email,
+          Password: formik.values.Password,
+          Address: formik.values.Address,
+          RoleID: formik.values.RoleID
+        })
+        .then((res) => {
+          if (res.data.Status === 'Updated') {
+            alert('Account Edited');
+            window.location.reload();
+          } else {
+            alert('Edited Fail');
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  });
+  const { handleSubmit, getFieldProps } = formik;
   const style = {
     position: 'absolute',
     top: '50%',
@@ -45,10 +84,19 @@ export default function AccountMoreMenu(AccountID) {
     boxShadow: 24,
     p: 4
   };
-
   const Input = styled('input')({
     display: 'none'
   });
+  const handleOpen = () => {
+    formik.setFieldValue('AccountID', Account.dulieu.AccountID);
+    formik.setFieldValue('FullName', Account.dulieu.FullName);
+    formik.setFieldValue('Image', Account.dulieu.Image);
+    formik.setFieldValue('Phone', Account.dulieu.Phone);
+    formik.setFieldValue('Email', Account.dulieu.Email);
+    formik.setFieldValue('Password', Account.dulieu.Password);
+    formik.setFieldValue('Address', Account.dulieu.Address);
+    setOpen(true);
+  };
   return (
     <>
       <IconButton ref={ref} onClick={() => setIsOpen(true)}>
@@ -67,8 +115,19 @@ export default function AccountMoreMenu(AccountID) {
       >
         <MenuItem
           onClick={() => {
-            if (confirm('Are you sure you want to delete this account')) {
-              console.log(AccountID);
+            if (confirm('Are you sure you want to delete this account?')) {
+              axios
+                .delete(
+                  `${process.env.REACT_APP_WEB_API}Organization/DeleteAccount?AccountID=${Account.dulieu.AccountID}`
+                )
+                .then((res) => {
+                  if (res.data.Status === 'Deleted') {
+                    alert('Account Deleted');
+                    window.location.reload();
+                  } else {
+                    alert('Account Not Deleted');
+                  }
+                });
             }
           }}
           sx={{ color: 'text.secondary' }}
@@ -95,35 +154,58 @@ export default function AccountMoreMenu(AccountID) {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Edit Account
-            </Typography>
-            <TextField label="FullName" variant="outlined" />
-            <TextField label="Phone" variant="outlined" />
-            <TextField label="Email" variant="outlined" />
-            <TextField label="Password" variant="outlined" />
-            <TextField label="Address" variant="outlined" />
-            <Select label="Role" variant="outlined" />
-            <label htmlFor="contained-button-file">
-              <Input
-                id="contained-button-file"
-                type="file"
-                onChange={(e) => {
-                  const { files } = e.target;
-                  const reader = new FileReader();
-                  reader.readAsDataURL(files[0]);
-                  reader.onload = (e) => {};
-                }}
-              />
-              <Button variant="contained" component="span">
-                Upload Image
-              </Button>
-            </label>
-            <LoadingButton fullWidth size="large" type="submit" variant="contained">
-              Edit Account
-            </LoadingButton>
-          </Box>
+          <FormikProvider value={formik}>
+            <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+              <Box sx={style}>
+                <Stack spacing={3}>
+                  <Typography id="modal-modal-title" variant="h6" component="h2">
+                    Add Account
+                  </Typography>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                    <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />
+                    <TextField label="Phone" {...getFieldProps('Phone')} variant="outlined" />
+                  </Stack>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                    <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
+                    <TextField
+                      type="password"
+                      label="Password"
+                      {...getFieldProps('Password')}
+                      variant="outlined"
+                    />
+                  </Stack>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                    <FormControl fullWidth>
+                      <InputLabel id="select-label">Role</InputLabel>
+                      <Select labelId="select-label" label="Role">
+                        <MenuItem value={1}>Admin</MenuItem>
+                      </Select>
+                    </FormControl>
+                    <label htmlFor="contained-button-file">
+                      <Input
+                        id="contained-button-file"
+                        type="file"
+                        onChange={(e) => {
+                          const { files } = e.target;
+                          const reader = new FileReader();
+                          reader.readAsDataURL(files[0]);
+                          reader.onload = (e) => {
+                            formik.setFieldValue('Image', e.target.result);
+                          };
+                        }}
+                      />
+                      <Button variant="contained" component="span">
+                        Upload Image
+                      </Button>
+                    </label>
+                  </Stack>
+                  <LoadingButton fullWidth size="large" type="submit" variant="contained">
+                    Edit Account
+                  </LoadingButton>
+                </Stack>
+              </Box>
+            </Form>
+          </FormikProvider>
         </Modal>
       </Menu>
     </>

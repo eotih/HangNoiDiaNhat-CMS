@@ -187,15 +187,6 @@ export default function User() {
     display: 'none'
   });
   const formik = useFormik({
-    initialValues: {
-      FullName: '',
-      Image: '',
-      Phone: '',
-      Email: '',
-      Password: '',
-      Address: '',
-      remember: true
-    },
     onSubmit: () => {
       axios
         .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditAccount`, {
@@ -354,7 +345,7 @@ export default function User() {
                           <TableCell align="left">{Address}</TableCell>
                           <TableCell align="left">{convertRoles(RoleID)}</TableCell>
                           <TableCell align="right">
-                            <AccountMoreMenu dulieu={AccountID} />
+                            <AccountMoreMenu dulieu={row} />
                           </TableCell>
                         </TableRow>
                       );
