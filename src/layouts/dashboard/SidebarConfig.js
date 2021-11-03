@@ -72,23 +72,27 @@ const sidebarConfig = [
     children: [
       {
         title: 'Order',
-        path: '/dashboard/order'
+        path: '/management/order'
       },
       {
         title: 'OrderDetails',
-        path: '/dashboard/order-details'
+        path: '/management/order-details'
       },
       {
         title: 'Customer',
-        path: '/dashboard/customer'
+        path: '/management/customer'
+      },
+      {
+        title: 'Contact',
+        path: '/management/contact'
       },
       {
         title: 'Product',
-        path: '/dashboard/product'
+        path: '/management/product'
       },
       {
         title: 'Product Images',
-        path: '/dashboard/product-images'
+        path: '/management/product-images'
       },
     ]
   },
@@ -121,17 +125,17 @@ const sidebarConfig = [
   },
   
   {
-    title: 'Actical',
-    path: '/dashboard/actical',
+    title: 'Article',
+    path: '/dashboard/article',
     icon: getIcon(fileTextFill),
     children: [
       {
         title: 'Post',
-        path: '/dashboard/post'
+        path: '/article/post'
       },
       {
         title: 'Field',
-        path: '/dashboard/field'
+        path: '/article/field'
       }
     ]
   }

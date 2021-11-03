@@ -20,6 +20,7 @@ import Brand from './pages/Brand';
 import Utilities from './pages/Utilities';
 import State from './pages/State';
 import Banner from './pages/Banner';
+import Field from './pages/Field';
 import Organization from './pages/Organization';
 import NotFound from './pages/Page404';
 
@@ -69,6 +70,15 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'services', element: <Service /> },
         { path: 'payment', element: <Payment /> }
+      ]
+    },
+    {
+      path: '/article',
+      element: <DashboardLayout />,
+      children: [
+        { element: <Navigate to="/dashboard/app" replace /> },
+        { path: 'post', element: <Service /> },
+        { path: 'field', element: <Field /> }
       ]
     },
     {
