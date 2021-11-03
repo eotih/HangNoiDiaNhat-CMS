@@ -12,44 +12,40 @@ import {
   Card,
   Table,
   Stack,
-  Avatar,
   Button,
   Checkbox,
   TableRow,
   TableBody,
   TableCell,
-  MenuItem,
   Container,
   Modal,
   Input,
   TextField,
-  Alert,
-  Select,
   Typography,
+  Avatar,
   TableContainer,
   TablePagination
 } from '@mui/material';
 // components
-import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
+import { styled } from '@mui/material/styles';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 import Box from '@mui/material/Box';
-import { getAllPayment } from 'src/Functions/Component';
+import { getAllCategory } from 'src/Functions/Component';
 import Page from '../components/Page';
-import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import {
-  PaymentMoreMenu,
-  PaymentListToolbar,
-  PaymentListHead
-} from '../components/_dashboard/payment';
+  CategoryMoreMenu,
+  CategoryListToolbar,
+  CategoryListHead
+} from '../components/_dashboard/category';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'PaymentID', label: 'PaymentID', alignRight: false },
+  { id: 'CategoryID', label: 'CategoryID', alignRight: false },
   { id: 'Name', label: 'Name', alignRight: false },
   { id: 'CreatedAt', label: 'CreatedAt', alignRight: false },
   { id: 'UpdatedAt', label: 'UpdatedAt', alignRight: false },
@@ -87,7 +83,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Payment() {
+export default function Category() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [page, setPage] = useState(0);
@@ -99,15 +95,15 @@ export default function Payment() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [Payment, setPayment] = useState([]);
+  const [category, setCategory] = useState([]);
   useEffect(() => {
-    getAllPayment().then((res) => {
+    getAllCategory().then((res) => {
       setIsLoaded(true);
-      setPayment(res);
+      setCategory(res);
     });
   }, []);
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - Payment.length) : 0;
-  const filteredUsers = applySortFilter(Payment, getComparator(order, orderBy), filterName);
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - category.length) : 0;
+  const filteredUsers = applySortFilter(category, getComparator(order, orderBy), filterName);
   const isUserNotFound = filteredUsers.length === 0;
 
   const handleRequestSort = (event, property) => {
@@ -115,7 +111,9 @@ export default function Payment() {
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
-
+  const Input = styled('input')({
+    display: 'none'
+  });
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
@@ -159,7 +157,7 @@ export default function Payment() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = Payment.map((n) => n.name);
+      const newSelecteds = category.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -167,16 +165,18 @@ export default function Payment() {
   };
   const formik = useFormik({
     initialValues: {
-      Name: ''
+      Name: '',
+      Thumbnail: ''
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditPayment`, {
-          Name: formik.values.Name
+        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditCategory`, {
+          Name: formik.values.Name,
+          Thumbnail: formik.values.Thumbnail
         })
         .then((res) => {
           if (res.data.Status === 'Success') {
-            alert('Add Payment Successfully');
+            alert('Add Category Successfully');
             window.location.reload();
           } else {
             alert('Add Failed');
@@ -200,7 +200,7 @@ export default function Payment() {
     );
   }
   return (
-    <Page title="Payment | HangnoidiaNhat">
+    <Page title="Category | HangnoidiaNhat">
       <Modal
         open={open}
         sx={{
@@ -215,13 +215,37 @@ export default function Payment() {
             <Box sx={style}>
               <Stack spacing={3}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add Payment
+                  Add Category
                 </Typography>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
                   <TextField label="Name" {...getFieldProps('Name')} variant="outlined" />
                 </Stack>
+                <Stack
+                  direction={{ xs: 'column', sm: 'row' }}
+                  spacing={2}
+                  justifyContent="flex-end"
+                >
+                  <Avatar src={formik.values.Thumbnail} sx={{ width: 50, height: 50 }} />
+                  <label htmlFor="contained-button-file">
+                    <Input
+                      id="contained-button-file"
+                      type="file"
+                      onChange={(e) => {
+                        const { files } = e.target;
+                        const reader = new FileReader();
+                        reader.readAsDataURL(files[0]);
+                        reader.onload = (e) => {
+                          formik.setFieldValue('Thumbnail', e.target.result);
+                        };
+                      }}
+                    />
+                    <Button variant="contained" component="span">
+                      Upload Thumbnail
+                    </Button>
+                  </label>
+                </Stack>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                  Add Payment
+                  Add Category
                 </LoadingButton>
               </Stack>
             </Box>
@@ -231,7 +255,7 @@ export default function Payment() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Payment
+            Category
           </Typography>
           <Button
             onClick={handleOpen}
@@ -240,12 +264,12 @@ export default function Payment() {
             to="#"
             startIcon={<Icon icon={plusFill} />}
           >
-            New Payment
+            New Category
           </Button>
         </Stack>
 
         <Card>
-          <PaymentListToolbar
+          <CategoryListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -254,25 +278,26 @@ export default function Payment() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <PaymentListHead
+                <CategoryListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={Payment.length}
+                  rowCount={category.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {Payment.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(
-                    (row) => {
-                      const { PaymentID, Name, CreatedAt, UpdatedAt } = row;
+                  {category
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => {
+                      const { CategoryID, Name, Slug, Thumbnail, CreatedAt, UpdatedAt } = row;
                       const isItemSelected = selected.indexOf(Name) !== -1;
 
                       return (
                         <TableRow
                           hover
-                          key={PaymentID}
+                          key={CategoryID}
                           tabIndex={-1}
                           role="checkbox"
                           selected={isItemSelected}
@@ -284,17 +309,24 @@ export default function Payment() {
                               onChange={(event) => handleClick(event, Name)}
                             />
                           </TableCell>
-                          <TableCell align="left">{PaymentID}</TableCell>
-                          <TableCell align="left">{Name}</TableCell>
+                          <TableCell align="left">{CategoryID}</TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack direction="row" alignItems="center" spacing={2}>
+                              <Avatar alt={Name} src={Thumbnail} />
+                              <Typography variant="subtitle2" noWrap>
+                                {Name}
+                              </Typography>
+                            </Stack>
+                          </TableCell>
+                          <TableCell align="left">{Slug}</TableCell>
                           <TableCell align="left">{CreatedAt}</TableCell>
                           <TableCell align="left">{UpdatedAt}</TableCell>
                           <TableCell align="right">
-                            <PaymentMoreMenu dulieu={row} />
+                            <CategoryMoreMenu dulieu={row} />
                           </TableCell>
                         </TableRow>
                       );
-                    }
-                  )}
+                    })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
@@ -317,7 +349,7 @@ export default function Payment() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={Payment.length}
+            count={category.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

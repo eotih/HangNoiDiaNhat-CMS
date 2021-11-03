@@ -9,3 +9,7 @@ export async function getAllPayment() {
   const res = await axios.get(`${REACT_APP_WEB_API}Component/SelectAllPayment`);
   return res.data;
 }
+export async function getAllCategory() {
+  const res = await axios.get(`${REACT_APP_WEB_API}Component/SelectAllCategory`);
+  return res.data;
+}

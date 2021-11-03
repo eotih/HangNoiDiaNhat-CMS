@@ -15,6 +15,7 @@ import Profile from './pages/Profile';
 import Role from './pages/Role';
 import Payment from './pages/Payment';
 import Service from './pages/Service';
+import Category from './pages/Category';
 import NotFound from './pages/Page404';
 
 // ----------------------------------------------------------------------
@@ -47,7 +48,8 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'role', element: <Role /> },
-        { path: 'payment', element: <Payment /> }
+        { path: 'payment', element: <Payment /> },
+        { path: 'category', element: <Category /> }
       ]
     },
     {
