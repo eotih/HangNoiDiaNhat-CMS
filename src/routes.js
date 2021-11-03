@@ -24,6 +24,7 @@ import Field from './pages/Field';
 import Organization from './pages/Organization';
 import Customer from './pages/Customer';
 import Contact from './pages/Contact';
+import Shipper from './pages/Shipper';
 import NotFound from './pages/Page404';
 
 // ----------------------------------------------------------------------
@@ -71,7 +72,8 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'services', element: <Service /> },
-        { path: 'payment', element: <Payment /> }
+        { path: 'payment', element: <Payment /> },
+        { path: 'shipper', element: <Shipper /> }
       ]
     },
     {
