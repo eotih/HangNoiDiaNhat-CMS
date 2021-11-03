@@ -23,6 +23,7 @@ import Banner from './pages/Banner';
 import Field from './pages/Field';
 import Organization from './pages/Organization';
 import Customer from './pages/Customer';
+import Contact from './pages/Contact';
 import NotFound from './pages/Page404';
 
 // ----------------------------------------------------------------------
@@ -88,7 +89,7 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'customer', element: <Customer /> },
-        { path: 'field', element: <Field /> }
+        { path: 'contact', element: <Contact /> }
       ]
     },
     {
