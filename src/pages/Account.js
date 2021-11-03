@@ -40,7 +40,11 @@ import Page from '../components/Page';
 import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from '../components/_dashboard/user';
+import {
+  AccountListHead,
+  AccountListToolbar,
+  AccountMoreMenu
+} from '../components/_dashboard/account';
 
 // ----------------------------------------------------------------------
 
@@ -194,7 +198,7 @@ export default function User() {
     },
     onSubmit: () => {
       axios
-        .post('http://localhost:33333/API/Organization/AddOrEditAccount', {
+        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditAccount`, {
           FullName: formik.values.FullName,
           Image: formik.values.Image,
           Phone: formik.values.Phone,
@@ -255,16 +259,6 @@ export default function User() {
                   <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
                   <TextField label="Password" {...getFieldProps('Password')} variant="outlined" />
                 </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
-                  <Select label="Role" {...getFieldProps('RoleID')} variant="outlined">
-                    {role.map((item) => (
-                      <MenuItem key={item.RoleID} value={item.RoleID}>
-                        {item.RoleName}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </Stack>
                 <label htmlFor="contained-button-file">
                   <Input
                     id="contained-button-file"
@@ -307,7 +301,7 @@ export default function User() {
         </Stack>
 
         <Card>
-          <UserListToolbar
+          <AccountListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -316,7 +310,7 @@ export default function User() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <UserListHead
+                <AccountListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
@@ -360,7 +354,7 @@ export default function User() {
                           <TableCell align="left">{Address}</TableCell>
                           <TableCell align="left">{convertRoles(RoleID)}</TableCell>
                           <TableCell align="right">
-                            <UserMoreMenu />
+                            <AccountMoreMenu dulieu={AccountID} />
                           </TableCell>
                         </TableRow>
                       );
