@@ -27,7 +27,9 @@ import {
   Select,
   Typography,
   TableContainer,
-  TablePagination
+  TablePagination,
+  FormControl,
+  InputLabel
 } from '@mui/material';
 // components
 import { styled } from '@mui/material/styles';
@@ -103,6 +105,7 @@ export default function User() {
   const handleClose = () => setOpen(false);
   const [account, setAccount] = useState([]);
   const [role, setRole] = useState([]);
+  const [roles, setRoles] = useState([]);
   useEffect(() => {
     getAllAccount().then((res) => {
       setIsLoaded(true);
@@ -110,9 +113,12 @@ export default function User() {
     });
     getAllRole().then((res) => {
       setIsLoaded(true);
-      setRole(res);
+      setRoles(res);
     });
   }, []);
+  const handleChange = (event) => {
+    setRole(event.target.value);
+  };
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - account.length) : 0;
   const filteredUsers = applySortFilter(account, getComparator(order, orderBy), filterName);
   const isUserNotFound = filteredUsers.length === 0;
@@ -263,25 +269,48 @@ export default function User() {
                 </Stack>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                   <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
-                  <TextField label="RoleID" {...getFieldProps('RoleID')} variant="outlined" />
+                  <FormControl>
+                    <InputLabel id="select-label">Role</InputLabel>
+                    <Select
+                      labelId="select-label"
+                      label="Role"
+                      {...getFieldProps('RoleID')}
+                      variant="outlined"
+                      value={role}
+                      onChange={handleChange}
+                    >
+                      {roles.map((item) => (
+                        <MenuItem key={item.RoleID} value={item.RoleID}>
+                          {item.RoleName}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </Stack>
-                <label htmlFor="contained-button-file">
-                  <Input
-                    id="contained-button-file"
-                    type="file"
-                    onChange={(e) => {
-                      const { files } = e.target;
-                      const reader = new FileReader();
-                      reader.readAsDataURL(files[0]);
-                      reader.onload = (e) => {
-                        formik.setFieldValue('Image', e.target.result);
-                      };
-                    }}
-                  />
-                  <Button variant="contained" component="span">
-                    Upload Image
-                  </Button>
-                </label>
+                <Stack
+                  direction={{ xs: 'column', sm: 'row' }}
+                  spacing={2}
+                  justifyContent="flex-end"
+                >
+                  <Avatar src={formik.values.Image} sx={{ width: 50, height: 50 }} />
+                  <label htmlFor="contained-button-file">
+                    <Input
+                      id="contained-button-file"
+                      type="file"
+                      onChange={(e) => {
+                        const { files } = e.target;
+                        const reader = new FileReader();
+                        reader.readAsDataURL(files[0]);
+                        reader.onload = (e) => {
+                          formik.setFieldValue('Image', e.target.result);
+                        };
+                      }}
+                    />
+                    <Button variant="contained" component="span">
+                      Upload Image
+                    </Button>
+                  </label>
+                </Stack>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained">
                   Add Account
                 </LoadingButton>

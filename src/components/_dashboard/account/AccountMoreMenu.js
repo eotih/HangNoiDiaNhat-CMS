@@ -209,7 +209,12 @@ export default function AccountMoreMenu(Account) {
                       </Select>
                     </FormControl>
                   </Stack>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <Stack
+                    direction={{ xs: 'column', sm: 'row' }}
+                    spacing={2}
+                    justifyContent="flex-end"
+                  >
+                    <Avatar src={formik.values.Image} sx={{ width: 50, height: 50 }} />
                     <label htmlFor="contained-button-file">
                       <Input
                         id="contained-button-file"
@@ -227,7 +232,6 @@ export default function AccountMoreMenu(Account) {
                         Upload Image
                       </Button>
                     </label>
-                    <Avatar src={formik.values.Image} sx={{ width: 50, height: 50 }} />
                   </Stack>
                   <LoadingButton fullWidth size="large" type="submit" variant="contained">
                     Edit Account
