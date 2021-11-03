@@ -21,3 +21,7 @@ export async function getAllUtilities() {
   const res = await axios.get(`${REACT_APP_WEB_API}Component/SelectAllUtil`);
   return res.data;
 }
+export async function getAllState() {
+  const res = await axios.get(`${REACT_APP_WEB_API}Component/SelectAllState`);
+  return res.data;
+}

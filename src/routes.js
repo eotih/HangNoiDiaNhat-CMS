@@ -18,6 +18,7 @@ import Service from './pages/Service';
 import Category from './pages/Category';
 import Brand from './pages/Brand';
 import Utilities from './pages/Utilities';
+import State from './pages/State';
 import NotFound from './pages/Page404';
 
 // ----------------------------------------------------------------------
@@ -53,6 +54,7 @@ export default function Router() {
         { path: 'payment', element: <Payment /> },
         { path: 'category', element: <Category /> },
         { path: 'utilities', element: <Utilities /> },
+        { path: 'state', element: <State /> },
         { path: 'brand', element: <Brand /> }
       ]
     },
