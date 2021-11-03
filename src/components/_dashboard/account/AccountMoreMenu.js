@@ -29,6 +29,7 @@ import {
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
+import { getAllRole } from '../../../Functions/Organization';
 
 // ----------------------------------------------------------------------
 
@@ -36,7 +37,13 @@ export default function AccountMoreMenu(Account) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = React.useState(false);
+  const [role, setRole] = useState([]);
   const handleClose = () => setOpen(false);
+  useEffect(() => {
+    getAllRole().then((res) => {
+      setRole(res);
+    });
+  }, []);
   const formik = useFormik({
     initialValues: {
       AccountID: '',
@@ -178,7 +185,11 @@ export default function AccountMoreMenu(Account) {
                     <FormControl fullWidth>
                       <InputLabel id="select-label">Role</InputLabel>
                       <Select labelId="select-label" label="Role">
-                        <MenuItem value={1}>Admin</MenuItem>
+                        {role.map((item) => (
+                          <MenuItem key={item.RoleID} value={item.RoleID}>
+                            {item.RoleName}
+                          </MenuItem>
+                        ))}
                       </Select>
                     </FormControl>
                     <label htmlFor="contained-button-file">
