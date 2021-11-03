@@ -35,7 +35,8 @@ import { LoadingButton } from '@mui/lab';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 import Box from '@mui/material/Box';
-import { getAllAccount, getAllRole } from 'src/Functions/Organization';
+import { getAllAccount } from 'src/Functions/Organization';
+import { getAllRole } from 'src/Functions/Component';
 import Page from '../components/Page';
 import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
@@ -200,8 +201,7 @@ export default function Role() {
       <Modal
         open={open}
         sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' },
-          '& .MuiSelect-root': { m: 1, width: '25ch' }
+          '& .MuiTextField-root': { m: 1, width: '25ch' }
         }}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"

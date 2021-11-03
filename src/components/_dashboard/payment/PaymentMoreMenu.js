@@ -28,26 +28,26 @@ import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
-export default function RoleMoreMenu(Role) {
+export default function PaymentMoreMenu(Payment) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = React.useState(false);
-  const [role, setRole] = useState([]);
+  const [payment, setPayment] = useState([]);
   const handleClose = () => setOpen(false);
   const formik = useFormik({
     initialValues: {
-      RoleID: '',
-      RoleName: ''
+      PaymentID: '',
+      Name: ''
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditRole`, {
-          RoleName: formik.values.RoleName,
-          RoleID: formik.values.RoleID
+        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditPayment`, {
+          Name: formik.values.Name,
+          PaymentID: formik.values.PaymentID
         })
         .then((res) => {
           if (res.data.Status === 'Updated') {
-            alert('Role Edited');
+            alert('Payment Edited');
             window.location.reload();
           } else {
             alert('Edited Fail');
@@ -73,8 +73,8 @@ export default function RoleMoreMenu(Role) {
     display: 'none'
   });
   const handleOpen = () => {
-    formik.setFieldValue('RoleID', Role.dulieu.RoleID);
-    formik.setFieldValue('RoleName', Role.dulieu.RoleName);
+    formik.setFieldValue('PaymentID', Payment.dulieu.PaymentID);
+    formik.setFieldValue('Name', Payment.dulieu.Name);
     setOpen(true);
   };
   return (
@@ -98,11 +98,11 @@ export default function RoleMoreMenu(Role) {
             if (confirm('Are you sure you want to delete this account?')) {
               axios
                 .delete(
-                  `${process.env.REACT_APP_WEB_API}Component/DeleteRole?RoleID=${Role.dulieu.RoleID}`
+                  `${process.env.REACT_APP_WEB_API}Component/DeletePayment?PaymentID=${Payment.dulieu.PaymentID}`
                 )
                 .then((res) => {
                   if (res.data.Status === 'Deleted') {
-                    alert('Role Deleted');
+                    alert('Payment Deleted');
                     window.location.reload();
                   } else {
                     alert('Deleted Fail');
@@ -138,13 +138,13 @@ export default function RoleMoreMenu(Role) {
               <Box sx={style}>
                 <Stack spacing={3}>
                   <Typography id="modal-modal-title" variant="h6" component="h2">
-                    Add Role
+                    Edit Payment
                   </Typography>
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
-                    <TextField label="RoleName" {...getFieldProps('RoleName')} variant="outlined" />
+                    <TextField label="Name" {...getFieldProps('Name')} variant="outlined" />
                   </Stack>
                   <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                    Add Role
+                    Edit Payment
                   </LoadingButton>
                 </Stack>
               </Box>

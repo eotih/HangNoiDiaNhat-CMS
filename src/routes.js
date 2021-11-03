@@ -13,6 +13,7 @@ import User from './pages/User';
 import Account from './pages/Account';
 import Profile from './pages/Profile';
 import Role from './pages/Role';
+import Payment from './pages/Payment';
 import NotFound from './pages/Page404';
 
 // ----------------------------------------------------------------------
@@ -25,13 +26,27 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'app', element: <DashboardApp /> },
-        { path: 'account', element: <Account /> },
         { path: 'user', element: <User /> },
         { path: 'products', element: <Products /> },
         { path: 'blog', element: <Blog /> },
         { path: 'profile', element: <Profile /> },
+      ]
+    },
+    {
+      path: '/organization',
+      element: <DashboardLayout />,
+      children: [
+        { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'account', element: <Account /> },
-        { path: 'role', element: <Role /> }
+      ]
+    },
+    {
+      path: '/component',
+      element: <DashboardLayout />,
+      children: [
+        { element: <Navigate to="/dashboard/app" replace /> },
+        { path: 'role', element: <Role /> },
+        { path: 'payment', element: <Payment /> }
       ]
     },
     {
