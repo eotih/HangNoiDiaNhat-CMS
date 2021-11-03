@@ -12,6 +12,7 @@ import Blog from './pages/Blog';
 import User from './pages/User';
 import Account from './pages/Account';
 import Profile from './pages/Profile';
+import Role from './pages/Role';
 import NotFound from './pages/Page404';
 
 // ----------------------------------------------------------------------
@@ -29,7 +30,8 @@ export default function Router() {
         { path: 'products', element: <Products /> },
         { path: 'blog', element: <Blog /> },
         { path: 'profile', element: <Profile /> },
-        { path: 'account', element: <Account /> }
+        { path: 'account', element: <Account /> },
+        { path: 'role', element: <Role /> }
       ]
     },
     {

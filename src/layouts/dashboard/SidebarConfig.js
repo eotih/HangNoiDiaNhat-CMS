@@ -49,7 +49,7 @@ const sidebarConfig = [
       },
       {
         title: 'Roles',
-        path: '/dashboard/Roles'
+        path: '/dashboard/role'
       },
       {
         title: 'Utilities',
