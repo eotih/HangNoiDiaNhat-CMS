@@ -103,6 +103,7 @@ export default function AccountMoreMenu(Account) {
     formik.setFieldValue('Email', Account.dulieu.Email);
     formik.setFieldValue('Password', Account.dulieu.Password);
     formik.setFieldValue('Address', Account.dulieu.Address);
+    formik.setFieldValue('RoleID', Account.dulieu.RoleID);
     setOpen(true);
   };
   return (
@@ -181,6 +182,10 @@ export default function AccountMoreMenu(Account) {
                       {...getFieldProps('Password')}
                       variant="outlined"
                     />
+                  </Stack>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                    <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
+                    <TextField label="RoleID" {...getFieldProps('RoleID')} variant="outlined" />
                   </Stack>
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                     <label htmlFor="contained-button-file">

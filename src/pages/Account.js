@@ -250,6 +250,10 @@ export default function User() {
                   <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
                   <TextField label="Password" {...getFieldProps('Password')} variant="outlined" />
                 </Stack>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
+                  <TextField label="RoleID" {...getFieldProps('RoleID')} variant="outlined" />
+                </Stack>
                 <label htmlFor="contained-button-file">
                   <Input
                     id="contained-button-file"

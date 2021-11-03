@@ -76,6 +76,7 @@ export default function EditAccount() {
   const { handleSubmit, getFieldProps } = formik;
   useEffect(() => {
     infoUserLogin().then((res) => {
+      console.log(res);
       const data = res.map((item) => {
         formik.setFieldValue('AccountID', item.AccountID);
         formik.setFieldValue('FullName', item.FullName);
@@ -84,6 +85,7 @@ export default function EditAccount() {
         formik.setFieldValue('Email', item.Email);
         formik.setFieldValue('Password', item.Password);
         formik.setFieldValue('Address', item.Address);
+        formik.setFieldValue('RoleID', item.Role.RoleID);
       });
     });
   }, []);
@@ -109,27 +111,19 @@ export default function EditAccount() {
               </Stack>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
-                <TextField label="Password" {...getFieldProps('Password')} variant="outlined" />
-              </Stack>
-              <label htmlFor="contained-button-file">
-                <Input
-                  id="contained-button-file"
-                  type="file"
-                  onChange={(e) => {
-                    const { files } = e.target;
-                    const reader = new FileReader();
-                    reader.readAsDataURL(files[0]);
-                    reader.onload = (e) => {
-                      formik.setFieldValue('Image', e.target.result);
-                    };
-                  }}
+                <TextField
+                  type="password"
+                  label="Password"
+                  {...getFieldProps('Password')}
+                  variant="outlined"
                 />
-                <Button variant="contained" component="span">
-                  Upload Image
-                </Button>
-              </label>
+              </Stack>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
+                <TextField label="RoleID" {...getFieldProps('RoleID')} variant="outlined" />
+              </Stack>
               <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                Add Account
+                Edit Profile
               </LoadingButton>
             </Stack>
           </Box>

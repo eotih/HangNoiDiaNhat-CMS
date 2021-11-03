@@ -102,26 +102,26 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         >
           <Box
             component="img"
-            src="/static/illustrations/illustration_avatar.png"
+            src="/static/H.png"
             sx={{ width: 100, position: 'absolute', top: -50 }}
           />
 
           <Box sx={{ textAlign: 'center' }}>
             <Typography gutterBottom variant="h6">
-              Get more?
+              Lê Trọng Hiếu
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              From only $69
+              Hàng nội địa Nhật
             </Typography>
           </Box>
 
           <Button
             fullWidth
-            href="https://material-ui.com/store/items/minimal-dashboard/"
+            href="https://www.facebook.com/eotihvn/"
             target="_blank"
             variant="contained"
           >
-            Upgrade to Pro
+            Go to the moon
           </Button>
         </Stack>
       </Box>
