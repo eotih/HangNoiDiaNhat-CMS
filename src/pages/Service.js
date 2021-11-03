@@ -12,44 +12,37 @@ import {
   Card,
   Table,
   Stack,
-  Avatar,
   Button,
   Checkbox,
   TableRow,
   TableBody,
   TableCell,
-  MenuItem,
   Container,
   Modal,
-  Input,
   TextField,
-  Alert,
-  Select,
   Typography,
   TableContainer,
   TablePagination
 } from '@mui/material';
 // components
-import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 import Box from '@mui/material/Box';
-import { getAllPayment } from 'src/Functions/Component';
+import { getAllServices } from 'src/Functions/Delivery';
 import Page from '../components/Page';
-import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import {
-  PaymentMoreMenu,
-  PaymentListToolbar,
-  PaymentListHead
-} from '../components/_dashboard/payment';
+  ServiceMoreMenu,
+  ServiceListToolbar,
+  ServiceListHead
+} from '../components/_dashboard/service';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'PaymentID', label: 'PaymentID', alignRight: false },
+  { id: 'ServiceID', label: 'ServiceID', alignRight: false },
   { id: 'Name', label: 'Name', alignRight: false },
   { id: 'CreatedAt', label: 'CreatedAt', alignRight: false },
   { id: 'UpdatedAt', label: 'UpdatedAt', alignRight: false },
@@ -87,7 +80,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Payment() {
+export default function Service() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [page, setPage] = useState(0);
@@ -99,15 +92,15 @@ export default function Payment() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [Payment, setPayment] = useState([]);
+  const [service, setService] = useState([]);
   useEffect(() => {
-    getAllPayment().then((res) => {
+    getAllServices().then((res) => {
       setIsLoaded(true);
-      setPayment(res);
+      setService(res);
     });
   }, []);
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - Payment.length) : 0;
-  const filteredUsers = applySortFilter(Payment, getComparator(order, orderBy), filterName);
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - service.length) : 0;
+  const filteredUsers = applySortFilter(service, getComparator(order, orderBy), filterName);
   const isUserNotFound = filteredUsers.length === 0;
 
   const handleRequestSort = (event, property) => {
@@ -159,7 +152,7 @@ export default function Payment() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = Payment.map((n) => n.name);
+      const newSelecteds = service.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -171,12 +164,12 @@ export default function Payment() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditPayment`, {
+        .post(`${process.env.REACT_APP_WEB_API}Delivery/AddOrEditService`, {
           Name: formik.values.Name
         })
         .then((res) => {
           if (res.data.Status === 'Success') {
-            alert('Add Payment Successfully');
+            alert('Add Service Successfully');
             window.location.reload();
           } else {
             alert('Add Failed');
@@ -200,7 +193,7 @@ export default function Payment() {
     );
   }
   return (
-    <Page title="Payment | HangnoidiaNhat">
+    <Page title="Service | HangnoidiaNhat">
       <Modal
         open={open}
         sx={{
@@ -215,13 +208,13 @@ export default function Payment() {
             <Box sx={style}>
               <Stack spacing={3}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add Payment
+                  Add Service
                 </Typography>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
                   <TextField label="Name" {...getFieldProps('Name')} variant="outlined" />
                 </Stack>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                  Add Payment
+                  Add Service
                 </LoadingButton>
               </Stack>
             </Box>
@@ -231,7 +224,7 @@ export default function Payment() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Payment
+            Service
           </Typography>
           <Button
             onClick={handleOpen}
@@ -240,48 +233,40 @@ export default function Payment() {
             to="#"
             startIcon={<Icon icon={plusFill} />}
           >
-            New Payment
+            New Service
           </Button>
         </Stack>
 
         <Card>
-          <PaymentListToolbar
+          <ServiceListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
           />
 
           <Scrollbar>
-            <PaymentListHead
-              order={order}
-              orderBy={orderBy}
-              headLabel={TABLE_HEAD}
-              rowCount={Payment.length}
-              numSelected={selected.length}
-              onRequestSort={handleRequestSort}
-              onSelectAllClick={handleSelectAllClick}
-            />
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <PaymentMoreMenu
+                <ServiceListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={Payment.length}
+                  rowCount={service.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {Payment.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(
-                    (row) => {
-                      const { PaymentID, Name, CreatedAt, UpdatedAt } = row;
+                  {service
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => {
+                      const { ServiceID, Name, CreatedAt, UpdatedAt } = row;
                       const isItemSelected = selected.indexOf(Name) !== -1;
 
                       return (
                         <TableRow
                           hover
-                          key={PaymentID}
+                          key={ServiceID}
                           tabIndex={-1}
                           role="checkbox"
                           selected={isItemSelected}
@@ -293,17 +278,16 @@ export default function Payment() {
                               onChange={(event) => handleClick(event, Name)}
                             />
                           </TableCell>
-                          <TableCell align="left">{PaymentID}</TableCell>
+                          <TableCell align="left">{ServiceID}</TableCell>
                           <TableCell align="left">{Name}</TableCell>
                           <TableCell align="left">{CreatedAt}</TableCell>
                           <TableCell align="left">{UpdatedAt}</TableCell>
                           <TableCell align="right">
-                            <PaymentMoreMenu dulieu={row} />
+                            <ServiceMoreMenu dulieu={row} />
                           </TableCell>
                         </TableRow>
                       );
-                    }
-                  )}
+                    })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
@@ -326,7 +310,7 @@ export default function Payment() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={Payment.length}
+            count={service.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

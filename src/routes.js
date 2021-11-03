@@ -14,6 +14,7 @@ import Account from './pages/Account';
 import Profile from './pages/Profile';
 import Role from './pages/Role';
 import Payment from './pages/Payment';
+import Service from './pages/Service';
 import NotFound from './pages/Page404';
 
 // ----------------------------------------------------------------------
@@ -46,6 +47,15 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'role', element: <Role /> },
+        { path: 'payment', element: <Payment /> }
+      ]
+    },
+    {
+      path: '/delivery',
+      element: <DashboardLayout />,
+      children: [
+        { element: <Navigate to="/dashboard/app" replace /> },
+        { path: 'services', element: <Service /> },
         { path: 'payment', element: <Payment /> }
       ]
     },

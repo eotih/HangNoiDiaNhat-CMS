@@ -44,10 +44,6 @@ const sidebarConfig = [
         path: '/component/state'
       },
       {
-        title: 'Services',
-        path: '/component/services'
-      },
-      {
         title: 'Roles',
         path: '/component/role'
       },
@@ -103,19 +99,23 @@ const sidebarConfig = [
     children: [
       {
         title: 'Shipper',
-        path: '/dashboard/shipper'
+        path: '/delivery/shipper'
       },
       {
         title: 'Shipping Department',
-        path: '/dashboard/shipping-department'
+        path: '/delivery/shipping-department'
+      },
+      {
+        title: 'Services',
+        path: '/delivery/services'
       },
       {
         title: 'Tracking order',
-        path: '/dashboard/tracking-order'
+        path: '/delivery/tracking-order'
       },
       {
         title: 'Identity Card',
-        path: '/dashboard/identity-card'
+        path: '/delivery/identity-card'
       }
     ]
   },
