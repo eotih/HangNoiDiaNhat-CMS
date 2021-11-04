@@ -27,6 +27,7 @@ import Contact from './pages/Contact';
 import Shipper from './pages/Shipper';
 import Product from './pages/Product';
 import ShippingDepartment from './pages/ShippingDepartment';
+import { AddProduct } from './components/_dashboard/product';
 import NotFound from './pages/Page404';
 
 // ----------------------------------------------------------------------
@@ -95,7 +96,8 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'customer', element: <Customer /> },
         { path: 'contact', element: <Contact /> },
-        { path: 'product', element: <Product /> }
+        { path: 'product', element: <Product /> },
+        { path: 'product/add', element: <AddProduct /> }
       ]
     },
     {

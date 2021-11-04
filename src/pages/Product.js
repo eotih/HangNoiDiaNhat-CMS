@@ -45,6 +45,7 @@ import SearchNotFound from '../components/SearchNotFound';
 import {
   ProductListHead,
   ProductListToolbar,
+  AddProduct,
   ProductMoreMenu
 } from '../components/_dashboard/product';
 
@@ -197,10 +198,9 @@ export default function Product() {
             Product
           </Typography>
           <Button
-            onClick={handleOpen}
+            to="./add"
             variant="contained"
             component={RouterLink}
-            to="#"
             startIcon={<Icon icon={plusFill} />}
           >
             New Product
@@ -230,7 +230,6 @@ export default function Product() {
                   {filteredProduct
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      console.log(row);
                       const { ProductID, Thumbnail, ThuongHieu, Quantity, Name, Price, TheLoai } =
                         row;
                       const isItemSelected = selected.indexOf(Name) !== -1;

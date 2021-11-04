@@ -212,7 +212,7 @@ export default function Category() {
             <Box sx={style}>
               <Stack spacing={3}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add Category
+                  Add Brand
                 </Typography>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
                   <TextField label="Name" {...getFieldProps('Name')} variant="outlined" />
@@ -242,7 +242,7 @@ export default function Category() {
                   </label>
                 </Stack>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                  Add Category
+                  Add Brand
                 </LoadingButton>
               </Stack>
             </Box>
@@ -252,7 +252,7 @@ export default function Category() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Category
+            Brand
           </Typography>
           <Button
             onClick={handleOpen}
@@ -261,7 +261,7 @@ export default function Category() {
             to="#"
             startIcon={<Icon icon={plusFill} />}
           >
-            New Category
+            New Brand
           </Button>
         </Stack>
 
@@ -288,13 +288,13 @@ export default function Category() {
                   {filteredBrands
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { CategoryID, Name, Slug, Thumbnail, CreatedAt, UpdatedAt } = row;
+                      const { BrandID, Name, Slug, Thumbnail, CreatedAt, UpdatedAt } = row;
                       const isItemSelected = selected.indexOf(Name) !== -1;
 
                       return (
                         <TableRow
                           hover
-                          key={CategoryID}
+                          key={BrandID}
                           tabIndex={-1}
                           role="checkbox"
                           selected={isItemSelected}
@@ -306,13 +306,14 @@ export default function Category() {
                               onChange={(event) => handleClick(event, Name)}
                             />
                           </TableCell>
-                          <TableCell align="left">{CategoryID}</TableCell>
+                          <TableCell align="left">{BrandID}</TableCell>
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
-                              <Avatar alt={Name} src={Thumbnail} />
-                              <Typography variant="subtitle2" noWrap>
-                                {Name}
-                              </Typography>
+                              <img
+                                style={{ width: '100px', height: '100%' }}
+                                alt={Name}
+                                src={Thumbnail}
+                              />
                             </Stack>
                           </TableCell>
                           <TableCell align="left">{Slug}</TableCell>
