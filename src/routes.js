@@ -28,6 +28,8 @@ import Shipper from './pages/Shipper';
 import Product from './pages/Product';
 import ShippingDepartment from './pages/ShippingDepartment';
 import { AddProduct } from './components/_dashboard/product';
+import Order from './pages/Order';
+import OrderDetail from './pages/OrderDetail';
 import NotFound from './pages/Page404';
 
 // ----------------------------------------------------------------------
@@ -97,6 +99,8 @@ export default function Router() {
         { path: 'customer', element: <Customer /> },
         { path: 'contact', element: <Contact /> },
         { path: 'product', element: <Product /> },
+        { path: 'order', element: <Order /> },
+        { path: 'order/detail/:id', element: <OrderDetail /> },
         { path: 'product/add', element: <AddProduct /> }
       ]
     },

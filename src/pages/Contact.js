@@ -2,42 +2,26 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable import/no-unresolved */
 import { filter } from 'lodash';
-import { Icon } from '@iconify/react';
 import React, { useState, useEffect } from 'react';
-import { useFormik, Form, FormikProvider } from 'formik';
-import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink } from 'react-router-dom';
 // material
 import {
   Card,
   Table,
   Stack,
-  Button,
   Checkbox,
   TableRow,
   TableBody,
   TableCell,
-  MenuItem,
   Container,
-  Modal,
-  TextField,
-  Alert,
-  Select,
   Typography,
   TableContainer,
-  TablePagination,
-  FormControl,
-  InputLabel
+  TablePagination
 } from '@mui/material';
 // components
-import { styled } from '@mui/material/styles';
-import { LoadingButton } from '@mui/lab';
 import CircularProgress from '@mui/material/CircularProgress';
-import axios from 'axios';
 import Box from '@mui/material/Box';
 import { getAllContact } from 'src/functions/Management';
 import Page from '../components/Page';
-import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import {
@@ -99,8 +83,6 @@ export default function User() {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [open, setOpen] = React.useState(false);
-  const [role, setRole] = useState([]);
   const [contact, setContact] = useState([]);
   useEffect(() => {
     getAllContact().then((res) => {
@@ -108,9 +90,6 @@ export default function User() {
       setContact(res);
     });
   }, []);
-  const handleChange = (event) => {
-    setRole(event.target.value);
-  };
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - contact.length) : 0;
   const filteredContact = applySortFilter(contact, getComparator(order, orderBy), filterName);
   const isUserNotFound = filteredContact.length === 0;
@@ -152,16 +131,6 @@ export default function User() {
     setFilterName(event.target.value);
   };
 
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4
-  };
-
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
       const newSelecteds = contact.map((n) => n.name);
@@ -170,40 +139,6 @@ export default function User() {
     }
     setSelected([]);
   };
-
-  const formik = useFormik({
-    initialValues: {
-      FullName: '',
-      Phone: '',
-      Email: '',
-      Address: '',
-      Password: '',
-      remember: true
-    },
-    onSubmit: () => {
-      axios
-        .post(`${process.env.REACT_APP_WEB_API}Management/AddOrEditCustomer`, {
-          FullName: formik.values.FullName,
-          Phone: formik.values.Phone,
-          Email: formik.values.Email,
-          Password: formik.values.Password,
-          Address: formik.values.Address
-        })
-        .then((res) => {
-          if (res.data.Status === 'Success') {
-            alert('Add Customer Successfully');
-            window.location.reload();
-          } else {
-            alert('Add Failed');
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  });
-
-  const { handleSubmit, getFieldProps } = formik;
   if (error) {
     return <div>Error: {error.message}</div>;
   }

@@ -2,10 +2,9 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import * as React from 'react';
 import { Icon } from '@iconify/react';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import editFill from '@iconify/icons-eva/edit-fill';
 import { useFormik, Form, FormikProvider } from 'formik';
-import { Link as RouterLink } from 'react-router-dom';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 // material
@@ -27,7 +26,6 @@ import {
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
-import { getAllShipper } from '../../../functions/Delivery';
 
 // ----------------------------------------------------------------------
 
@@ -36,13 +34,7 @@ export default function ShipperMoreMenu(Shipper) {
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [role, setRole] = useState([]);
-  const [shipper, setShipper] = useState([]);
   const handleClose = () => setOpen(false);
-  useEffect(() => {
-    getAllShipper().then((res) => {
-      setShipper(res);
-    });
-  }, []);
   const formik = useFormik({
     initialValues: {
       ShipperID: '',

@@ -2,10 +2,9 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import * as React from 'react';
 import { Icon } from '@iconify/react';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import editFill from '@iconify/icons-eva/edit-fill';
 import { useFormik, Form, FormikProvider } from 'formik';
-import { Link as RouterLink } from 'react-router-dom';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 // material
@@ -19,11 +18,9 @@ import {
   ListItemText,
   Stack,
   Typography,
-  TextField,
-  Button
+  TextField
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { styled } from '@mui/material/styles';
 import axios from 'axios';
 
 // ----------------------------------------------------------------------
@@ -32,7 +29,6 @@ export default function PaymentMoreMenu(Payment) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = React.useState(false);
-  const [payment, setPayment] = useState([]);
   const handleClose = () => setOpen(false);
   const formik = useFormik({
     initialValues: {
@@ -69,9 +65,6 @@ export default function PaymentMoreMenu(Payment) {
     boxShadow: 24,
     p: 4
   };
-  const Input = styled('input')({
-    display: 'none'
-  });
   const handleOpen = () => {
     formik.setFieldValue('PaymentID', Payment.dulieu.PaymentID);
     formik.setFieldValue('Name', Payment.dulieu.Name);

@@ -2,51 +2,42 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable import/no-unresolved */
 import { filter } from 'lodash';
-import { Icon } from '@iconify/react';
 import React, { useState, useEffect } from 'react';
-import { useFormik, Form, FormikProvider } from 'formik';
-import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink } from 'react-router-dom';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import { useParams } from 'react-router-dom';
 // material
 import {
   Card,
   Table,
   Stack,
-  Avatar,
-  Button,
   Checkbox,
   TableRow,
   TableBody,
   TableCell,
   Container,
-  Modal,
-  TextField,
   Typography,
   TableContainer,
+  Link,
   TablePagination
 } from '@mui/material';
 // components
-import { LoadingButton } from '@mui/lab';
 import CircularProgress from '@mui/material/CircularProgress';
-import axios from 'axios';
 import Box from '@mui/material/Box';
-import { getAllOrganization } from 'src/functions/Organization';
+import { getAllOrderDetailByOrderID } from 'src/functions/Management';
 import Page from '../components/Page';
+import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
-import {
-  OrganizationListHead,
-  OrganizationListToolbar,
-  OrganizationMoreMenu
-} from '../components/_dashboard/organization';
+import { OrderListHead, OrderListToolbar, OrderMoreMenu } from '../components/_dashboard/order';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'FullName', label: 'FullName', alignRight: false },
-  { id: 'Email', label: 'Email', alignRight: false },
-  { id: 'Phone', label: 'Phone', alignRight: false },
-  { id: 'Address', label: 'Address', alignRight: false },
+  { id: 'OrderID', label: 'OrderID', alignRight: false },
+  { id: 'ProductID', label: 'Product', alignRight: false },
+  { id: 'CustomerID', label: 'Customer', alignRight: false },
+  { id: 'Quantity', label: 'Quantity', alignRight: false },
+  { id: 'StateID', label: 'State', alignRight: false },
   { id: '' }
 ];
 
@@ -81,7 +72,8 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function User() {
+export default function Order() {
+  const { id } = useParams();
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [page, setPage] = useState(0);
@@ -90,23 +82,16 @@ export default function User() {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const [organization, setOrganization] = useState([]);
+  const [orders, setOrders] = useState([]);
   useEffect(() => {
-    getAllOrganization().then((res) => {
+    getAllOrderDetailByOrderID(id).then((res) => {
       setIsLoaded(true);
-      setOrganization(res);
+      setOrders(res);
     });
   }, []);
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - organization.length) : 0;
-  const filteredOrganization = applySortFilter(
-    organization,
-    getComparator(order, orderBy),
-    filterName
-  );
-  const isUserNotFound = filteredOrganization.length === 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - orders.length) : 0;
+  const filteredOrder = applySortFilter(orders, getComparator(order, orderBy), filterName);
+  const isUserNotFound = filteredOrder.length === 0;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -157,44 +142,13 @@ export default function User() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = organization.map((n) => n.name);
+      const newSelecteds = orders.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const formik = useFormik({
-    initialValues: {
-      FullName: '',
-      Phone: '',
-      Email: '',
-      Address: '',
-      remember: true
-    },
-    onSubmit: () => {
-      axios
-        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditOrganization`, {
-          FullName: formik.values.FullName,
-          Phone: formik.values.Phone,
-          Email: formik.values.Email,
-          Address: formik.values.Address
-        })
-        .then((res) => {
-          if (res.data.Status === 'Success') {
-            alert('Add Organization Successfully');
-            window.location.reload();
-          } else {
-            alert('Add Failed');
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  });
-
-  const { handleSubmit, getFieldProps } = formik;
   if (error) {
     return <div>Error: {error.message}</div>;
   }
@@ -206,58 +160,25 @@ export default function User() {
     );
   }
   return (
-    <Page title="Organization | HangnoidiaNhat">
-      <Modal
-        open={open}
-        sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' },
-          '& .MuiSelect-root': { m: 1, width: '25ch' }
-        }}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <FormikProvider value={formik}>
-          <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-            <Box sx={style}>
-              <Stack spacing={3}>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add Organization
-                </Typography>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />
-                  <TextField label="Phone" {...getFieldProps('Phone')} variant="outlined" />
-                </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
-                  <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
-                </Stack>
-                <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                  Add Organization
-                </LoadingButton>
-              </Stack>
-            </Box>
-          </Form>
-        </FormikProvider>
-      </Modal>
+    <Page title="OrderDetail | HangnoidiaNhat">
       <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+        <Stack direction="column" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Organization
+            Order Detail
           </Typography>
-          <Button
-            onClick={handleOpen}
-            variant="contained"
-            component={RouterLink}
-            to="#"
-            startIcon={<Icon icon={plusFill} />}
-          >
-            New Organization
-          </Button>
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link underline="hover" color="inherit" href="/">
+              Dashboard
+            </Link>
+            <Link underline="hover" color="inherit" href="../">
+              Order
+            </Link>
+            <Typography color="text.primary">Order Detail / {id}</Typography>
+          </Breadcrumbs>
         </Stack>
 
         <Card>
-          <OrganizationListToolbar
+          <OrderListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -266,26 +187,26 @@ export default function User() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <OrganizationListHead
+                <OrderListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={organization.length}
+                  rowCount={orders.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredOrganization
+                  {filteredOrder
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { OrganizationID, Address, FullName, Email, Phone } = row;
-                      const isItemSelected = selected.indexOf(FullName) !== -1;
-
+                      const { OrderDetailID, ThumbnailSP, NameSP, Quantity, KhachHang, TrangThai } =
+                        row;
+                      const isItemSelected = selected.indexOf(OrderDetailID) !== -1;
                       return (
                         <TableRow
                           hover
-                          key={OrganizationID}
+                          key={OrderDetailID}
                           tabIndex={-1}
                           role="checkbox"
                           selected={isItemSelected}
@@ -294,15 +215,37 @@ export default function User() {
                           <TableCell padding="checkbox">
                             <Checkbox
                               checked={isItemSelected}
-                              onChange={(event) => handleClick(event, FullName)}
+                              onChange={(event) => handleClick(event, OrderDetailID)}
                             />
                           </TableCell>
-                          <TableCell align="left">{FullName}</TableCell>
-                          <TableCell align="left">{Email}</TableCell>
-                          <TableCell align="left">{Phone}</TableCell>
-                          <TableCell align="left">{Address}</TableCell>
+                          <TableCell align="left">{OrderDetailID}</TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack direction="row" alignItems="center" spacing={2}>
+                              <img
+                                alt={NameSP}
+                                style={{ width: '60px', height: '70px', borderRadius: '10px' }}
+                                src={ThumbnailSP}
+                              />
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  alignItems: 'flex-start',
+                                  flexDirection: 'column',
+                                  p: 1,
+                                  m: 1
+                                }}
+                              >
+                                <Typography variant="subtitle2" noWrap>
+                                  {NameSP}
+                                </Typography>
+                              </Box>
+                            </Stack>
+                          </TableCell>
+                          <TableCell align="left">{KhachHang}</TableCell>
+                          <TableCell align="left">{Quantity}</TableCell>
+                          <TableCell align="left">{TrangThai}</TableCell>
                           <TableCell align="right">
-                            <OrganizationMoreMenu dulieu={row} />
+                            <OrderMoreMenu dulieu={row} />
                           </TableCell>
                         </TableRow>
                       );
@@ -329,7 +272,7 @@ export default function User() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={organization.length}
+            count={orders.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

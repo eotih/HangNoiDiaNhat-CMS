@@ -2,8 +2,11 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import * as React from 'react';
 import { Icon } from '@iconify/react';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import editFill from '@iconify/icons-eva/edit-fill';
+import carfill from '@iconify/icons-eva/car-fill';
+import external from '@iconify/icons-eva/external-link-fill';
 import { useFormik, Form, FormikProvider } from 'formik';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
@@ -13,46 +16,53 @@ import {
   Modal,
   Menu,
   MenuItem,
+  FormControl,
   IconButton,
+  InputLabel,
+  Select,
   ListItemIcon,
   ListItemText,
   Stack,
   Typography,
-  TextField
+  TextField,
+  Button
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import axios from 'axios';
+import { getAllState } from '../../../functions/Component';
 
 // ----------------------------------------------------------------------
 
-export default function OrganizationMoreMenu(Organization) {
+export default function OrderMoreMenu(State) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [state, setState] = useState([]);
+  const [states, setStates] = useState([]);
   const [open, setOpen] = React.useState(false);
   const handleClose = () => setOpen(false);
+  useEffect(() => {
+    getAllState().then((res) => {
+      setStates(res);
+    });
+  }, []);
   const formik = useFormik({
     initialValues: {
-      FullName: '',
-      Phone: '',
-      Email: '',
-      Address: '',
-      OrganizationID: ''
+      StateID: '',
+      OrderID: ''
     },
     onSubmit: () => {
+      console.log(formik.values);
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditOrganization`, {
-          FullName: formik.values.FullName,
-          OrganizationID: formik.values.OrganizationID,
-          Email: formik.values.Email,
-          Address: formik.values.Address,
-          Phone: formik.values.Phone
+        .post(`${process.env.REACT_APP_WEB_API}Management/EditStateOfOrder`, {
+          OrderID: formik.values.OrderID,
+          StateID: formik.values.StateID
         })
         .then((res) => {
           if (res.data.Status === 'Updated') {
-            alert('Edit Organization Successfully');
+            alert('State Edited');
             window.location.reload();
           } else {
-            alert('Edit Failed');
+            alert('Edited Fail');
           }
         })
         .catch((err) => {
@@ -61,6 +71,9 @@ export default function OrganizationMoreMenu(Organization) {
     }
   });
   const { handleSubmit, getFieldProps } = formik;
+  const handleChange = (event) => {
+    setState(event.target.value);
+  };
   const style = {
     position: 'absolute',
     top: '50%',
@@ -72,11 +85,9 @@ export default function OrganizationMoreMenu(Organization) {
     p: 4
   };
   const handleOpen = () => {
-    formik.setFieldValue('OrganizationID', Organization.dulieu.OrganizationID);
-    formik.setFieldValue('FullName', Organization.dulieu.FullName);
-    formik.setFieldValue('Phone', Organization.dulieu.Phone);
-    formik.setFieldValue('Email', Organization.dulieu.Email);
-    formik.setFieldValue('Address', Organization.dulieu.Address);
+    formik.setFieldValue('StateID', State.dulieu.TrangThai.StateID);
+    formik.setFieldValue('OrderID', State.dulieu.OrderID);
+    setState(State.dulieu.TrangThai.StateID);
     setOpen(true);
   };
   return (
@@ -97,21 +108,18 @@ export default function OrganizationMoreMenu(Organization) {
       >
         <MenuItem
           onClick={() => {
-            if (confirm('Are you sure you want to delete this Organization?')) {
+            if (confirm('Are you sure you want to delete this Order?')) {
               axios
                 .delete(
-                  `${process.env.REACT_APP_WEB_API}Organization/DeleteOrganization?OrganizationID=${Organization.dulieu.OrganizationID}`
+                  `${process.env.REACT_APP_WEB_API}Management/DeleteOrder?OrderID=${State.dulieu.OrderID}`
                 )
                 .then((res) => {
                   if (res.data.Status === 'Deleted') {
-                    alert('Organization Deleted');
+                    alert('Order Deleted');
                     window.location.reload();
                   } else {
                     alert('Deleted Fail');
                   }
-                })
-                .catch((err) => {
-                  console.log(err);
                 });
             }
           }}
@@ -143,24 +151,55 @@ export default function OrganizationMoreMenu(Organization) {
               <Box sx={style}>
                 <Stack spacing={3}>
                   <Typography id="modal-modal-title" variant="h6" component="h2">
-                    Edit Organization
+                    Edit State
                   </Typography>
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                    <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />
-                    <TextField label="Phone" {...getFieldProps('Phone')} variant="outlined" />
-                  </Stack>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                    <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
-                    <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
+                    <FormControl>
+                      <InputLabel id="select-label">State</InputLabel>
+                      <Select
+                        labelId="select-label"
+                        label="State"
+                        {...getFieldProps('StateID')}
+                        variant="outlined"
+                        value={state}
+                        onChange={handleChange}
+                      >
+                        {states.map((item) => (
+                          <MenuItem key={item.StateID} value={item.StateID}>
+                            {item.Name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                   </Stack>
                   <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                    Edit Organization
+                    Edit State
                   </LoadingButton>
                 </Stack>
               </Box>
             </Form>
           </FormikProvider>
         </Modal>
+        <MenuItem
+          component={RouterLink}
+          to="/delivery/tracking-delivery"
+          sx={{ color: 'text.secondary' }}
+        >
+          <ListItemIcon>
+            <Icon icon={carfill} width={24} height={24} />
+          </ListItemIcon>
+          <ListItemText primary="Tracking Order" primaryTypographyProps={{ variant: 'body2' }} />
+        </MenuItem>
+        <MenuItem
+          component={RouterLink}
+          to={`detail/${State.dulieu.OrderID}`}
+          sx={{ color: 'text.secondary' }}
+        >
+          <ListItemIcon>
+            <Icon icon={external} width={24} height={24} />
+          </ListItemIcon>
+          <ListItemText primary="View Detail" primaryTypographyProps={{ variant: 'body2' }} />
+        </MenuItem>
       </Menu>
     </>
   );
