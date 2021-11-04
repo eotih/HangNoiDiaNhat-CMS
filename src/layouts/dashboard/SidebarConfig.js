@@ -75,10 +75,6 @@ const sidebarConfig = [
         path: '/management/order'
       },
       {
-        title: 'OrderDetails',
-        path: '/management/order-details'
-      },
-      {
         title: 'Customer',
         path: '/management/customer'
       },
@@ -89,10 +85,6 @@ const sidebarConfig = [
       {
         title: 'Product',
         path: '/management/product'
-      },
-      {
-        title: 'Product Images',
-        path: '/management/product-images'
       },
     ]
   },
@@ -108,6 +100,10 @@ const sidebarConfig = [
       {
         title: 'Shipping Department',
         path: '/delivery/shipping-department'
+      },
+      {
+        title: 'Pick Up Orders',
+        path: '/delivery/pick-up'
       },
       {
         title: 'Services',

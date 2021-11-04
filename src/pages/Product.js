@@ -271,12 +271,12 @@ export default function Product() {
                                 <img
                                   alt={Name}
                                   style={{ width: '100px', height: '100%' }}
-                                  src={ThuongHieu.Thumbnail}
+                                  src={ThuongHieu}
                                 />
                               </Box>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{TheLoai.Name}</TableCell>
+                          <TableCell align="left">{TheLoai}</TableCell>
                           <TableCell align="left">{Price}</TableCell>
                           <TableCell align="left">{convertQuantity(Quantity)}</TableCell>
                           <TableCell align="right">
