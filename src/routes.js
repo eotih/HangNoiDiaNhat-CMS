@@ -25,6 +25,7 @@ import Organization from './pages/Organization';
 import Customer from './pages/Customer';
 import Contact from './pages/Contact';
 import Shipper from './pages/Shipper';
+import Product from './pages/Product';
 import ShippingDepartment from './pages/ShippingDepartment';
 import NotFound from './pages/Page404';
 
@@ -93,7 +94,8 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'customer', element: <Customer /> },
-        { path: 'contact', element: <Contact /> }
+        { path: 'contact', element: <Contact /> },
+        { path: 'product', element: <Product /> }
       ]
     },
     {
