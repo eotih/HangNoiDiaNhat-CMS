@@ -9,24 +9,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 // material
-import {
-  Input,
-  Box,
-  Modal,
-  Menu,
-  MenuItem,
-  IconButton,
-  ListItemIcon,
-  InputLabel,
-  FormControl,
-  ListItemText,
-  Stack,
-  Typography,
-  TextField,
-  Select,
-  Button,
-  Avatar
-} from '@mui/material';
+import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
@@ -34,83 +17,11 @@ import { getAllRole } from '../../../functions/Component';
 
 // ----------------------------------------------------------------------
 
-export default function ProductMoreMenu(Account) {
+export default function ProductMoreMenu(Product) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [open, setOpen] = React.useState(false);
-  const [role, setRole] = useState([]);
-  const [roles, setRoles] = useState([]);
-  const handleClose = () => setOpen(false);
-  useEffect(() => {
-    getAllRole().then((res) => {
-      setRoles(res);
-    });
-  }, []);
-  const formik = useFormik({
-    initialValues: {
-      AccountID: '',
-      FullName: '',
-      Image: '',
-      Phone: '',
-      Email: '',
-      Password: '',
-      RoleID: '',
-      Address: '',
-      remember: true
-    },
-    onSubmit: () => {
-      axios
-        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditAccount`, {
-          AccountID: formik.values.AccountID,
-          FullName: formik.values.FullName,
-          Image: formik.values.Image,
-          Phone: formik.values.Phone,
-          Email: formik.values.Email,
-          Password: formik.values.Password,
-          Address: formik.values.Address,
-          RoleID: formik.values.RoleID
-        })
-        .then((res) => {
-          if (res.data.Status === 'Updated') {
-            alert('Account Edited');
-            window.location.reload();
-          } else {
-            alert('Edited Fail');
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  });
-  const { handleSubmit, getFieldProps } = formik;
-  const handleChange = (event) => {
-    setRole(event.target.value);
-  };
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 600,
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4
-  };
-  const Input = styled('input')({
-    display: 'none'
-  });
   const handleOpen = () => {
-    formik.setFieldValue('AccountID', Account.dulieu.AccountID);
-    formik.setFieldValue('FullName', Account.dulieu.FullName);
-    formik.setFieldValue('Image', Account.dulieu.Image);
-    formik.setFieldValue('Phone', Account.dulieu.Phone);
-    formik.setFieldValue('Email', Account.dulieu.Email);
-    formik.setFieldValue('Password', Account.dulieu.Password);
-    formik.setFieldValue('Address', Account.dulieu.Address);
-    formik.setFieldValue('RoleID', Account.dulieu.RoleID);
-    setRole(Account.dulieu.RoleID);
-    setOpen(true);
+    alert('Waiting...');
   };
   return (
     <>
@@ -130,17 +41,17 @@ export default function ProductMoreMenu(Account) {
       >
         <MenuItem
           onClick={() => {
-            if (confirm('Are you sure you want to delete this account?')) {
+            if (confirm('Are you sure you want to delete this Product?')) {
               axios
                 .delete(
-                  `${process.env.REACT_APP_WEB_API}Organization/DeleteAccount?AccountID=${Account.dulieu.AccountID}`
+                  `${process.env.REACT_APP_WEB_API}Management/DeleteProduct?ProductID=${Product.dulieu.ProductID}`
                 )
                 .then((res) => {
                   if (res.data.Status === 'Deleted') {
-                    alert('Account Deleted');
+                    alert('Product Deleted');
                     window.location.reload();
                   } else {
-                    alert('Account Not Deleted');
+                    alert('Product Not Deleted');
                   }
                 });
             }
@@ -159,88 +70,6 @@ export default function ProductMoreMenu(Account) {
           </ListItemIcon>
           <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
-        <Modal
-          open={open}
-          sx={{
-            '& .MuiTextField-root': { m: 1, width: '25ch' },
-            '& .MuiSelect-root': { m: 1, width: '25ch' }
-          }}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <FormikProvider value={formik}>
-            <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-              <Box sx={style}>
-                <Stack spacing={3}>
-                  <Typography id="modal-modal-title" variant="h6" component="h2">
-                    Edit Account
-                  </Typography>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                    <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />
-                    <TextField label="Phone" {...getFieldProps('Phone')} variant="outlined" />
-                  </Stack>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                    <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
-                    <TextField
-                      type="password"
-                      label="Password"
-                      {...getFieldProps('Password')}
-                      variant="outlined"
-                    />
-                  </Stack>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                    <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
-                    <FormControl>
-                      <InputLabel id="select-label">Role</InputLabel>
-                      <Select
-                        labelId="select-label"
-                        label="Role"
-                        {...getFieldProps('RoleID')}
-                        variant="outlined"
-                        value={role}
-                        onChange={handleChange}
-                      >
-                        {roles.map((item) => (
-                          <MenuItem key={item.RoleID} value={item.RoleID}>
-                            {item.RoleName}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Stack>
-                  <Stack
-                    direction={{ xs: 'column', sm: 'row' }}
-                    spacing={2}
-                    justifyContent="flex-end"
-                  >
-                    <Avatar src={formik.values.Image} sx={{ width: 50, height: 50 }} />
-                    <label htmlFor="contained-button-file">
-                      <Input
-                        id="contained-button-file"
-                        type="file"
-                        onChange={(e) => {
-                          const { files } = e.target;
-                          const reader = new FileReader();
-                          reader.readAsDataURL(files[0]);
-                          reader.onload = (e) => {
-                            formik.setFieldValue('Image', e.target.result);
-                          };
-                        }}
-                      />
-                      <Button variant="contained" component="span">
-                        Upload Image
-                      </Button>
-                    </label>
-                  </Stack>
-                  <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                    Edit Account
-                  </LoadingButton>
-                </Stack>
-              </Box>
-            </Form>
-          </FormikProvider>
-        </Modal>
       </Menu>
     </>
   );
