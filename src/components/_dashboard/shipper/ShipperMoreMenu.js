@@ -17,13 +17,10 @@ import {
   MenuItem,
   IconButton,
   ListItemIcon,
-  InputLabel,
-  FormControl,
   ListItemText,
   Stack,
   Typography,
   TextField,
-  Select,
   Button,
   Avatar
 } from '@mui/material';
@@ -92,7 +89,6 @@ export default function ShipperMoreMenu(Shipper) {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 600,
     bgcolor: 'background.paper',
     boxShadow: 24,
     p: 4
@@ -161,8 +157,7 @@ export default function ShipperMoreMenu(Shipper) {
         <Modal
           open={open}
           sx={{
-            '& .MuiTextField-root': { m: 1, width: '25ch' },
-            '& .MuiSelect-root': { m: 1, width: '25ch' }
+            '& .MuiTextField-root': { m: 1, width: '100%' }
           }}
           onClose={handleClose}
           aria-labelledby="modal-modal-title"
@@ -181,13 +176,18 @@ export default function ShipperMoreMenu(Shipper) {
                   </Stack>
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                     <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
-                    <TextField label="Password" {...getFieldProps('Password')} variant="outlined" />
+                    <TextField
+                      type="password"
+                      label="Password"
+                      {...getFieldProps('Password')}
+                      variant="outlined"
+                    />
                     <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
                   </Stack>
                   <Stack
                     direction={{ xs: 'column', sm: 'row' }}
                     spacing={2}
-                    justifyContent="flex-end"
+                    justifyContent="center"
                   >
                     <Avatar src={formik.values.FrontFigure} sx={{ width: 50, height: 50 }} />
                     <label htmlFor="contained-button-file">

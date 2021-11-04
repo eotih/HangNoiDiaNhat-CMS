@@ -18,18 +18,13 @@ import {
   TableRow,
   TableBody,
   TableCell,
-  MenuItem,
   Container,
   Modal,
   Input,
   TextField,
-  Alert,
-  Select,
   Typography,
   TableContainer,
-  TablePagination,
-  FormControl,
-  InputLabel
+  TablePagination
 } from '@mui/material';
 // components
 import { styled } from '@mui/material/styles';
@@ -39,7 +34,6 @@ import axios from 'axios';
 import Box from '@mui/material/Box';
 import { getAllShipper } from 'src/functions/Delivery';
 import Page from '../components/Page';
-import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import {
@@ -238,8 +232,7 @@ export default function User() {
       <Modal
         open={open}
         sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' },
-          '& .MuiSelect-root': { m: 1, width: '25ch' }
+          '& .MuiTextField-root': { m: 1, width: '100%' }
         }}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
@@ -261,11 +254,7 @@ export default function User() {
                   <TextField label="Password" {...getFieldProps('Password')} variant="outlined" />
                   <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
                 </Stack>
-                <Stack
-                  direction={{ xs: 'column', sm: 'row' }}
-                  spacing={2}
-                  justifyContent="flex-end"
-                >
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center">
                   <Avatar src={formik.values.FrontFigure} sx={{ width: 50, height: 50 }} />
                   <label htmlFor="contained-button-file">
                     <Input

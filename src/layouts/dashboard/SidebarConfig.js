@@ -116,10 +116,6 @@ const sidebarConfig = [
       {
         title: 'Tracking order',
         path: '/delivery/tracking-order'
-      },
-      {
-        title: 'Identity Card',
-        path: '/delivery/identity-card'
       }
     ]
   },
