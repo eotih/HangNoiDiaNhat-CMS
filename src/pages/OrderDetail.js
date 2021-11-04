@@ -28,7 +28,11 @@ import Page from '../components/Page';
 import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
-import { OrderListHead, OrderListToolbar, OrderMoreMenu } from '../components/_dashboard/order';
+import {
+  OrderDetailListHead,
+  OrderDetailListToolbar,
+  OrderDetailMoreMenu
+} from '../components/_dashboard/order_detail';
 
 // ----------------------------------------------------------------------
 
@@ -178,7 +182,7 @@ export default function Order() {
         </Stack>
 
         <Card>
-          <OrderListToolbar
+          <OrderDetailListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -187,7 +191,7 @@ export default function Order() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <OrderListHead
+                <OrderDetailListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
@@ -244,9 +248,9 @@ export default function Order() {
                           <TableCell align="left">{KhachHang}</TableCell>
                           <TableCell align="left">{Quantity}</TableCell>
                           <TableCell align="left">{TrangThai}</TableCell>
-                          <TableCell align="right">
-                            <OrderMoreMenu dulieu={row} />
-                          </TableCell>
+                          {/* <TableCell align="right">
+                            <OrderDetailMoreMenu dulieu={row} />
+                          </TableCell> */}
                         </TableRow>
                       );
                     })}

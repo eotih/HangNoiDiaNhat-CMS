@@ -53,7 +53,7 @@ export default function OrderDetailMoreMenu(State) {
     onSubmit: () => {
       console.log(formik.values);
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Management/EditStateOfOrder`, {
+        .post(`${process.env.REACT_APP_WEB_API}Management/EditStateInOrderDetail`, {
           OrderID: formik.values.OrderID,
           StateID: formik.values.StateID
         })

@@ -115,6 +115,13 @@ export default function OrderMoreMenu(State) {
                 )
                 .then((res) => {
                   if (res.data.Status === 'Deleted') {
+                    axios
+                      .delete(
+                        `${process.env.REACT_APP_WEB_API}Management/DeleteOrderDetailsByOrderID?OrderID=${State.dulieu.OrderID}`
+                      )
+                      .then((res) => {
+                        console.log(res.data.Status);
+                      });
                     alert('Order Deleted');
                     window.location.reload();
                   } else {
