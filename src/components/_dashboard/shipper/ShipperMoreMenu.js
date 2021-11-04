@@ -30,7 +30,7 @@ import {
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
-import { getAllShipper } from '../../../Functions/Delivery';
+import { getAllShipper } from '../../../functions/Delivery';
 
 // ----------------------------------------------------------------------
 
@@ -173,7 +173,7 @@ export default function ShipperMoreMenu(Shipper) {
               <Box sx={style}>
                 <Stack spacing={3}>
                   <Typography id="modal-modal-title" variant="h6" component="h2">
-                    Add Shipper
+                    Edit Shipper
                   </Typography>
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                     <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />
@@ -227,7 +227,7 @@ export default function ShipperMoreMenu(Shipper) {
                     </label>
                   </Stack>
                   <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                    Add Shipper
+                    Edit Shipper
                   </LoadingButton>
                 </Stack>
               </Box>

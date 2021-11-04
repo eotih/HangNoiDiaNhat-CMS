@@ -17,7 +17,7 @@ const sidebarConfig = [
   },
   {
     title: 'Organization',
-    path: '/dashboard/app',
+    path: '/organization',
     icon: getIcon(peopleFill),
     children: [
       {
@@ -36,7 +36,7 @@ const sidebarConfig = [
   },
   {
     title: 'Component  ',
-    path: '/dashboard/app',
+    path: '/component',
     icon: getIcon(briefcasefill),
     children: [
       {
@@ -67,7 +67,7 @@ const sidebarConfig = [
   },
   {
     title: 'Management',
-    path: '/dashboard/management',
+    path: '/management',
     icon: getIcon(keypadoutline),
     children: [
       {
@@ -98,7 +98,7 @@ const sidebarConfig = [
   },
   {
     title: 'Delivery',
-    path: '/dashboard/delivery',
+    path: '/delivery',
     icon: getIcon(carfill),
     children: [
       {
@@ -126,7 +126,7 @@ const sidebarConfig = [
   
   {
     title: 'Article',
-    path: '/dashboard/article',
+    path: '/article',
     icon: getIcon(fileTextFill),
     children: [
       {

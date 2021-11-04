@@ -10,7 +10,7 @@ import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 import { MHidden } from '../../components/@material-extend';
 //
-import { infoUserLogin } from '../../Functions/Organization';
+import { infoUserLogin } from '../../functions/Organization';
 import sidebarConfig from './SidebarConfig';
 
 // ----------------------------------------------------------------------

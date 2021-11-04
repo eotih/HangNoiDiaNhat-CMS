@@ -19,9 +19,9 @@ import {
   InputLabel
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { infoUserLogin } from 'src/Functions/Organization';
+import { infoUserLogin } from 'src/functions/Organization';
 import axios from 'axios';
-import { getAllRole } from 'src/Functions/Component';
+import { getAllRole } from 'src/functions/Component';
 import Page from '../components/Page';
 
 export default function EditAccount() {

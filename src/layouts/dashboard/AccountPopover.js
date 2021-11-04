@@ -10,7 +10,7 @@ import { Button, Box, Divider, MenuItem, Typography, Avatar, IconButton } from '
 // components
 import MenuPopover from '../../components/MenuPopover';
 //
-import { infoUserLogin } from '../../Functions/Organization';
+import { infoUserLogin } from '../../functions/Organization';
 
 // ----------------------------------------------------------------------
 

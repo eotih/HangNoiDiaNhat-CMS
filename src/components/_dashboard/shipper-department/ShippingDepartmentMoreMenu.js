@@ -30,7 +30,7 @@ import {
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
-import { getAllShippingDepartment } from '../../../Functions/Delivery';
+import { getAllShippingDepartment } from '../../../functions/Delivery';
 
 // ----------------------------------------------------------------------
 
