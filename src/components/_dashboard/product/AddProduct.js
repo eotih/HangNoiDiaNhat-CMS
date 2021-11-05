@@ -101,11 +101,15 @@ export default function AddProduct() {
   });
   const formik = useFormik({
     initialValues: {
-      gender: '',
-      category: '',
-      colors: '',
-      priceRange: '',
-      rating: ''
+      BrandID: '',
+      CategoryID: '',
+      UtilityID: '',
+      Discount: '',
+      Price: '',
+      ImportPrice: '',
+      Quantity: '',
+      Details: '',
+      Name: ''
     },
     onSubmit: () => {
       setOpenFilter(false);
@@ -183,7 +187,7 @@ export default function AddProduct() {
                                 handleChange3(data);
                               }}
                             />
-                            <Button variant="contained" component="span">
+                            <Button sx={{ mt: 5 }} variant="contained" component="span">
                               Upload Image
                             </Button>
                           </label>
@@ -209,6 +213,7 @@ export default function AddProduct() {
                             labelId="demo-multiple-checkbox-label"
                             id="demo-multiple-checkbox"
                             multiple
+                            {...getFieldProps('UtilityID')}
                             value={utilities2}
                             onChange={handleChange}
                             input={<OutlinedInput label="Tag" />}
@@ -231,12 +236,13 @@ export default function AddProduct() {
                             id="Brand"
                             {...getFieldProps('BrandID')}
                             value={brand}
-                            label="Brand"
                             onChange={handleChange1}
+                            input={<OutlinedInput label="Brand" />}
+                            MenuProps={MenuProps}
                           >
                             {brand2.map((name, i) => (
                               <MenuItem key={name.BrandID} value={name.Name}>
-                                {name.Name}
+                                <ListItemText primary={name.Name} />
                               </MenuItem>
                             ))}
                           </Select>
@@ -252,14 +258,15 @@ export default function AddProduct() {
                             label="Category"
                             onChange={handleChange2}
                           >
-                            {category2.map((name, i) => (
-                              <MenuItem key={name.CategoryID} value={name.Name}>
-                                {name.Name}
-                              </MenuItem>
-                            ))}
+                            {category2 &&
+                              category2.map((name, i) => (
+                                <MenuItem key={name.CategoryID} value={name.Name}>
+                                  {name.Name}
+                                </MenuItem>
+                              ))}
                           </Select>
                         </FormControl>
-                        <Stack direction={{ xs: 'column' }} spacing={2}>
+                        <Stack direction="row" alignItems="center" justifyContent="center">
                           <label htmlFor="contained-button-file">
                             <Input
                               id="contained-button-file"
@@ -276,11 +283,11 @@ export default function AddProduct() {
                             <Button variant="contained" component="span">
                               Upload Thumbnail
                             </Button>
-                            <Avatar
-                              src={formik.values.Thumbnail}
-                              sx={{ width: '100px', height: '100%' }}
-                            />
                           </label>
+                          <Avatar
+                            src={formik.values.Thumbnail}
+                            sx={{ width: '100px', height: '100%', ml: 5 }}
+                          />
                         </Stack>
                       </Stack>
                     </Card>
@@ -296,7 +303,7 @@ export default function AddProduct() {
                           <TextField
                             sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
                             label="Import price"
-                            {...getFieldProps('Import price')}
+                            {...getFieldProps('ImportPrice')}
                             variant="outlined"
                           />
                         </Stack>
