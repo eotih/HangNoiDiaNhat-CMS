@@ -117,6 +117,7 @@ export default function User() {
     });
   }, []);
   const handleChange = (event) => {
+    formik.setFieldValue('RoleID', event.target.value);
     setRole(event.target.value);
   };
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - account.length) : 0;
@@ -177,18 +178,6 @@ export default function User() {
       return;
     }
     setSelected([]);
-  };
-  const convertRoles = (RoleID) => {
-    switch (RoleID) {
-      case 1:
-        return 'Fullstack';
-      case 2:
-        return 'Backend';
-      case 3:
-        return 'Frontend';
-      default:
-        return 'Slave';
-    }
   };
   const Input = styled('input')({
     display: 'none'
@@ -265,7 +254,12 @@ export default function User() {
                 </Stack>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                   <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
-                  <TextField label="Password" {...getFieldProps('Password')} variant="outlined" />
+                  <TextField
+                    type="password"
+                    label="Password"
+                    {...getFieldProps('Password')}
+                    variant="outlined"
+                  />
                 </Stack>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                   <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
@@ -392,7 +386,7 @@ export default function User() {
                           <TableCell align="left">{Email}</TableCell>
                           <TableCell align="left">{Phone}</TableCell>
                           <TableCell align="left">{Address}</TableCell>
-                          <TableCell align="left">{convertRoles(RoleID)}</TableCell>
+                          <TableCell align="left">{RoleID}</TableCell>
                           <TableCell align="right">
                             <AccountMoreMenu dulieu={row} />
                           </TableCell>

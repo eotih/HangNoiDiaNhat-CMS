@@ -70,6 +70,7 @@ export default function OrderMoreMenu(State) {
   });
   const { handleSubmit, getFieldProps } = formik;
   const handleChange = (event) => {
+    formik.setFieldValue('StateID', event.target.value);
     setState(event.target.value);
   };
   const style = {

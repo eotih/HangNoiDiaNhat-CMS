@@ -26,6 +26,7 @@ export default function EditAccount() {
   const [role, setRole] = useState('');
   const [roles, setRoles] = useState([]);
   const handleChange = (event) => {
+    formik.setFieldValue('RoleID', event.target.value);
     setRole(event.target.value);
   };
   const formik = useFormik({

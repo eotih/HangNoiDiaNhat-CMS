@@ -83,6 +83,7 @@ export default function AccountMoreMenu(Account) {
   });
   const { handleSubmit, getFieldProps } = formik;
   const handleChange = (event) => {
+    formik.setFieldValue('RoleID', event.target.value);
     setRole(event.target.value);
   };
   const style = {

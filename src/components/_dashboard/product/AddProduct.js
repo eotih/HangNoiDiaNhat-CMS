@@ -57,6 +57,7 @@ export default function AddProduct() {
   const [category2, setCategory2] = React.useState([]);
   const [image, setImage] = React.useState([]);
   const handleChange1 = (event) => {
+    formik.setFieldValue('BrandID', event.target.value);
     setBrand(event.target.value);
   };
   const handleChange3 = (event) => {
@@ -73,9 +74,10 @@ export default function AddProduct() {
     document.getElementById('hinhanh').innerHTML = html;
   };
   const handleChange2 = (event) => {
+    formik.setFieldValue('CategoryID', event.target.value);
     setCategory(event.target.value);
   };
-  const handleChange = (event) => {
+  const handleChange5 = (event) => {
     const {
       target: { value }
     } = event;
@@ -112,7 +114,7 @@ export default function AddProduct() {
       Name: ''
     },
     onSubmit: () => {
-      setOpenFilter(false);
+      console.log(formik.values);
     }
   });
   const Item = styled(Paper)(({ theme }) => ({
@@ -155,8 +157,8 @@ export default function AddProduct() {
                     <Item>
                       <Stack direction={{ xs: 'column' }} spacing={2}>
                         <TextField
-                          label="Product Name"
                           {...getFieldProps('Name')}
+                          label="Product Name"
                           sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
                           variant="outlined"
                         />
@@ -215,13 +217,13 @@ export default function AddProduct() {
                             multiple
                             {...getFieldProps('UtilityID')}
                             value={utilities2}
-                            onChange={handleChange}
+                            onChange={handleChange5}
                             input={<OutlinedInput label="Tag" />}
                             renderValue={(selected) => selected.join(', ')}
                             MenuProps={MenuProps}
                           >
                             {utilities.map((name, i) => (
-                              <MenuItem key={name.UtilityID} value={name.Name}>
+                              <MenuItem key={name.UtilityID} value={name.UtilityID}>
                                 <Checkbox checked={utilities2.indexOf(name.Name) > -1} />
                                 <ListItemText primary={name.Name} />
                               </MenuItem>
@@ -241,7 +243,7 @@ export default function AddProduct() {
                             MenuProps={MenuProps}
                           >
                             {brand2.map((name, i) => (
-                              <MenuItem key={name.BrandID} value={name.Name}>
+                              <MenuItem key={name.BrandID} value={name.BrandID}>
                                 <ListItemText primary={name.Name} />
                               </MenuItem>
                             ))}
