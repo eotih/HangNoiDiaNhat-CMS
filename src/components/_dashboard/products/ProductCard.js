@@ -26,7 +26,8 @@ ShopProductCard.propTypes = {
 };
 
 export default function ShopProductCard({ product }) {
-  const { Name, Thumbnail, Price, Discount } = product;
+  const { Name, Thumbnail, Price, Discount, ThuongHieu } = product;
+  console.log(product);
   const convertPriceToPriceSale = (price, priceSale) => price - price * priceSale;
   return (
     <Card>
@@ -54,10 +55,10 @@ export default function ShopProductCard({ product }) {
           <Typography variant="subtitle2" noWrap>
             {Name}
           </Typography>
+          <img alt="thuong hieu" style={{ width: '100px', height: '100%' }} src={ThuongHieu} />
         </Link>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-          {/* <ColorPreview colors={colors} /> */}
           <Typography variant="subtitle1">
             <Typography
               component="span"
