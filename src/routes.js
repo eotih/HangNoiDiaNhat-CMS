@@ -43,7 +43,6 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'app', element: <DashboardApp /> },
         { path: 'user', element: <User /> },
-        { path: 'products', element: <Products /> },
         { path: 'blog', element: <Blog /> },
         { path: 'profile', element: <Profile /> },
       ]
@@ -100,6 +99,7 @@ export default function Router() {
         { path: 'contact', element: <Contact /> },
         { path: 'product', element: <Product /> },
         { path: 'order', element: <Order /> },
+        { path: 'products', element: <Products /> },
         { path: 'order/detail/:id', element: <OrderDetail /> },
         { path: 'product/add', element: <AddProduct /> }
       ]

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import searchFill from '@iconify/icons-eva/search-fill';
 import trash2Fill from '@iconify/icons-eva/trash-2-fill';
+import { Link as RouterLink } from 'react-router-dom';
 import roundFilterList from '@iconify/icons-ic/round-filter-list';
 // material
 import { styled } from '@mui/material/styles';
@@ -79,7 +80,7 @@ export default function ProductListToolbar({ numSelected, filterName, onFilterNa
           </IconButton>
         </Tooltip>
       ) : (
-        <Tooltip title="Filter list">
+        <Tooltip component={RouterLink} to="/management/products" title="Filter list">
           <IconButton>
             <Icon icon={roundFilterList} />
           </IconButton>

@@ -1,5 +1,5 @@
 import { useFormik } from 'formik';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 // material
 import { Container, Stack, Typography } from '@mui/material';
 // components
@@ -12,12 +12,18 @@ import {
 } from '../components/_dashboard/products';
 //
 import PRODUCTS from '../_mocks_/products';
+import { getAllProduct } from '../functions/Management';
 
 // ----------------------------------------------------------------------
 
 export default function EcommerceShop() {
   const [openFilter, setOpenFilter] = useState(false);
-
+  const [product, setProduct] = useState([]);
+  useEffect(() => {
+    getAllProduct().then((res) => {
+      setProduct(res);
+    });
+  }, []);
   const formik = useFormik({
     initialValues: {
       gender: '',
@@ -45,7 +51,6 @@ export default function EcommerceShop() {
     handleSubmit();
     resetForm();
   };
-
   return (
     <Page title="Dashboard: Products | Minimal-UI">
       <Container>
@@ -72,7 +77,7 @@ export default function EcommerceShop() {
           </Stack>
         </Stack>
 
-        <ProductList products={PRODUCTS} />
+        <ProductList products={product} />
         <ProductCartWidget />
       </Container>
     </Page>

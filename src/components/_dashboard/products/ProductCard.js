@@ -26,12 +26,12 @@ ShopProductCard.propTypes = {
 };
 
 export default function ShopProductCard({ product }) {
-  const { name, cover, price, colors, status, priceSale } = product;
-
+  const { Name, Thumbnail, Price, Discount } = product;
+  const convertPriceToPriceSale = (price, priceSale) => price - price * priceSale;
   return (
     <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>
-        {status && (
+        {/* {status && (
           <Label
             variant="filled"
             color={(status === 'sale' && 'error') || 'info'}
@@ -45,19 +45,19 @@ export default function ShopProductCard({ product }) {
           >
             {status}
           </Label>
-        )}
-        <ProductImgStyle alt={name} src={cover} />
+        )} */}
+        <ProductImgStyle alt={Name} src={Thumbnail} />
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
         <Link to="#" color="inherit" underline="hover" component={RouterLink}>
           <Typography variant="subtitle2" noWrap>
-            {name}
+            {Name}
           </Typography>
         </Link>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <ColorPreview colors={colors} />
+          {/* <ColorPreview colors={colors} /> */}
           <Typography variant="subtitle1">
             <Typography
               component="span"
@@ -67,10 +67,10 @@ export default function ShopProductCard({ product }) {
                 textDecoration: 'line-through'
               }}
             >
-              {priceSale && fCurrency(priceSale)}
+              {Price && fCurrency(Price)}
             </Typography>
             &nbsp;
-            {fCurrency(price)}
+            {fCurrency(convertPriceToPriceSale(Price, Discount))}
           </Typography>
         </Stack>
       </Stack>
