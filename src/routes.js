@@ -28,8 +28,10 @@ import Shipper from './pages/Shipper';
 import Product from './pages/Product';
 import ShippingDepartment from './pages/ShippingDepartment';
 import { AddProduct } from './components/_dashboard/product';
+import { AddPost } from './components/_dashboard/post';
 import Order from './pages/Order';
 import OrderDetail from './pages/OrderDetail';
+import Post from './pages/Post';
 import NotFound from './pages/Page404';
 
 // ----------------------------------------------------------------------
@@ -86,7 +88,8 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
-        { path: 'post', element: <Service /> },
+        { path: 'post', element: <Post /> },
+        { path: 'post/add', element: <AddPost /> },
         { path: 'field', element: <Field /> }
       ]
     },

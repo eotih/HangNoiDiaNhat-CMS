@@ -58,7 +58,7 @@ export default function AddProduct() {
   const [image, setImage] = React.useState([]);
   const handleChange1 = (event) => {
     formik.setFieldValue('BrandID', event.target.value);
-    setBrand(event.target.value);
+    setBrand(event.target.name);
   };
   const handleChange3 = (event) => {
     const html = event.map(
@@ -78,12 +78,10 @@ export default function AddProduct() {
     setCategory(event.target.value);
   };
   const handleChange5 = (event) => {
-    const {
-      target: { value }
-    } = event;
+    console.log(event.target);
     setUtilities2(
       // On autofill we get a the stringified value.
-      typeof value === 'string' ? value.split(',') : value
+      typeof event.target.name === 'string' ? event.target.name.split(',') : event.target.name
     );
   };
   useEffect(() => {
@@ -154,187 +152,183 @@ export default function AddProduct() {
               <Grid container spacing={3}>
                 <Grid item xs={12} md={8}>
                   <Card sx={{ p: 3, pb: 1 }}>
-                    <Item>
-                      <Stack direction={{ xs: 'column' }} spacing={2}>
-                        <TextField
-                          {...getFieldProps('Name')}
-                          label="Product Name"
-                          sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                          variant="outlined"
-                        />
-                        <Typography variant="h7">Product Description</Typography>
-                        <SunEditor
-                          height="100%"
-                          label="Type something"
-                          aria-label="Type something"
-                          placeholder="Please type here..."
-                          variant="outlined"
-                          {...getFieldProps('Details')}
-                        />
-                      </Stack>
-                      <Stack direction={{ xs: 'column', sm: 'row' }}>
-                        <Stack direction={{ xs: 'column' }} spacing={2} justifyContent="center">
-                          <label htmlFor="contained-button-file1">
-                            <Input
-                              accept="image/*"
-                              multiple
-                              id="contained-button-file1"
-                              type="file"
-                              onChange={async (e) => {
-                                const { files } = e.target;
-                                for (let i = 0; i < files.length; i++) {
-                                  image.push(fileToDataUri(files[i]));
-                                }
-                                const data = await Promise.all(image);
-                                handleChange3(data);
-                              }}
-                            />
-                            <Button sx={{ mt: 5 }} variant="contained" component="span">
-                              Upload Image
-                            </Button>
-                          </label>
-                          <ImageList
-                            id="hinhanh"
-                            sx={{ width: 500, height: 450 }}
-                            cols={3}
-                            rowHeight={164}
+                    <Stack direction={{ xs: 'column' }} spacing={2}>
+                      <TextField
+                        {...getFieldProps('Name')}
+                        label="Product Name"
+                        sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                        variant="outlined"
+                      />
+                      <Typography variant="h7">Product Description</Typography>
+                      <SunEditor
+                        height="100%"
+                        label="Type something"
+                        aria-label="Type something"
+                        placeholder="Please type here..."
+                        variant="outlined"
+                        {...getFieldProps('Details')}
+                      />
+                    </Stack>
+                    <Stack direction={{ xs: 'column', sm: 'row' }}>
+                      <Stack direction={{ xs: 'column' }} spacing={2} justifyContent="center">
+                        <label htmlFor="contained-button-file1">
+                          <Input
+                            accept="image/*"
+                            multiple
+                            id="contained-button-file1"
+                            type="file"
+                            onChange={async (e) => {
+                              const { files } = e.target;
+                              for (let i = 0; i < files.length; i++) {
+                                image.push(fileToDataUri(files[i]));
+                              }
+                              const data = await Promise.all(image);
+                              handleChange3(data);
+                            }}
                           />
-                        </Stack>
+                          <Button sx={{ mt: 5 }} variant="contained" component="span">
+                            Upload Image
+                          </Button>
+                        </label>
+                        <ImageList
+                          id="hinhanh"
+                          sx={{ width: 500, height: 450 }}
+                          cols={3}
+                          rowHeight={164}
+                        />
                       </Stack>
-                    </Item>
+                    </Stack>
                   </Card>
                 </Grid>
                 <Grid item xs={12} sm={8} md={4}>
-                  <Item>
-                    <Card sx={{ p: 3, pb: 1 }}>
-                      <Stack direction={{ xs: 'column' }} spacing={3}>
-                        <FormControl>
-                          <InputLabel id="demo-multiple-checkbox-label">Utilities</InputLabel>
-                          <Select
-                            sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                            labelId="demo-multiple-checkbox-label"
-                            id="demo-multiple-checkbox"
-                            multiple
-                            {...getFieldProps('UtilityID')}
-                            value={utilities2}
-                            onChange={handleChange5}
-                            input={<OutlinedInput label="Tag" />}
-                            renderValue={(selected) => selected.join(', ')}
-                            MenuProps={MenuProps}
-                          >
-                            {utilities.map((name, i) => (
-                              <MenuItem key={name.UtilityID} value={name.UtilityID}>
-                                <Checkbox checked={utilities2.indexOf(name.Name) > -1} />
-                                <ListItemText primary={name.Name} />
+                  <Card sx={{ p: 3, pb: 1 }}>
+                    <Stack direction={{ xs: 'column' }} spacing={3}>
+                      <FormControl>
+                        <InputLabel id="demo-multiple-checkbox-label">Utilities</InputLabel>
+                        <Select
+                          sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                          labelId="demo-multiple-checkbox-label"
+                          id="demo-multiple-checkbox"
+                          multiple
+                          {...getFieldProps('UtilityID')}
+                          value={utilities2}
+                          onChange={handleChange5}
+                          input={<OutlinedInput label="Tag" />}
+                          renderValue={(selected) => selected.join(', ')}
+                          MenuProps={MenuProps}
+                        >
+                          {utilities.map((name, i) => (
+                            <MenuItem key={name.UtilityID} value={name.UtilityID}>
+                              <Checkbox checked={utilities2.indexOf(name.Name) > -1} />
+                              <ListItemText primary={name.Name} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      <FormControl>
+                        <InputLabel id="Brand-label">Brand</InputLabel>
+                        <Select
+                          sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                          labelId="Brand-label"
+                          id="Brand"
+                          {...getFieldProps('BrandID')}
+                          value={brand}
+                          onChange={handleChange1}
+                          input={<OutlinedInput label="Brand" />}
+                          MenuProps={MenuProps}
+                        >
+                          {brand2.map((name, i) => (
+                            <MenuItem key={name.BrandID} value={name.BrandID}>
+                              <ListItemText primary={name.Name} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      <FormControl>
+                        <InputLabel id="Category-label">Category</InputLabel>
+                        <Select
+                          sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                          labelId="Category-label"
+                          id="Brand"
+                          {...getFieldProps('CategoryID')}
+                          value={category}
+                          label="Category"
+                          onChange={handleChange2}
+                        >
+                          {category2 &&
+                            category2.map((name, i) => (
+                              <MenuItem key={name.CategoryID} value={name.Name}>
+                                {name.Name}
                               </MenuItem>
                             ))}
-                          </Select>
-                        </FormControl>
-                        <FormControl>
-                          <InputLabel id="Brand-label">Brand</InputLabel>
-                          <Select
-                            sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                            labelId="Brand-label"
-                            id="Brand"
-                            {...getFieldProps('BrandID')}
-                            value={brand}
-                            onChange={handleChange1}
-                            input={<OutlinedInput label="Brand" />}
-                            MenuProps={MenuProps}
-                          >
-                            {brand2.map((name, i) => (
-                              <MenuItem key={name.BrandID} value={name.BrandID}>
-                                <ListItemText primary={name.Name} />
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        <FormControl>
-                          <InputLabel id="Category-label">Category</InputLabel>
-                          <Select
-                            sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                            labelId="Category-label"
-                            id="Brand"
-                            {...getFieldProps('CategoryID')}
-                            value={category}
-                            label="Category"
-                            onChange={handleChange2}
-                          >
-                            {category2 &&
-                              category2.map((name, i) => (
-                                <MenuItem key={name.CategoryID} value={name.Name}>
-                                  {name.Name}
-                                </MenuItem>
-                              ))}
-                          </Select>
-                        </FormControl>
-                        <Stack direction="row" alignItems="center" justifyContent="center">
-                          <label htmlFor="contained-button-file">
-                            <Input
-                              id="contained-button-file"
-                              type="file"
-                              onChange={(e) => {
-                                const { files } = e.target;
-                                const reader = new FileReader();
-                                reader.readAsDataURL(files[0]);
-                                reader.onload = (e) => {
-                                  formik.setFieldValue('Thumbnail', e.target.result);
-                                };
-                              }}
-                            />
-                            <Button variant="contained" component="span">
-                              Upload Thumbnail
-                            </Button>
-                          </label>
-                          <Avatar
-                            src={formik.values.Thumbnail}
-                            sx={{ width: '100px', height: '100%', ml: 5 }}
+                        </Select>
+                      </FormControl>
+                      <Stack direction="row" alignItems="center" justifyContent="center">
+                        <label htmlFor="contained-button-file">
+                          <Input
+                            id="contained-button-file"
+                            type="file"
+                            onChange={(e) => {
+                              const { files } = e.target;
+                              const reader = new FileReader();
+                              reader.readAsDataURL(files[0]);
+                              reader.onload = (e) => {
+                                formik.setFieldValue('Thumbnail', e.target.result);
+                              };
+                            }}
                           />
-                        </Stack>
+                          <Button variant="contained" component="span">
+                            Upload Thumbnail
+                          </Button>
+                        </label>
+                        <Avatar
+                          src={formik.values.Thumbnail}
+                          sx={{ width: '100px', height: '100%', ml: 5 }}
+                        />
                       </Stack>
-                    </Card>
-                    <Card sx={{ p: 3, mt: 5 }}>
-                      <Stack direction={{ xs: 'row' }} spacing={2} justifyContent="center">
-                        <Stack direction={{ xs: 'column' }} spacing={2}>
-                          <TextField
-                            sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                            label="Price"
-                            {...getFieldProps('Price')}
-                            variant="outlined"
-                          />
-                          <TextField
-                            sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                            label="Import price"
-                            {...getFieldProps('ImportPrice')}
-                            variant="outlined"
-                          />
-                        </Stack>
-                        <Stack direction={{ xs: 'column' }} spacing={2}>
-                          <TextField
-                            sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                            label="Discount %"
-                            {...getFieldProps('Discount')}
-                            variant="outlined"
-                          />
-                          <TextField
-                            sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                            label="Quantity"
-                            {...getFieldProps('Quantity')}
-                            variant="outlined"
-                          />
-                        </Stack>
+                    </Stack>
+                  </Card>
+                  <Card sx={{ p: 3, mt: 5 }}>
+                    <Stack direction={{ xs: 'row' }} spacing={2} justifyContent="center">
+                      <Stack direction={{ xs: 'column' }} spacing={2}>
+                        <TextField
+                          sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                          label="Price"
+                          {...getFieldProps('Price')}
+                          variant="outlined"
+                        />
+                        <TextField
+                          sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                          label="Import price"
+                          {...getFieldProps('ImportPrice')}
+                          variant="outlined"
+                        />
                       </Stack>
-                    </Card>
-                    <LoadingButton
-                      fullWidth
-                      size="large"
-                      type="submit"
-                      variant="contained"
-                      sx={{ mt: 5 }}
-                    >
-                      Add Product
-                    </LoadingButton>
-                  </Item>
+                      <Stack direction={{ xs: 'column' }} spacing={2}>
+                        <TextField
+                          sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                          label="Discount %"
+                          {...getFieldProps('Discount')}
+                          variant="outlined"
+                        />
+                        <TextField
+                          sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                          label="Quantity"
+                          {...getFieldProps('Quantity')}
+                          variant="outlined"
+                        />
+                      </Stack>
+                    </Stack>
+                  </Card>
+                  <LoadingButton
+                    fullWidth
+                    size="large"
+                    type="submit"
+                    variant="contained"
+                    sx={{ mt: 5 }}
+                  >
+                    Add Product
+                  </LoadingButton>
                 </Grid>
               </Grid>
             </Box>

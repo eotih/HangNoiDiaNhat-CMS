@@ -5,3 +5,7 @@ export async function getAllField() {
   const res = await axios.get(`${REACT_APP_WEB_API}Article/SelectAllField`);
   return res.data;
 }
+export async function getAllPosts() {
+  const res = await axios.get(`${REACT_APP_WEB_API}Article/SelectAllPost`);
+  return res.data;
+}
