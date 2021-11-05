@@ -17,8 +17,12 @@ import {
   Checkbox,
   Input,
   ImageList,
+  CardHeader,
   ImageListItem,
   Button,
+  Card,
+  Paper,
+  Grid,
   Avatar,
   ListItemText,
   OutlinedInput
@@ -91,34 +95,7 @@ export default function AddProduct() {
       setCategory2(res);
     });
   }, []);
-  const style = {
-    position: 'absolute',
-    width: '620px',
-    top: '20%',
-    left: '20%',
-    bgcolor: 'background.paper',
-    borderRadius: 2,
-    boxShadow: 24,
-    p: 4
-  };
-  const styleSelect = {
-    position: 'absolute',
-    top: '20%',
-    left: '55%',
-    bgcolor: 'background.paper',
-    borderRadius: 2,
-    boxShadow: 24,
-    p: 4
-  };
-  const styleSale = {
-    position: 'absolute',
-    top: '50%',
-    left: '55%',
-    bgcolor: 'background.paper',
-    borderRadius: 2,
-    boxShadow: 24,
-    p: 4
-  };
+
   const Input = styled('input')({
     display: 'none'
   });
@@ -134,6 +111,14 @@ export default function AddProduct() {
       setOpenFilter(false);
     }
   });
+  const Item = styled(Paper)(({ theme }) => ({
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    justify: 'center',
+    borderRadius: 2,
+    boxShadow: 24,
+    color: theme.palette.text.secondary
+  }));
   const { handleSubmit, getFieldProps } = formik;
   const fileToDataUri = (image) =>
     new Promise((res) => {
@@ -151,202 +136,202 @@ export default function AddProduct() {
     });
   return (
     <Page title="Dashboard: Add Products ">
-      <Container>
+      <Container maxWidth="xl">
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h3" sx={{ mb: 5 }}>
-            Create a new product
+            Add product
           </Typography>
         </Stack>
+        <FormikProvider value={formik}>
+          <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+            <Box sx={{ flexGrow: 1 }}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={8}>
+                  <Card sx={{ p: 3, pb: 1 }}>
+                    <Item>
+                      <Stack direction={{ xs: 'column' }} spacing={2}>
+                        <TextField
+                          label="Product Name"
+                          {...getFieldProps('Name')}
+                          sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                          variant="outlined"
+                        />
+                        <Typography variant="h7">Product Description</Typography>
+                        <SunEditor
+                          height="100%"
+                          label="Type something"
+                          aria-label="Type something"
+                          placeholder="Please type here..."
+                          variant="outlined"
+                          {...getFieldProps('Details')}
+                        />
+                      </Stack>
+                      <Stack direction={{ xs: 'column', sm: 'row' }}>
+                        <Stack direction={{ xs: 'column' }} spacing={2} justifyContent="center">
+                          <label htmlFor="contained-button-file1">
+                            <Input
+                              accept="image/*"
+                              multiple
+                              id="contained-button-file1"
+                              type="file"
+                              onChange={async (e) => {
+                                const { files } = e.target;
+                                for (let i = 0; i < files.length; i++) {
+                                  image.push(fileToDataUri(files[i]));
+                                }
+                                const data = await Promise.all(image);
+                                handleChange3(data);
+                              }}
+                            />
+                            <Button variant="contained" component="span">
+                              Upload Image
+                            </Button>
+                          </label>
+                          <ImageList
+                            id="hinhanh"
+                            sx={{ width: 500, height: 450 }}
+                            cols={3}
+                            rowHeight={164}
+                          />
+                        </Stack>
+                      </Stack>
+                    </Item>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={8} md={4}>
+                  <Item>
+                    <Card sx={{ p: 3, pb: 1 }}>
+                      <Stack direction={{ xs: 'column' }} spacing={3}>
+                        <FormControl>
+                          <InputLabel id="demo-multiple-checkbox-label">Utilities</InputLabel>
+                          <Select
+                            sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                            labelId="demo-multiple-checkbox-label"
+                            id="demo-multiple-checkbox"
+                            multiple
+                            value={utilities2}
+                            onChange={handleChange}
+                            input={<OutlinedInput label="Tag" />}
+                            renderValue={(selected) => selected.join(', ')}
+                            MenuProps={MenuProps}
+                          >
+                            {utilities.map((name, i) => (
+                              <MenuItem key={name.UtilityID} value={name.Name}>
+                                <Checkbox checked={utilities2.indexOf(name.Name) > -1} />
+                                <ListItemText primary={name.Name} />
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        <FormControl>
+                          <InputLabel id="Brand-label">Brand</InputLabel>
+                          <Select
+                            sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                            labelId="Brand-label"
+                            id="Brand"
+                            {...getFieldProps('BrandID')}
+                            value={brand}
+                            label="Brand"
+                            onChange={handleChange1}
+                          >
+                            {brand2.map((name, i) => (
+                              <MenuItem key={name.BrandID} value={name.Name}>
+                                {name.Name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        <FormControl>
+                          <InputLabel id="Category-label">Category</InputLabel>
+                          <Select
+                            sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                            labelId="Category-label"
+                            id="Brand"
+                            {...getFieldProps('CategoryID')}
+                            value={category}
+                            label="Category"
+                            onChange={handleChange2}
+                          >
+                            {category2.map((name, i) => (
+                              <MenuItem key={name.CategoryID} value={name.Name}>
+                                {name.Name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        <Stack direction={{ xs: 'column' }} spacing={2}>
+                          <label htmlFor="contained-button-file">
+                            <Input
+                              id="contained-button-file"
+                              type="file"
+                              onChange={(e) => {
+                                const { files } = e.target;
+                                const reader = new FileReader();
+                                reader.readAsDataURL(files[0]);
+                                reader.onload = (e) => {
+                                  formik.setFieldValue('Thumbnail', e.target.result);
+                                };
+                              }}
+                            />
+                            <Button variant="contained" component="span">
+                              Upload Thumbnail
+                            </Button>
+                            <Avatar
+                              src={formik.values.Thumbnail}
+                              sx={{ width: '100px', height: '100%' }}
+                            />
+                          </label>
+                        </Stack>
+                      </Stack>
+                    </Card>
+                    <Card sx={{ p: 3, mt: 5 }}>
+                      <Stack direction={{ xs: 'row' }} spacing={2} justifyContent="center">
+                        <Stack direction={{ xs: 'column' }} spacing={2}>
+                          <TextField
+                            sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                            label="Price"
+                            {...getFieldProps('Price')}
+                            variant="outlined"
+                          />
+                          <TextField
+                            sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                            label="Import price"
+                            {...getFieldProps('Import price')}
+                            variant="outlined"
+                          />
+                        </Stack>
+                        <Stack direction={{ xs: 'column' }} spacing={2}>
+                          <TextField
+                            sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                            label="Discount %"
+                            {...getFieldProps('Discount')}
+                            variant="outlined"
+                          />
+                          <TextField
+                            sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                            label="Quantity"
+                            {...getFieldProps('Quantity')}
+                            variant="outlined"
+                          />
+                        </Stack>
+                      </Stack>
+                    </Card>
+                    <LoadingButton
+                      fullWidth
+                      size="large"
+                      type="submit"
+                      variant="contained"
+                      sx={{ mt: 5 }}
+                    >
+                      Add Product
+                    </LoadingButton>
+                  </Item>
+                </Grid>
+              </Grid>
+            </Box>
+          </Form>
+        </FormikProvider>
       </Container>
-      <FormikProvider value={formik}>
-        <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-          <Box sx={style}>
-            <Stack
-              sx={{
-                '& .MuiTextField-root': { m: 1, mr: 2, width: '40ch' },
-                '& .MuiSelect-root': { m: 1, width: '40ch' }
-              }}
-              spacing={3}
-            >
-              <Stack direction={{ xs: 'column', sm: 'row' }}>
-                <Stack direction={{ xs: 'column' }} spacing={2}>
-                  <TextField
-                    label="Product Name"
-                    {...getFieldProps('Name')}
-                    sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                    variant="outlined"
-                  />
-                  <SunEditor
-                    height="100%"
-                    label="Type something"
-                    aria-label="Type something"
-                    placeholder="Please type here..."
-                    variant="outlined"
-                    {...getFieldProps('Details')}
-                  />
-                </Stack>
-              </Stack>
-              <Stack direction={{ xs: 'column', sm: 'row' }}>
-                <Stack direction={{ xs: 'column' }} spacing={2} justifyContent="center">
-                  <label htmlFor="contained-button-file">
-                    <Input
-                      id="contained-button-file"
-                      type="file"
-                      onChange={(e) => {
-                        const { files } = e.target;
-                        const reader = new FileReader();
-                        reader.readAsDataURL(files[0]);
-                        reader.onload = (e) => {
-                          formik.setFieldValue('Thumbnail', e.target.result);
-                        };
-                      }}
-                    />
-                    <Button variant="contained" component="span">
-                      Upload Thumbnail
-                    </Button>
-                  </label>
-                  <Avatar src={formik.values.Thumbnail} sx={{ width: 50, height: 50 }} />
-                  <label htmlFor="contained-button-file1">
-                    <Input
-                      accept="image/*"
-                      multiple
-                      id="contained-button-file1"
-                      type="file"
-                      onChange={async (e) => {
-                        const { files } = e.target;
-                        for (let i = 0; i < files.length; i++) {
-                          image.push(fileToDataUri(files[i]));
-                        }
-                        const data = await Promise.all(image);
-                        handleChange3(data);
-                      }}
-                    />
-                    <Button variant="contained" component="span">
-                      Upload Image
-                    </Button>
-                  </label>
-                  <ImageList
-                    id="hinhanh"
-                    sx={{ width: 500, height: 450 }}
-                    cols={3}
-                    rowHeight={164}
-                  />
-                </Stack>
-              </Stack>
-            </Stack>
-          </Box>
-          <Box sx={styleSelect}>
-            <Stack direction={{ xs: 'column' }} spacing={1} sx={{ borderRadius: 2, width: '42ch' }}>
-              <FormControl>
-                <InputLabel id="demo-multiple-checkbox-label">Utilities</InputLabel>
-                <Select
-                  sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                  labelId="demo-multiple-checkbox-label"
-                  id="demo-multiple-checkbox"
-                  multiple
-                  value={utilities2}
-                  onChange={handleChange}
-                  input={<OutlinedInput label="Tag" />}
-                  renderValue={(selected) => selected.join(', ')}
-                  MenuProps={MenuProps}
-                >
-                  {utilities.map((name, i) => (
-                    <MenuItem key={name.UtilityID} value={name.Name}>
-                      <Checkbox checked={utilities2.indexOf(name.Name) > -1} />
-                      <ListItemText primary={name.Name} />
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl sx={{ ml: 1 }}>
-                <InputLabel id="Brand-label">Brand</InputLabel>
-                <Select
-                  sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                  labelId="Brand-label"
-                  id="Brand"
-                  {...getFieldProps('BrandID')}
-                  value={brand}
-                  label="Brand"
-                  onChange={handleChange1}
-                >
-                  {brand2.map((name, i) => (
-                    <MenuItem key={name.BrandID} value={name.Name}>
-                      {name.Name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl sx={{ ml: 1 }}>
-                <InputLabel id="Category-label">Category</InputLabel>
-                <Select
-                  sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                  labelId="Category-label"
-                  id="Brand"
-                  {...getFieldProps('CategoryID')}
-                  value={category}
-                  label="Category"
-                  onChange={handleChange2}
-                >
-                  {category2.map((name, i) => (
-                    <MenuItem key={name.CategoryID} value={name.Name}>
-                      {name.Name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Stack>
-          </Box>
-          <Box sx={styleSale}>
-            <Stack direction={{ xs: 'row' }} spacing={2} justifyContent="center">
-              <Stack
-                direction={{ xs: 'column', width: '20ch' }}
-                sx={{
-                  '& .MuiTextField-root': { m: 1, width: '19ch' }
-                }}
-                spacing={1}
-              >
-                <TextField
-                  sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                  label="Price"
-                  {...getFieldProps('Price')}
-                  variant="outlined"
-                />
-                <TextField
-                  sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                  label="Import price"
-                  {...getFieldProps('ImportPrice')}
-                  variant="outlined"
-                />
-              </Stack>
-              <Stack
-                direction={{ xs: 'column', width: '20.5ch' }}
-                sx={{
-                  '& .MuiTextField-root': { m: 1, width: '19ch' }
-                }}
-                spacing={2}
-              >
-                <TextField
-                  sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                  label="Discount %"
-                  {...getFieldProps('Discount')}
-                  variant="outlined"
-                />
-                <TextField
-                  sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                  label="Quantity"
-                  {...getFieldProps('Quantity')}
-                  variant="outlined"
-                />
-              </Stack>
-            </Stack>
-          </Box>
-          <Box sx={{ marginTop: '32%', marginLeft: '53%' }}>
-            <LoadingButton sx={{ width: '50ch' }} size="large" type="submit" variant="contained">
-              Add Product
-            </LoadingButton>
-          </Box>
-        </Form>
-      </FormikProvider>
     </Page>
   );
 }
