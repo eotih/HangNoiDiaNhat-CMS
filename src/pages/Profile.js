@@ -7,12 +7,10 @@ import {
   Stack,
   Container,
   Typography,
-  Card,
-  Button,
   Box,
+  Link,
+  Breadcrumbs,
   TextField,
-  Avatar,
-  Input,
   Select,
   FormControl,
   MenuItem,
@@ -100,6 +98,12 @@ export default function EditAccount() {
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Edit Profile
+            <Breadcrumbs aria-label="breadcrumb">
+              <Link underline="hover" color="inherit" href="/">
+                Dashboard
+              </Link>
+              <Typography color="text.primary">Edit Profile</Typography>
+            </Breadcrumbs>
           </Typography>
         </Stack>
       </Container>
@@ -109,6 +113,12 @@ export default function EditAccount() {
             <Stack spacing={3}>
               <Typography id="modal-modal-title" variant="h6" component="h2">
                 Add Account
+                <Breadcrumbs aria-label="breadcrumb">
+                  <Link underline="hover" color="inherit" href="/">
+                    Dashboard
+                  </Link>
+                  <Typography color="text.primary">Profile</Typography>
+                </Breadcrumbs>
               </Typography>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />

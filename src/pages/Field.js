@@ -20,6 +20,8 @@ import {
   Container,
   Modal,
   Input,
+  Link,
+  Breadcrumbs,
   TextField,
   Typography,
   Avatar,
@@ -213,6 +215,12 @@ export default function Field() {
               <Stack spacing={3}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
                   Add Field
+                  <Breadcrumbs aria-label="breadcrumb">
+                    <Link underline="hover" color="inherit" href="/">
+                      Dashboard
+                    </Link>
+                    <Typography color="text.primary">Field</Typography>
+                  </Breadcrumbs>
                 </Typography>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
                   <TextField label="Name" {...getFieldProps('Name')} variant="outlined" />

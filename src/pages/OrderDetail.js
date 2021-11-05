@@ -25,7 +25,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import { getAllOrderDetailByOrderID } from 'src/functions/Management';
 import Page from '../components/Page';
-import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import {
@@ -132,16 +131,6 @@ export default function Order() {
 
   const handleFilterByName = (event) => {
     setFilterName(event.target.value);
-  };
-
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4
   };
 
   const handleSelectAllClick = (event) => {

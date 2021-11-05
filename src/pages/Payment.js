@@ -15,6 +15,8 @@ import {
   Button,
   Checkbox,
   TableRow,
+  Link,
+  Breadcrumbs,
   TableBody,
   TableCell,
   Container,
@@ -225,6 +227,12 @@ export default function Payment() {
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Payment
+            <Breadcrumbs aria-label="breadcrumb">
+              <Link underline="hover" color="inherit" href="/">
+                Dashboard
+              </Link>
+              <Typography color="text.primary">Payment</Typography>
+            </Breadcrumbs>
           </Typography>
           <Button
             onClick={handleOpen}

@@ -18,11 +18,11 @@ import {
   TableBody,
   TableCell,
   Container,
+  Link,
+  Breadcrumbs,
   Modal,
-  Input,
   TextField,
   Typography,
-  Avatar,
   TableContainer,
   TablePagination
 } from '@mui/material';
@@ -227,6 +227,12 @@ export default function Brand() {
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Utilities
+            <Breadcrumbs aria-label="breadcrumb">
+              <Link underline="hover" color="inherit" href="/">
+                Dashboard
+              </Link>
+              <Typography color="text.primary">Utilities</Typography>
+            </Breadcrumbs>
           </Typography>
           <Button
             onClick={handleOpen}

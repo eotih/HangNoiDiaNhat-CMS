@@ -9,7 +9,6 @@ import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 // material
 import {
-  Input,
   Box,
   Modal,
   Menu,

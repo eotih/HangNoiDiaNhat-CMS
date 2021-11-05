@@ -1,3 +1,6 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable no-plusplus */
 /* eslint-disable import/extensions */
 /* eslint-disable import/no-unresolved */
 /* eslint-disable jsx-a11y/label-has-associated-control */
@@ -13,6 +16,8 @@ import {
   MenuItem,
   Checkbox,
   Input,
+  ImageList,
+  ImageListItem,
   Button,
   Avatar,
   ListItemText,
@@ -46,8 +51,22 @@ export default function AddProduct() {
   const [brand2, setBrand2] = React.useState([]);
   const [category, setCategory] = React.useState([]);
   const [category2, setCategory2] = React.useState([]);
+  const [image, setImage] = React.useState([]);
   const handleChange1 = (event) => {
     setBrand(event.target.value);
+  };
+  const handleChange3 = (event) => {
+    const html = event.map(
+      (res) => `
+            <ImageListItem key={index}>
+              <img
+                src=${res.base64}
+                srcSet=${res.base64}
+                loading="lazy"
+              />
+            </ImageListItem>`
+    );
+    document.getElementById('hinhanh').innerHTML = html;
   };
   const handleChange2 = (event) => {
     setCategory(event.target.value);
@@ -74,9 +93,9 @@ export default function AddProduct() {
   }, []);
   const style = {
     position: 'absolute',
-    top: '50%',
-    left: '40%',
-    transform: 'translate(-50%, -50%)',
+    width: '620px',
+    top: '20%',
+    left: '20%',
     bgcolor: 'background.paper',
     borderRadius: 2,
     boxShadow: 24,
@@ -85,7 +104,7 @@ export default function AddProduct() {
   const styleSelect = {
     position: 'absolute',
     top: '20%',
-    left: '60%',
+    left: '55%',
     bgcolor: 'background.paper',
     borderRadius: 2,
     boxShadow: 24,
@@ -94,7 +113,7 @@ export default function AddProduct() {
   const styleSale = {
     position: 'absolute',
     top: '50%',
-    left: '60%',
+    left: '55%',
     bgcolor: 'background.paper',
     borderRadius: 2,
     boxShadow: 24,
@@ -115,7 +134,21 @@ export default function AddProduct() {
       setOpenFilter(false);
     }
   });
-  const { resetForm, handleSubmit, getFieldProps } = formik;
+  const { handleSubmit, getFieldProps } = formik;
+  const fileToDataUri = (image) =>
+    new Promise((res) => {
+      const reader = new FileReader();
+      const { type, name, size } = image;
+      reader.addEventListener('load', () => {
+        res({
+          base64: reader.result,
+          name,
+          type,
+          size
+        });
+      });
+      reader.readAsDataURL(image);
+    });
   return (
     <Page title="Dashboard: Add Products ">
       <Container>
@@ -175,21 +208,29 @@ export default function AddProduct() {
                   <Avatar src={formik.values.Thumbnail} sx={{ width: 50, height: 50 }} />
                   <label htmlFor="contained-button-file1">
                     <Input
+                      accept="image/*"
+                      multiple
                       id="contained-button-file1"
                       type="file"
-                      onChange={(e) => {
+                      onChange={async (e) => {
                         const { files } = e.target;
-                        const reader = new FileReader();
-                        reader.readAsDataURL(files[0]);
-                        reader.onload = (e) => {
-                          formik.setFieldValue('ImageProduct', e.target.result);
-                        };
+                        for (let i = 0; i < files.length; i++) {
+                          image.push(fileToDataUri(files[i]));
+                        }
+                        const data = await Promise.all(image);
+                        handleChange3(data);
                       }}
                     />
                     <Button variant="contained" component="span">
                       Upload Image
                     </Button>
                   </label>
+                  <ImageList
+                    id="hinhanh"
+                    sx={{ width: 500, height: 450 }}
+                    cols={3}
+                    rowHeight={164}
+                  />
                 </Stack>
               </Stack>
             </Stack>

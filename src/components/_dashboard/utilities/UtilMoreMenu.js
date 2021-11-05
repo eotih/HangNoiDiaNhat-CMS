@@ -14,16 +14,13 @@ import {
   Menu,
   MenuItem,
   IconButton,
-  Avatar,
   ListItemIcon,
   ListItemText,
   Stack,
   Typography,
-  TextField,
-  Button
+  TextField
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { styled } from '@mui/material/styles';
 import axios from 'axios';
 
 // ----------------------------------------------------------------------
@@ -68,9 +65,6 @@ export default function UtilMoreMenu(Utility) {
     boxShadow: 24,
     p: 4
   };
-  const Input = styled('input')({
-    display: 'none'
-  });
   const handleOpen = () => {
     formik.setFieldValue('UtilityID', Utility.dulieu.UtilityID);
     formik.setFieldValue('Name', Utility.dulieu.Name);

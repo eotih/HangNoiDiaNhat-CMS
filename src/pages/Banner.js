@@ -21,6 +21,8 @@ import {
   Modal,
   Input,
   TextField,
+  Link,
+  Breadcrumbs,
   Typography,
   Avatar,
   TableContainer,
@@ -252,6 +254,12 @@ export default function Category() {
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Banner
+            <Breadcrumbs aria-label="breadcrumb">
+              <Link underline="hover" color="inherit" href="/">
+                Dashboard
+              </Link>
+              <Typography color="text.primary">Banner</Typography>
+            </Breadcrumbs>
           </Typography>
           <Button
             onClick={handleOpen}

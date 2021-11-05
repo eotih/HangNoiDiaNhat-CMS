@@ -16,6 +16,8 @@ import {
   Checkbox,
   TableRow,
   TableBody,
+  Link,
+  Breadcrumbs,
   TableCell,
   Container,
   Modal,
@@ -255,6 +257,12 @@ export default function User() {
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Customer
+            <Breadcrumbs aria-label="breadcrumb">
+              <Link underline="hover" color="inherit" href="/">
+                Dashboard
+              </Link>
+              <Typography color="text.primary">Customer</Typography>
+            </Breadcrumbs>
           </Typography>
           <Button
             onClick={handleOpen}

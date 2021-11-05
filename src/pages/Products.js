@@ -1,7 +1,7 @@
 import { useFormik } from 'formik';
 import { useState, useEffect } from 'react';
 // material
-import { Container, Stack, Typography } from '@mui/material';
+import { Container, Stack, Typography, Link, Breadcrumbs } from '@mui/material';
 // components
 import Page from '../components/Page';
 import {
@@ -11,7 +11,6 @@ import {
   ProductFilterSidebar
 } from '../components/_dashboard/products';
 //
-import PRODUCTS from '../_mocks_/products';
 import { getAllProduct } from '../functions/Management';
 
 // ----------------------------------------------------------------------
@@ -56,6 +55,12 @@ export default function EcommerceShop() {
       <Container>
         <Typography variant="h4" sx={{ mb: 5 }}>
           Products
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link underline="hover" color="inherit" href="/">
+              Dashboard
+            </Link>
+            <Typography color="text.primary">Products</Typography>
+          </Breadcrumbs>
         </Typography>
 
         <Stack

@@ -4,7 +4,6 @@
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
 import React, { useState, useEffect } from 'react';
-import { useFormik, Form, FormikProvider } from 'formik';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import { Link as RouterLink } from 'react-router-dom';
 // material
@@ -12,30 +11,20 @@ import {
   Card,
   Table,
   Stack,
-  Avatar,
   Button,
   Checkbox,
   TableRow,
+  Link,
+  Breadcrumbs,
   TableBody,
   TableCell,
-  MenuItem,
   Container,
-  Modal,
-  Input,
-  TextField,
-  Alert,
-  Select,
   Typography,
   TableContainer,
-  TablePagination,
-  FormControl,
-  InputLabel
+  TablePagination
 } from '@mui/material';
 // components
-import { styled } from '@mui/material/styles';
-import { LoadingButton } from '@mui/lab';
 import CircularProgress from '@mui/material/CircularProgress';
-import axios from 'axios';
 import Box from '@mui/material/Box';
 import { getAllProduct } from 'src/functions/Management';
 import Page from '../components/Page';
@@ -45,7 +34,6 @@ import SearchNotFound from '../components/SearchNotFound';
 import {
   ProductListHead,
   ProductListToolbar,
-  AddProduct,
   ProductMoreMenu
 } from '../components/_dashboard/product';
 
@@ -196,6 +184,12 @@ export default function Product() {
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Product
+            <Breadcrumbs aria-label="breadcrumb">
+              <Link underline="hover" color="inherit" href="/">
+                Dashboard
+              </Link>
+              <Typography color="text.primary">Product</Typography>
+            </Breadcrumbs>
           </Typography>
           <Button
             to="./add"

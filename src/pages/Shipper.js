@@ -18,6 +18,8 @@ import {
   TableRow,
   TableBody,
   TableCell,
+  Link,
+  Breadcrumbs,
   Container,
   Modal,
   TextField,
@@ -303,6 +305,12 @@ export default function User() {
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Shipper
+            <Breadcrumbs aria-label="breadcrumb">
+              <Link underline="hover" color="inherit" href="/">
+                Dashboard
+              </Link>
+              <Typography color="text.primary">Shipper</Typography>
+            </Breadcrumbs>
           </Typography>
           <Button
             onClick={handleOpen}

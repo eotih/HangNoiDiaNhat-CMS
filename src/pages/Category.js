@@ -18,6 +18,8 @@ import {
   TableBody,
   TableCell,
   Container,
+  Link,
+  Breadcrumbs,
   Modal,
   Input,
   TextField,
@@ -257,6 +259,12 @@ export default function Category() {
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Category
+            <Breadcrumbs aria-label="breadcrumb">
+              <Link underline="hover" color="inherit" href="/">
+                Dashboard
+              </Link>
+              <Typography color="text.primary">Category</Typography>
+            </Breadcrumbs>
           </Typography>
           <Button
             onClick={handleOpen}

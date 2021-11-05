@@ -10,6 +10,8 @@ import {
   Stack,
   Checkbox,
   TableRow,
+  Link,
+  Breadcrumbs,
   TableBody,
   TableCell,
   Container,
@@ -22,7 +24,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import { getAllOrder } from 'src/functions/Management';
 import Page from '../components/Page';
-import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import { OrderListHead, OrderListToolbar, OrderMoreMenu } from '../components/_dashboard/order';
@@ -126,16 +127,6 @@ export default function Order() {
     setFilterName(event.target.value);
   };
 
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4
-  };
-
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
       const newSelecteds = orders.map((n) => n.name);
@@ -158,10 +149,16 @@ export default function Order() {
   return (
     <Page title="Order | HangnoidiaNhat">
       <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+        <Stack direction="column" mb={5}>
           <Typography variant="h4" gutterBottom>
             Order
           </Typography>
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link underline="hover" color="inherit" href="/">
+              Dashboard
+            </Link>
+            <Typography color="text.primary">Order</Typography>
+          </Breadcrumbs>
         </Stack>
 
         <Card>

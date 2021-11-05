@@ -7,7 +7,6 @@ import { styled } from '@mui/material/styles';
 import { fCurrency } from '../../../utils/formatNumber';
 //
 import Label from '../../Label';
-import ColorPreview from '../../ColorPreview';
 
 // ----------------------------------------------------------------------
 
@@ -24,29 +23,64 @@ const ProductImgStyle = styled('img')({
 ShopProductCard.propTypes = {
   product: PropTypes.object
 };
-
+const convertQuantity = (quantity) => {
+  if (quantity === 0) {
+    return (
+      <Label
+        variant="filled"
+        color="error"
+        sx={{
+          zIndex: 9,
+          top: 16,
+          right: 16,
+          position: 'absolute',
+          textTransform: 'uppercase'
+        }}
+      >
+        Out of stock
+      </Label>
+    );
+  }
+  if (quantity < 5) {
+    return (
+      <Label
+        variant="filled"
+        color="warning"
+        sx={{
+          zIndex: 9,
+          top: 16,
+          right: 16,
+          position: 'absolute',
+          textTransform: 'uppercase'
+        }}
+      >
+        Low stock
+      </Label>
+    );
+  }
+  return (
+    <Label
+      variant="filled"
+      color="success"
+      sx={{
+        zIndex: 9,
+        top: 16,
+        right: 16,
+        position: 'absolute',
+        textTransform: 'uppercase'
+      }}
+    >
+      In stock
+    </Label>
+  );
+};
+const convertPriceToPriceSale = (price, priceSale) => price - price * priceSale;
 export default function ShopProductCard({ product }) {
-  const { Name, Thumbnail, Price, Discount, ThuongHieu } = product;
-  console.log(product);
-  const convertPriceToPriceSale = (price, priceSale) => price - price * priceSale;
+  const { Name, Thumbnail, Price, Discount, ThuongHieu, Quantity } = product;
   return (
     <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>
-        {/* {status && (
-          <Label
-            variant="filled"
-            color={(status === 'sale' && 'error') || 'info'}
-            sx={{
-              zIndex: 9,
-              top: 16,
-              right: 16,
-              position: 'absolute',
-              textTransform: 'uppercase'
-            }}
-          >
-            {status}
-          </Label>
-        )} */}
+        {convertQuantity(Quantity)}
         <ProductImgStyle alt={Name} src={Thumbnail} />
       </Box>
 
