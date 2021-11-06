@@ -28,7 +28,7 @@ import Shipper from './pages/Shipper';
 import Product from './pages/Product';
 import ShippingDepartment from './pages/ShippingDepartment';
 import { AddProduct } from './components/_dashboard/product';
-import { AddPost } from './components/_dashboard/post';
+import { AddPost, EditPost } from './components/_dashboard/post';
 import Order from './pages/Order';
 import OrderDetail from './pages/OrderDetail';
 import Post from './pages/Post';
@@ -90,6 +90,7 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'post', element: <Post /> },
         { path: 'post/add', element: <AddPost /> },
+        { path: 'post/edit/:slug', element: <EditPost /> },
         { path: 'field', element: <Field /> }
       ]
     },

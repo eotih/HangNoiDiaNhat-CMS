@@ -1,8 +1,3 @@
-/* eslint-disable array-callback-return */
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable no-plusplus */
-/* eslint-disable import/extensions */
-/* eslint-disable import/no-unresolved */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import {
   Container,
@@ -11,9 +6,12 @@ import {
   Box,
   TextField,
   FormControl,
+  Breadcrumbs,
+  Link,
   InputLabel,
   Select,
   MenuItem,
+  Input,
   CardHeader,
   Button,
   Card,
@@ -22,14 +20,15 @@ import {
   ListItemText,
   OutlinedInput
 } from '@mui/material';
-import React, { useState, useEffect } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import SunEditor from 'suneditor-react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import 'suneditor/dist/css/suneditor.min.css';
 import axios from 'axios';
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
-import { getAllField } from '../../../functions/Article';
+import { getAllField, getPostBySlug } from '../../../functions/Article';
 import Page from '../../Page';
 
 const ITEM_HEIGHT = 48;
@@ -43,7 +42,8 @@ const MenuProps = {
   }
 };
 
-export default function AddPost() {
+export default function EditPost() {
+  const { slug } = useParams();
   const [field, setField] = useState([]);
   const [field2, setField2] = useState([]);
   const handleChange = (event) => {
@@ -51,10 +51,24 @@ export default function AddPost() {
     setField(event.target.value);
   };
   useEffect(() => {
+    getPostBySlug(slug)
+      .then((res) => {
+        setField(res.LinhVuc.FieldID);
+        formik.setFieldValue('PostID', res.PostID);
+        formik.setFieldValue('Title', res.Title);
+        formik.setFieldValue('Slug', res.Slug);
+        formik.setFieldValue('Details', res.Details);
+        formik.setFieldValue('FieldID', res.LinhVuc.FieldID);
+        formik.setFieldValue('Thumbnail', res.Thumbnail);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     getAllField().then((res) => {
       setField2(res);
     });
-  }, []);
+  }, [slug]);
+
   const handleEditorChange = (content) => {
     formik.setFieldValue('Details', content);
   };
@@ -64,6 +78,7 @@ export default function AddPost() {
   const formik = useFormik({
     initialValues: {
       FieldID: '',
+      PostID: '',
       Title: '',
       Details: '',
       Thumbnail: ''
@@ -72,16 +87,17 @@ export default function AddPost() {
       axios
         .post(`${process.env.REACT_APP_WEB_API}Article/AddOrEditPost`, {
           FieldID: formik.values.FieldID,
+          PostID: formik.values.PostID,
           Title: formik.values.Title,
           Details: formik.values.Details,
           Thumbnail: formik.values.Thumbnail
         })
         .then((res) => {
-          if (res.data.Status === 'Success') {
-            alert('Add Post Successfully');
-            window.location.reload();
+          if (res.data.Status === 'Updated') {
+            alert('Edit Post Successfully');
+            window.location.href = '../';
           } else {
-            alert('Add Post Failed');
+            alert('Edit Post Failed');
           }
         });
     }
@@ -89,11 +105,20 @@ export default function AddPost() {
 
   const { handleSubmit, getFieldProps } = formik;
   return (
-    <Page title="Dashboard: Add Post ">
+    <Page title="Dashboard: Edit Post ">
       <Container maxWidth="xl">
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h3" sx={{ mb: 5 }}>
-            Create new Post
+            Edit Post
+            <Breadcrumbs aria-label="breadcrumb">
+              <Link underline="hover" color="inherit" href="/">
+                Dashboard
+              </Link>
+              <Link underline="hover" color="inherit" href="../">
+                Post
+              </Link>
+              <Typography color="text.primary">Edit / {slug}</Typography>
+            </Breadcrumbs>
           </Typography>
         </Stack>
         <FormikProvider value={formik}>
@@ -121,6 +146,7 @@ export default function AddPost() {
                         />
                         <Typography variant="h7">Post Description</Typography>
                         <SunEditor
+                          setContents={formik.values.Details}
                           onChange={handleEditorChange}
                           autoFocus
                           height="100%"
@@ -219,7 +245,7 @@ export default function AddPost() {
                     variant="contained"
                     sx={{ mt: 5 }}
                   >
-                    Add Post
+                    Edit Post
                   </LoadingButton>
                 </Grid>
               </Grid>

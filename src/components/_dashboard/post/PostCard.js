@@ -72,7 +72,7 @@ const convertState = (state) => {
   );
 };
 export default function PostCard({ product }) {
-  const { Title, Thumbnail, TrangThai, LinhVuc } = product;
+  const { Title, Thumbnail, TrangThai, LinhVuc, Slug } = product;
   return (
     <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>
@@ -81,7 +81,7 @@ export default function PostCard({ product }) {
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
-        <Link to="#" color="inherit" underline="hover" component={RouterLink}>
+        <Link to={`edit/${Slug}`} color="inherit" underline="hover" component={RouterLink}>
           <Typography variant="subtitle2" noWrap>
             {Title}
           </Typography>
