@@ -8,6 +8,7 @@ import {
   Container,
   Typography,
   Box,
+  Modal,
   Avatar,
   Link,
   Button,
@@ -21,6 +22,7 @@ import {
   MenuItem,
   InputLabel
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
 import { infoUserLogin } from 'src/functions/Organization';
 import axios from 'axios';
@@ -29,10 +31,31 @@ import Page from '../components/Page';
 
 export default function EditAccount() {
   const [role, setRole] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [roles, setRoles] = useState([]);
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const handleShowPassword = () => {
+    setShowPassword((show) => !show);
+  };
   const handleChange = (event) => {
     formik.setFieldValue('RoleID', event.target.value);
     setRole(event.target.value);
+  };
+  const Input = styled('input')({
+    display: 'none'
+  });
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    bgcolor: 'background.paper',
+    borderRadius: 2,
+    boxShadow: 24,
+    p: 4
   };
   const formik = useFormik({
     initialValues: {
@@ -41,7 +64,6 @@ export default function EditAccount() {
       Image: '',
       Phone: '',
       Email: '',
-      Password: '',
       RoleID: '',
       Address: '',
       remember: true
@@ -53,7 +75,6 @@ export default function EditAccount() {
           Image: formik.values.Image,
           Phone: formik.values.Phone,
           Email: formik.values.Email,
-          Password: formik.values.Password,
           Address: formik.values.Address,
           RoleID: formik.values.RoleID
         })
@@ -77,6 +98,7 @@ export default function EditAccount() {
     });
     infoUserLogin().then((res) => {
       const data = res.map((item) => {
+        setRole(item.Role.RoleID);
         formik.setFieldValue('AccountID', item.AccountID);
         formik.setFieldValue('FullName', item.FullName);
         formik.setFieldValue('Image', item.Image);
@@ -91,6 +113,40 @@ export default function EditAccount() {
   return (
     <Page title="Profile">
       <Container>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <Stack direction="column" spacing={3}>
+              <Typography variant="h5">Change Password</Typography>
+              <TextField
+                fullWidth
+                label="Old Password"
+                type={showPassword ? 'text' : 'password'}
+                variant="outlined"
+              />
+              <TextField
+                fullWidth
+                label="New Password"
+                type={showPassword ? 'text' : 'password'}
+                {...getFieldProps('Password')}
+                variant="outlined"
+              />
+              <TextField
+                fullWidth
+                label="Repeat new password"
+                type={showPassword ? 'text' : 'password'}
+                variant="outlined"
+              />
+              <Button fullWidth variant="contained" component="span">
+                Change Password
+              </Button>
+            </Stack>
+          </Box>
+        </Modal>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Profile
@@ -134,11 +190,14 @@ export default function EditAccount() {
                         </Button>
                       </label>
                     </Stack>
+                    <Button fullWidth onClick={handleOpen} variant="contained" component="span">
+                      Change Password
+                    </Button>
                   </Card>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <Card sx={{ p: 2 }}>
-                    <Stack spacing={3}>
+                  <Card sx={{ p: 5 }}>
+                    <Stack spacing={2}>
                       <Stack direction={{ xs: 'row' }} spacing={2}>
                         <TextField
                           fullWidth
@@ -150,21 +209,6 @@ export default function EditAccount() {
                           fullWidth
                           label="Phone"
                           {...getFieldProps('Phone')}
-                          variant="outlined"
-                        />
-                      </Stack>
-                      <Stack direction={{ xs: 'row' }} spacing={2}>
-                        <TextField
-                          fullWidth
-                          label="Email"
-                          {...getFieldProps('Email')}
-                          variant="outlined"
-                        />
-                        <TextField
-                          fullWidth
-                          type="password"
-                          label="Password"
-                          {...getFieldProps('Password')}
                           variant="outlined"
                         />
                       </Stack>
@@ -192,6 +236,14 @@ export default function EditAccount() {
                             ))}
                           </Select>
                         </FormControl>
+                      </Stack>
+                      <Stack direction={{ xs: 'row' }} spacing={2}>
+                        <TextField
+                          fullWidth
+                          label="Email"
+                          {...getFieldProps('Email')}
+                          variant="outlined"
+                        />
                       </Stack>
                     </Stack>
                   </Card>

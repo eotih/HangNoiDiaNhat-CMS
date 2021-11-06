@@ -48,40 +48,33 @@ const MenuProps = {
 };
 
 export default function AddProduct() {
-  const [openFilter, setOpenFilter] = useState(false);
-  const [utilities, setUtilities] = React.useState([]);
-  const [utilities2, setUtilities2] = React.useState([]);
-  const [brand, setBrand] = React.useState([]);
-  const [brand2, setBrand2] = React.useState([]);
-  const [category, setCategory] = React.useState([]);
-  const [category2, setCategory2] = React.useState([]);
-  const [image, setImage] = React.useState([]);
-  const handleChange1 = (event) => {
-    formik.setFieldValue('BrandID', event.target.value);
-    setBrand(event.target.name);
+  const [utilities, setUtilities] = useState([]);
+  const [utilities2, setUtilities2] = useState([]);
+  const [brand, setBrand] = useState([]);
+  const [brand2, setBrand2] = useState([]);
+  const [category, setCategory] = useState([]);
+  const [category2, setCategory2] = useState([]);
+  const [image, setImage] = useState([]);
+
+  const handleEditorChange = (content) => {
+    formik.setFieldValue('Details', content);
   };
-  const handleChange3 = (event) => {
-    const html = event.map(
-      (res) => `
-            <ImageListItem key={index}>
-              <img
-                src=${res.base64}
-                srcSet=${res.base64}
-                loading="lazy"
-              />
-            </ImageListItem>`
-    );
-    document.getElementById('hinhanh').innerHTML = html;
-  };
-  const handleChange2 = (event) => {
-    formik.setFieldValue('CategoryID', event.target.value);
+  const handleChangeCategory = (event) => {
     setCategory(event.target.value);
+    formik.setFieldValue('CategoryID', event.target.value);
   };
-  const handleChange5 = (event) => {
-    console.log(event.target);
+  const handleChangeBrand = (event) => {
+    setBrand(event.target.value);
+    formik.setFieldValue('BrandID', event.target.value);
+  };
+  const handleChangeUtilities = (event) => {
+    const {
+      target: { value }
+    } = event;
+    console.log(value);
     setUtilities2(
       // On autofill we get a the stringified value.
-      typeof event.target.name === 'string' ? event.target.name.split(',') : event.target.name
+      typeof value === 'string' ? value.split(',') : value
     );
   };
   useEffect(() => {
@@ -103,7 +96,6 @@ export default function AddProduct() {
     initialValues: {
       BrandID: '',
       CategoryID: '',
-      UtilityID: '',
       Discount: '',
       Price: '',
       ImportPrice: '',
@@ -115,14 +107,6 @@ export default function AddProduct() {
       console.log(formik.values);
     }
   });
-  const Item = styled(Paper)(({ theme }) => ({
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    justify: 'center',
-    borderRadius: 2,
-    boxShadow: 24,
-    color: theme.palette.text.secondary
-  }));
   const { handleSubmit, getFieldProps } = formik;
   const fileToDataUri = (image) =>
     new Promise((res) => {
@@ -161,12 +145,45 @@ export default function AddProduct() {
                       />
                       <Typography variant="h7">Product Description</Typography>
                       <SunEditor
+                        onChange={handleEditorChange}
+                        autoFocus
                         height="100%"
-                        label="Type something"
-                        aria-label="Type something"
-                        placeholder="Please type here..."
+                        setOptions={{
+                          showPathLabel: false,
+                          minHeight: '50vh',
+                          maxHeight: '50vh',
+                          placeholder: 'Enter your text here!!!',
+                          buttonList: [
+                            ['undo', 'redo'],
+                            ['font', 'fontSize', 'formatBlock'],
+                            ['paragraphStyle'],
+                            ['bold', 'underline', 'italic', 'strike', 'subscript', 'superscript'],
+                            ['fontColor', 'hiliteColor'],
+                            ['removeFormat'],
+                            '/', // Line break
+                            ['outdent', 'indent'],
+                            ['align', 'horizontalRule', 'list', 'lineHeight'],
+                            ['table', 'link', 'image']
+                          ],
+                          formats: ['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+                          font: [
+                            'Arial',
+                            'Calibri',
+                            'Comic Sans',
+                            'Courier',
+                            'Garamond',
+                            'Georgia',
+                            'Impact',
+                            'Lucida Console',
+                            'Palatino Linotype',
+                            'Segoe UI',
+                            'Tahoma',
+                            'Times New Roman',
+                            'Trebuchet MS'
+                          ]
+                        }}
+                        // {...getFieldProps('Details')}
                         variant="outlined"
-                        {...getFieldProps('Details')}
                       />
                     </Stack>
                     <Stack direction={{ xs: 'column', sm: 'row' }}>
@@ -183,19 +200,20 @@ export default function AddProduct() {
                                 image.push(fileToDataUri(files[i]));
                               }
                               const data = await Promise.all(image);
-                              handleChange3(data);
+                              setImage(data);
                             }}
                           />
                           <Button sx={{ mt: 5 }} variant="contained" component="span">
                             Upload Image
                           </Button>
                         </label>
-                        <ImageList
-                          id="hinhanh"
-                          sx={{ width: 500, height: 450 }}
-                          cols={3}
-                          rowHeight={164}
-                        />
+                        <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
+                          {image.map((item, index) => (
+                            <ImageListItem key={index}>
+                              <img src={item.base64} alt="img" />
+                            </ImageListItem>
+                          ))}
+                        </ImageList>
                       </Stack>
                     </Stack>
                   </Card>
@@ -210,9 +228,8 @@ export default function AddProduct() {
                           labelId="demo-multiple-checkbox-label"
                           id="demo-multiple-checkbox"
                           multiple
-                          {...getFieldProps('UtilityID')}
                           value={utilities2}
-                          onChange={handleChange5}
+                          onChange={handleChangeUtilities}
                           input={<OutlinedInput label="Tag" />}
                           renderValue={(selected) => selected.join(', ')}
                           MenuProps={MenuProps}
@@ -229,12 +246,12 @@ export default function AddProduct() {
                         <InputLabel id="Brand-label">Brand</InputLabel>
                         <Select
                           sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                          labelId="Brand-label"
-                          id="Brand"
+                          labelId="BrandID-label"
+                          id="BrandID"
                           {...getFieldProps('BrandID')}
                           value={brand}
-                          onChange={handleChange1}
-                          input={<OutlinedInput label="Brand" />}
+                          onChange={handleChangeBrand}
+                          input={<OutlinedInput label="Field" />}
                           MenuProps={MenuProps}
                         >
                           {brand2.map((name, i) => (
@@ -248,19 +265,19 @@ export default function AddProduct() {
                         <InputLabel id="Category-label">Category</InputLabel>
                         <Select
                           sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                          labelId="Category-label"
-                          id="Brand"
+                          labelId="CategoryID-label"
+                          id="CategoryID"
                           {...getFieldProps('CategoryID')}
                           value={category}
-                          label="Category"
-                          onChange={handleChange2}
+                          onChange={handleChangeCategory}
+                          input={<OutlinedInput label="Field" />}
+                          MenuProps={MenuProps}
                         >
-                          {category2 &&
-                            category2.map((name, i) => (
-                              <MenuItem key={name.CategoryID} value={name.Name}>
-                                {name.Name}
-                              </MenuItem>
-                            ))}
+                          {category2.map((name, i) => (
+                            <MenuItem key={name.CategoryID} value={name.CategoryID}>
+                              <ListItemText primary={name.Name} />
+                            </MenuItem>
+                          ))}
                         </Select>
                       </FormControl>
                       <Stack direction="row" alignItems="center" justifyContent="center">

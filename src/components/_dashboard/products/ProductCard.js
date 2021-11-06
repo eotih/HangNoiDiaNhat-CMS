@@ -78,7 +78,7 @@ const convertPriceToPriceSale = (price, priceSale) => price - price * priceSale;
 export default function ShopProductCard({ product }) {
   const { Name, Thumbnail, Price, Discount, ThuongHieu, Quantity } = product;
   return (
-    <Card>
+    <Card sx={{ height: '100%' }}>
       <Box sx={{ pt: '100%', position: 'relative' }}>
         {convertQuantity(Quantity)}
         <ProductImgStyle alt={Name} src={Thumbnail} />
