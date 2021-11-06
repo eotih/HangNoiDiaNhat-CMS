@@ -23,3 +23,9 @@ export async function getAllOrderDetailByOrderID(OrderID) {
   );
   return res.data;
 }
+export async function getLengthByCategory(CategoryID) {
+  const res = await axios.get(
+    `${REACT_APP_WEB_API}Management/GetProductByCategoryID?CategoryID=${CategoryID}`
+  );
+  return res.data;
+}

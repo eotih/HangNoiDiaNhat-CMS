@@ -8,10 +8,15 @@ import {
   Container,
   Typography,
   Box,
+  Avatar,
   Link,
+  Button,
+  Grid,
   Breadcrumbs,
+  Card,
   TextField,
   Select,
+  Input,
   FormControl,
   MenuItem,
   InputLabel
@@ -65,22 +70,12 @@ export default function EditAccount() {
         });
     }
   });
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4
-  };
   const { handleSubmit, getFieldProps } = formik;
   useEffect(() => {
     getAllRole().then((res) => {
       setRoles(res);
     });
     infoUserLogin().then((res) => {
-      console.log(res);
       const data = res.map((item) => {
         formik.setFieldValue('AccountID', item.AccountID);
         formik.setFieldValue('FullName', item.FullName);
@@ -98,7 +93,7 @@ export default function EditAccount() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Edit Profile
+            Profile
             <Breadcrumbs aria-label="breadcrumb">
               <Link underline="hover" color="inherit" href="/">
                 Dashboard
@@ -107,60 +102,114 @@ export default function EditAccount() {
             </Breadcrumbs>
           </Typography>
         </Stack>
-      </Container>
-      <FormikProvider value={formik}>
-        <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-          <Box sx={style}>
-            <Stack spacing={3}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                Add Account
-                <Breadcrumbs aria-label="breadcrumb">
-                  <Link underline="hover" color="inherit" href="/">
-                    Dashboard
-                  </Link>
-                  <Typography color="text.primary">Profile</Typography>
-                </Breadcrumbs>
-              </Typography>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />
-                <TextField label="Phone" {...getFieldProps('Phone')} variant="outlined" />
-              </Stack>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
-                <TextField
-                  type="password"
-                  label="Password"
-                  {...getFieldProps('Password')}
-                  variant="outlined"
-                />
-              </Stack>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
-                <FormControl>
-                  <InputLabel id="select-label">Role</InputLabel>
-                  <Select
-                    labelId="select-label"
-                    label="Role"
-                    {...getFieldProps('RoleID')}
-                    variant="outlined"
-                    value={role}
-                    onChange={handleChange}
+
+        <FormikProvider value={formik}>
+          <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+            <Box sx={{ flexGrow: 1 }}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={6} md={4}>
+                  <Card sx={{ p: 5 }}>
+                    <Stack
+                      direction={{ xs: 'column', sm: 'row' }}
+                      alignItems="center"
+                      justifyContent="center"
+                      spacing={2}
+                    >
+                      <Avatar src={formik.values.Image} sx={{ width: 100, height: 100 }} />
+                      <label htmlFor="contained-button-file">
+                        <Input
+                          id="contained-button-file"
+                          type="file"
+                          onChange={(e) => {
+                            const { files } = e.target;
+                            const reader = new FileReader();
+                            reader.readAsDataURL(files[0]);
+                            reader.onload = (e) => {
+                              formik.setFieldValue('Image', e.target.result);
+                            };
+                          }}
+                        />
+                        <Button fullWidth variant="contained" component="span">
+                          Upload Thumbnail
+                        </Button>
+                      </label>
+                    </Stack>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Card sx={{ p: 2 }}>
+                    <Stack spacing={3}>
+                      <Stack direction={{ xs: 'row' }} spacing={2}>
+                        <TextField
+                          fullWidth
+                          label="FullName"
+                          {...getFieldProps('FullName')}
+                          variant="outlined"
+                        />
+                        <TextField
+                          fullWidth
+                          label="Phone"
+                          {...getFieldProps('Phone')}
+                          variant="outlined"
+                        />
+                      </Stack>
+                      <Stack direction={{ xs: 'row' }} spacing={2}>
+                        <TextField
+                          fullWidth
+                          label="Email"
+                          {...getFieldProps('Email')}
+                          variant="outlined"
+                        />
+                        <TextField
+                          fullWidth
+                          type="password"
+                          label="Password"
+                          {...getFieldProps('Password')}
+                          variant="outlined"
+                        />
+                      </Stack>
+                      <Stack direction={{ xs: 'row' }} spacing={2}>
+                        <TextField
+                          fullWidth
+                          label="Address"
+                          {...getFieldProps('Address')}
+                          variant="outlined"
+                        />
+                        <FormControl fullWidth>
+                          <InputLabel id="select-label">Role</InputLabel>
+                          <Select
+                            labelId="select-label"
+                            label="Role"
+                            {...getFieldProps('RoleID')}
+                            variant="outlined"
+                            value={role}
+                            onChange={handleChange}
+                          >
+                            {roles.map((item) => (
+                              <MenuItem key={item.RoleID} value={item.RoleID}>
+                                {item.RoleName}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Stack>
+                    </Stack>
+                  </Card>
+                  <LoadingButton
+                    fullWidth
+                    sx={{ mt: 5 }}
+                    size="large"
+                    type="submit"
+                    variant="contained"
                   >
-                    {roles.map((item) => (
-                      <MenuItem key={item.RoleID} value={item.RoleID}>
-                        {item.RoleName}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Stack>
-              <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                Edit Profile
-              </LoadingButton>
-            </Stack>
-          </Box>
-        </Form>
-      </FormikProvider>
+                    Edit Profile
+                  </LoadingButton>
+                </Grid>
+              </Grid>
+            </Box>
+          </Form>
+        </FormikProvider>
+      </Container>
     </Page>
   );
 }

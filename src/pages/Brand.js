@@ -169,13 +169,13 @@ export default function Category() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditCategory`, {
+        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditBrand`, {
           Name: formik.values.Name,
           Thumbnail: formik.values.Thumbnail
         })
         .then((res) => {
           if (res.data.Status === 'Success') {
-            alert('Add Category Successfully');
+            alert('Add Brand Successfully');
             window.location.reload();
           } else {
             alert('Add Failed');
