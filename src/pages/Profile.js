@@ -166,6 +166,7 @@ export default function EditAccount() {
                 <Grid item xs={12} sm={6} md={4}>
                   <Card sx={{ p: 5 }}>
                     <Stack
+                      sx={{ mb: 5 }}
                       direction={{ xs: 'column', sm: 'row' }}
                       alignItems="center"
                       justifyContent="center"
@@ -215,8 +216,8 @@ export default function EditAccount() {
                       <Stack direction={{ xs: 'row' }} spacing={2}>
                         <TextField
                           fullWidth
-                          label="Address"
-                          {...getFieldProps('Address')}
+                          label="Email"
+                          {...getFieldProps('Email')}
                           variant="outlined"
                         />
                         <FormControl fullWidth>
@@ -240,8 +241,8 @@ export default function EditAccount() {
                       <Stack direction={{ xs: 'row' }} spacing={2}>
                         <TextField
                           fullWidth
-                          label="Email"
-                          {...getFieldProps('Email')}
+                          label="Address"
+                          {...getFieldProps('Address')}
                           variant="outlined"
                         />
                       </Stack>
