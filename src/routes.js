@@ -32,6 +32,7 @@ import { AddPost, EditPost } from './components/_dashboard/post';
 import Order from './pages/Order';
 import OrderDetail from './pages/OrderDetail';
 import Post from './pages/Post';
+import ProductDetails from './pages/ProductDetails';
 import NotFound from './pages/Page404';
 
 // ----------------------------------------------------------------------
@@ -104,6 +105,7 @@ export default function Router() {
         { path: 'product', element: <Product /> },
         { path: 'order', element: <Order /> },
         { path: 'products', element: <Products /> },
+        { path: 'products/detail/:slug', element: <ProductDetails /> },
         { path: 'order/detail/:id', element: <OrderDetail /> },
         { path: 'product/add', element: <AddProduct /> }
       ]

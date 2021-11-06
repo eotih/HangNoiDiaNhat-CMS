@@ -74,40 +74,20 @@ const convertQuantity = (quantity) => {
     </Label>
   );
 };
-const convertPriceToPriceSale = (price, priceSale) => price - price * priceSale;
 export default function ShopProductCard({ product }) {
-  const { Name, Thumbnail, Price, Discount, ThuongHieu, Quantity } = product;
+  const { ProductName, Image1, ImageID } = product;
   return (
-    <Card>
+    <Card sx={{ height: '100%' }}>
       <Box sx={{ pt: '100%', position: 'relative' }}>
-        {convertQuantity(Quantity)}
-        <ProductImgStyle alt={Name} src={Thumbnail} />
+        <ProductImgStyle alt={ProductName} src={Image1} />
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
         <Link to="#" color="inherit" underline="hover" component={RouterLink}>
           <Typography variant="subtitle2" noWrap>
-            {Name}
+            Hình {ProductName} {ImageID}
           </Typography>
-          <img alt="thuong hieu" style={{ width: '100px', height: '100%' }} src={ThuongHieu} />
         </Link>
-
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <Typography variant="subtitle1">
-            <Typography
-              component="span"
-              variant="body1"
-              sx={{
-                color: 'text.disabled',
-                textDecoration: 'line-through'
-              }}
-            >
-              {Price && fCurrency(Price)}
-            </Typography>
-            &nbsp;
-            {fCurrency(convertPriceToPriceSale(Price, Discount))}
-          </Typography>
-        </Stack>
       </Stack>
     </Card>
   );

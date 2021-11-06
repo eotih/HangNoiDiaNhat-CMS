@@ -29,3 +29,9 @@ export async function getLengthByCategory(CategoryID) {
   );
   return res.data;
 }
+export async function GetProductImageByProductName(ProductName) {
+  const res = await axios.get(
+    `${REACT_APP_WEB_API}Management/GetProductImageByProductName?ProductName=${ProductName}`
+  );
+  return res.data;
+}
