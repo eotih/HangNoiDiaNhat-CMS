@@ -176,12 +176,7 @@ export default function ShippingDepartment() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Delivery/AddOrEditShippingDepartment`, {
-          FullName: formik.values.FullName,
-          Phone: formik.values.Phone,
-          Email: formik.values.Email,
-          Address: formik.values.Address
-        })
+        .post(`${process.env.REACT_APP_WEB_API}Delivery/AddOrEditShippingDepartment`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
             alert('Add ShippingDepartment Successfully');

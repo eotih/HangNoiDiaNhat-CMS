@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import { Icon } from '@iconify/react';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 // material
 import { Container, Stack, Typography, Link, Breadcrumbs, Button } from '@mui/material';
 // components
@@ -19,11 +21,14 @@ import { getAllProduct } from '../functions/Management';
 // ----------------------------------------------------------------------
 
 export default function Products() {
+  const [error, setError] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
   const [product, setProduct] = useState([]);
   useEffect(() => {
     getAllProduct().then((res) => {
       setProduct(res);
+      setIsLoaded(true);
     });
   }, []);
   const formik = useFormik({
@@ -53,6 +58,16 @@ export default function Products() {
     handleSubmit();
     resetForm();
   };
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+  if (!isLoaded) {
+    return (
+      <Box sx={{ display: 'flex' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
   return (
     <Page title="Dashboard: Products | Minimal-UI">
       <Container>

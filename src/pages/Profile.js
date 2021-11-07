@@ -31,9 +31,6 @@ import { getAllRole } from 'src/functions/Component';
 import Page from '../components/Page';
 
 export default function EditAccount() {
-  const [role, setRole] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [roles, setRoles] = useState([]);
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [repeatNewPassword, setRepeatNewPassword] = useState('');
@@ -41,13 +38,6 @@ export default function EditAccount() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleShowPassword = () => {
-    setShowPassword((show) => !show);
-  };
-  const handleChange = (event) => {
-    formik.setFieldValue('RoleID', event.target.value);
-    setRole(event.target.value);
-  };
   const Input = styled('input')({
     display: 'none'
   });
@@ -74,15 +64,7 @@ export default function EditAccount() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditAccount`, {
-          AccountID: formik.values.AccountID,
-          FullName: formik.values.FullName,
-          Image: formik.values.Image,
-          Phone: formik.values.Phone,
-          Email: formik.values.Email,
-          Address: formik.values.Address,
-          RoleID: formik.values.RoleID
-        })
+        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditAccount`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Updated') {
             alert('Account Edit Successfully');
@@ -125,12 +107,8 @@ export default function EditAccount() {
     }
   };
   useEffect(() => {
-    getAllRole().then((res) => {
-      setRoles(res);
-    });
     infoUserLogin().then((res) => {
-      const data = res.map((item) => {
-        setRole(item.Role.RoleID);
+      res.map((item) => {
         formik.setFieldValue('AccountID', item.AccountID);
         formik.setFieldValue('FullName', item.FullName);
         formik.setFieldValue('Image', item.Image);
@@ -160,7 +138,6 @@ export default function EditAccount() {
                   setOldPassword(e.target.value);
                 }}
                 label="Old Password"
-                type={showPassword ? 'text' : 'password'}
                 variant="outlined"
               />
               <TextField
@@ -169,7 +146,6 @@ export default function EditAccount() {
                   setNewPassword(e.target.value);
                 }}
                 label="New Password"
-                type={showPassword ? 'text' : 'password'}
                 variant="outlined"
               />
               <TextField
@@ -178,8 +154,6 @@ export default function EditAccount() {
                   setRepeatNewPassword(e.target.value);
                 }}
                 label="Repeat new password"
-                type={showPassword ? 'text' : 'password'}
-                // {...getFieldProps('Password')}
                 variant="outlined"
               />
               <Button onClick={handleChangePassword} fullWidth variant="contained" component="span">
@@ -261,23 +235,6 @@ export default function EditAccount() {
                           {...getFieldProps('Email')}
                           variant="outlined"
                         />
-                        <FormControl fullWidth>
-                          <InputLabel id="select-label">Role</InputLabel>
-                          <Select
-                            labelId="select-label"
-                            label="Role"
-                            {...getFieldProps('RoleID')}
-                            variant="outlined"
-                            value={role}
-                            onChange={handleChange}
-                          >
-                            {roles.map((item) => (
-                              <MenuItem key={item.RoleID} value={item.RoleID}>
-                                {item.RoleName}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
                       </Stack>
                       <Stack direction={{ xs: 'row' }} spacing={2}>
                         <TextField

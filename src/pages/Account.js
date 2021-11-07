@@ -36,8 +36,8 @@ import {
 import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
 import CircularProgress from '@mui/material/CircularProgress';
-import axios from 'axios';
 import Box from '@mui/material/Box';
+import axios from 'axios';
 import { getAllAccount } from 'src/functions/Organization';
 import { getAllRole } from 'src/functions/Component';
 import Page from '../components/Page';
@@ -195,15 +195,7 @@ export default function User() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditAccount`, {
-          FullName: formik.values.FullName,
-          Image: formik.values.Image,
-          Phone: formik.values.Phone,
-          Email: formik.values.Email,
-          Password: formik.values.Password,
-          Address: formik.values.Address,
-          RoleID: formik.values.RoleID
-        })
+        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditAccount`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
             alert('Thêm thành công');

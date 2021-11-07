@@ -166,9 +166,7 @@ export default function Payment() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditPayment`, {
-          Name: formik.values.Name
-        })
+        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditPayment`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
             alert('Add Payment Successfully');

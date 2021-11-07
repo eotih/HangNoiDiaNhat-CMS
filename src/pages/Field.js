@@ -169,10 +169,7 @@ export default function Field() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Article/AddOrEditField`, {
-          Name: formik.values.Name,
-          Thumbnail: formik.values.Thumbnail
-        })
+        .post(`${process.env.REACT_APP_WEB_API}Article/AddOrEditField`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
             alert('Add Field Successfully');

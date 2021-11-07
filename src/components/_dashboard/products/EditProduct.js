@@ -80,6 +80,7 @@ export default function AddProduct() {
   });
   const formik = useFormik({
     initialValues: {
+      ProductID: '',
       AccountID: '',
       BrandID: '',
       CategoryID: '',
@@ -94,30 +95,14 @@ export default function AddProduct() {
       axios
         .post(`${process.env.REACT_APP_WEB_API}Management/AddOrEditProduct`, formik.values)
         .then((res) => {
-          if (res.data.Status === 'Success') {
-            for (let i = 0; i < image.length; i += 1) {
-              uploadImageProduct(image[i].base64, formik.values.Name);
-            }
+          if (res.data.Status === 'Updated') {
+            alert('Updated');
           } else {
-            alert('Add Failed');
+            alert('Update Failed');
           }
         });
     }
   });
-  const uploadImageProduct = (image, name) => {
-    axios
-      .post(`${process.env.REACT_APP_WEB_API}Management/AddOrEditProductImage`, {
-        Image2: image,
-        ProductName: name
-      })
-      .then((res) => {
-        if (res.data.Status === 'Success') {
-          window.location.reload();
-        } else {
-          console.log('Add Failed');
-        }
-      });
-  };
   const { handleSubmit, getFieldProps } = formik;
   const fileToDataUri = (image) =>
     new Promise((res) => {
@@ -134,7 +119,7 @@ export default function AddProduct() {
       reader.readAsDataURL(image);
     });
   return (
-    <Page title="Dashboard: Add Products ">
+    <Page title="Dashboard: Edit Products ">
       <Container maxWidth="xl">
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h3" sx={{ mb: 5 }}>
@@ -244,12 +229,11 @@ export default function AddProduct() {
                         <Select
                           sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
                           labelId="BrandID-label"
-                          label="Brand"
                           id="BrandID"
-                          {...getFieldProps('Brand')}
+                          {...getFieldProps('BrandID')}
                           value={brand}
                           onChange={handleChangeBrand}
-                          input={<OutlinedInput label="Brand" />}
+                          input={<OutlinedInput label="Field" />}
                           MenuProps={MenuProps}
                         >
                           {brand2.map((name, i) => (
@@ -264,12 +248,11 @@ export default function AddProduct() {
                         <Select
                           sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
                           labelId="CategoryID-label"
-                          label="Category"
                           id="CategoryID"
                           {...getFieldProps('CategoryID')}
                           value={category}
                           onChange={handleChangeCategory}
-                          input={<OutlinedInput label="Category" />}
+                          input={<OutlinedInput label="Field" />}
                           MenuProps={MenuProps}
                         >
                           {category2.map((name, i) => (

@@ -168,10 +168,7 @@ export default function Category() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditBanner`, {
-          Name: formik.values.Name,
-          Image: formik.values.Image
-        })
+        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditBanner`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
             alert('Add Banner Successfully');

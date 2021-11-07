@@ -177,13 +177,7 @@ export default function User() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Management/AddOrEditCustomer`, {
-          FullName: formik.values.FullName,
-          Phone: formik.values.Phone,
-          Email: formik.values.Email,
-          Password: formik.values.Password,
-          Address: formik.values.Address
-        })
+        .post(`${process.env.REACT_APP_WEB_API}Management/AddOrEditCustomer`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
             alert('Add Customer Successfully');

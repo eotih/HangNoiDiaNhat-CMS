@@ -194,15 +194,7 @@ export default function User() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Delivery/AddOrEditShipper`, {
-          FullName: formik.values.FullName,
-          FrontFigure: formik.values.FrontFigure,
-          Phone: formik.values.Phone,
-          Email: formik.values.Email,
-          Password: formik.values.Password,
-          Address: formik.values.Address,
-          BackSideFigure: formik.values.BackSideFigure
-        })
+        .post(`${process.env.REACT_APP_WEB_API}Delivery/AddOrEditShipper`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
             alert('Add Shipper Successfully');

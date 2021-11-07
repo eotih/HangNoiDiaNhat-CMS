@@ -166,9 +166,7 @@ export default function Service() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Delivery/AddOrEditService`, {
-          Name: formik.values.Name
-        })
+        .post(`${process.env.REACT_APP_WEB_API}Delivery/AddOrEditService`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
             alert('Add Service Successfully');

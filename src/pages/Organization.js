@@ -175,12 +175,7 @@ export default function User() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditOrganization`, {
-          FullName: formik.values.FullName,
-          Phone: formik.values.Phone,
-          Email: formik.values.Email,
-          Address: formik.values.Address
-        })
+        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditOrganization`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
             alert('Add Organization Successfully');

@@ -162,9 +162,7 @@ export default function Role() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditRole`, {
-          RoleName: formik.values.RoleName
-        })
+        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditRole`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
             alert('Thêm thành công');

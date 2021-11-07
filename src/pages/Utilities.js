@@ -166,9 +166,7 @@ export default function Brand() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditUtil`, {
-          Name: formik.values.Name
-        })
+        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditUtil`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
             alert('Add Utilities Successfully');

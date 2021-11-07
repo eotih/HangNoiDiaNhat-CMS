@@ -169,10 +169,7 @@ export default function Category() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditBrand`, {
-          Name: formik.values.Name,
-          Thumbnail: formik.values.Thumbnail
-        })
+        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditBrand`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
             alert('Add Brand Successfully');
