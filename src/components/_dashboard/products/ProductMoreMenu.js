@@ -4,12 +4,14 @@ import * as React from 'react';
 import { Icon } from '@iconify/react';
 import { useRef, useState, useEffect } from 'react';
 import editFill from '@iconify/icons-eva/edit-fill';
+import trash from '@iconify/icons-eva/trash-2-outline';
 // import { useFormik, Form, FormikProvider } from 'formik';
 // import InputAdornment from '@mui/material/InputAdornment';
 import external from '@iconify/icons-eva/external-link-fill';
 import { Link as RouterLink } from 'react-router-dom';
 import pluscirclefill from '@iconify/icons-eva/plus-circle-fill';
 import morehorizontalfill from '@iconify/icons-eva/more-horizontal-fill';
+import axios from 'axios';
 // material
 import {
   Menu,
@@ -44,6 +46,22 @@ export default function ProductMoreMenu(Product) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleDelete = () => {
+    if (confirm('Are you sure you want to delete')) {
+      axios
+        .delete(
+          `${process.env.REACT_APP_WEB_API}Management/DeleteProduct?ProductID=${Product.ProductID}`
+        )
+        .then((res) => {
+          if (res.data.Status === 'Deleted') {
+            alert('Product deleted successfully');
+            window.location.reload();
+          } else {
+            alert('Product not deleted');
+          }
+        });
+    }
+  };
   return (
     <>
       <IconButton ref={ref} onClick={() => setIsOpen(true)}>
@@ -96,13 +114,6 @@ export default function ProductMoreMenu(Product) {
           </ListItemIcon>
           <ListItemText primary="Stock" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
-
-        <MenuItem sx={{ color: 'text.secondary' }}>
-          <ListItemIcon>
-            <Icon icon={editFill} width={24} height={24} />
-          </ListItemIcon>
-          <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
-        </MenuItem>
         <MenuItem
           component={RouterLink}
           to={`../products/detail/${Product.name}`}
@@ -113,6 +124,18 @@ export default function ProductMoreMenu(Product) {
             <Icon icon={external} width={24} height={24} />
           </ListItemIcon>
           <ListItemText primary="Details" primaryTypographyProps={{ variant: 'body2' }} />
+        </MenuItem>
+        <MenuItem sx={{ color: 'text.secondary' }}>
+          <ListItemIcon>
+            <Icon icon={editFill} width={24} height={24} />
+          </ListItemIcon>
+          <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
+        </MenuItem>
+        <MenuItem onClick={handleDelete} sx={{ color: 'text.secondary' }}>
+          <ListItemIcon>
+            <Icon icon={trash} width={24} height={24} />
+          </ListItemIcon>
+          <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
       </Menu>
     </>

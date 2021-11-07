@@ -67,7 +67,7 @@ export default function EditPost() {
     getAllField().then((res) => {
       setField2(res);
     });
-  }, [slug]);
+  }, []);
 
   const handleEditorChange = (content) => {
     formik.setFieldValue('Details', content);

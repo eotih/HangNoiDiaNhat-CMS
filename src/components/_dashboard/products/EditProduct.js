@@ -1,4 +1,3 @@
-/* eslint-disable array-callback-return */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import {
   Container,
@@ -7,12 +6,13 @@ import {
   Box,
   TextField,
   FormControl,
+  Breadcrumbs,
+  Link,
   InputLabel,
   Select,
   MenuItem,
   Input,
-  ImageList,
-  ImageListItem,
+  CardHeader,
   Button,
   Card,
   Grid,
@@ -20,16 +20,17 @@ import {
   ListItemText,
   OutlinedInput
 } from '@mui/material';
-import React, { useState, useEffect } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import SunEditor from 'suneditor-react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import 'suneditor/dist/css/suneditor.min.css';
 import axios from 'axios';
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
-import Page from '../../Page';
+import { getProductBySlug } from '../../../functions/Management';
 import { getAllBrands, getAllCategory } from '../../../functions/Component';
-import { infoUserLogin } from '../../../functions/Organization';
+import Page from '../../Page';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -42,88 +43,99 @@ const MenuProps = {
   }
 };
 
-export default function AddProduct() {
-  const [brand, setBrand] = useState([]);
-  const [brand2, setBrand2] = useState([]);
+export default function EditProduct() {
+  const { slug } = useParams();
   const [category, setCategory] = useState([]);
   const [category2, setCategory2] = useState([]);
-  const [image, setImage] = useState([]);
-  const [show, setShow] = useState(false);
-
-  const handleEditorChange = (content) => {
-    formik.setFieldValue('Details', content);
-  };
+  const [brand, setBrand] = useState([]);
+  const [brand2, setBrand2] = useState([]);
   const handleChangeCategory = (event) => {
-    setCategory(event.target.value);
     formik.setFieldValue('CategoryID', event.target.value);
+    setCategory(event.target.value);
   };
   const handleChangeBrand = (event) => {
-    setBrand(event.target.value);
     formik.setFieldValue('BrandID', event.target.value);
+    setBrand(event.target.value);
   };
   useEffect(() => {
-    infoUserLogin().then((res) => {
-      res.map((item) => {
-        formik.setFieldValue('AccountID', item.AccountID);
-      });
+    getAllCategory().then((res) => {
+      setCategory2(res);
     });
     getAllBrands().then((res) => {
       setBrand2(res);
     });
-    getAllCategory().then((res) => {
-      setCategory2(res);
-    });
+    getProductBySlug(slug)
+      .then((res) => {
+        formik.setFieldValue('Name', res.Name);
+        formik.setFieldValue('ProductID', res.ProductID);
+        formik.setFieldValue('AccountID', res.AccountID);
+        formik.setFieldValue('CategoryID', res.CategoryID);
+        formik.setFieldValue('Description', res.Description);
+        formik.setFieldValue('Price', res.Price);
+        formik.setFieldValue('BrandID', res.BrandID);
+        formik.setFieldValue('Thumbnail', res.Thumbnail);
+        formik.setFieldValue('Discount', res.Discount);
+        formik.setFieldValue('Quantity', res.Quantity);
+        formik.setFieldValue('ImportPrice', res.ImportPrice);
+        formik.setFieldValue('Sold', res.Sold);
+        setBrand(res.BrandID);
+        setCategory(res.CategoryID);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
+  const handleEditorChange = (content) => {
+    formik.setFieldValue('Details', content);
+  };
   const Input = styled('input')({
     display: 'none'
   });
   const formik = useFormik({
     initialValues: {
+      Name: '',
       ProductID: '',
-      AccountID: '',
-      BrandID: '',
       CategoryID: '',
-      Discount: '',
+      Description: '',
+      AccountID: '',
       Price: '',
-      ImportPrice: '',
+      BrandID: '',
+      Thumbnail: '',
+      Discount: '',
       Quantity: '',
-      Details: '',
-      Name: ''
+      ImportPrice: '',
+      Details: ''
     },
     onSubmit: () => {
       axios
         .post(`${process.env.REACT_APP_WEB_API}Management/AddOrEditProduct`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Updated') {
-            alert('Updated');
+            alert('Edit Product Successfully');
+            window.location.href = '../';
           } else {
-            alert('Update Failed');
+            alert('Edit Product Failed');
           }
         });
     }
   });
   const { handleSubmit, getFieldProps } = formik;
-  const fileToDataUri = (image) =>
-    new Promise((res) => {
-      const reader = new FileReader();
-      const { type, name, size } = image;
-      reader.addEventListener('load', () => {
-        res({
-          base64: reader.result,
-          name,
-          type,
-          size
-        });
-      });
-      reader.readAsDataURL(image);
-    });
   return (
-    <Page title="Dashboard: Edit Products ">
+    <Page title="Dashboard: Add Products ">
       <Container maxWidth="xl">
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h3" sx={{ mb: 5 }}>
-            Create a new product
+            Edit product
+            <Breadcrumbs aria-label="breadcrumb">
+              <Link underline="hover" color="inherit" href="/">
+                Dashboard
+              </Link>
+              <Link underline="hover" color="inherit" href="../">
+                Post
+              </Link>
+              <Typography color="text.primary">Edit / {slug}</Typography>
+            </Breadcrumbs>
           </Typography>
         </Stack>
         <FormikProvider value={formik}>
@@ -133,9 +145,10 @@ export default function AddProduct() {
                 <Grid item xs={12} md={8}>
                   <Card sx={{ p: 3, pb: 1 }}>
                     <Stack direction={{ xs: 'column' }} spacing={2}>
+                      <Typography variant="h7">Product Name</Typography>
                       <TextField
+                        disabled
                         {...getFieldProps('Name')}
-                        label="Product Name"
                         sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
                         variant="outlined"
                       />
@@ -182,43 +195,6 @@ export default function AddProduct() {
                         variant="outlined"
                       />
                     </Stack>
-                    <Stack direction={{ xs: 'column', sm: 'row' }}>
-                      <Stack direction={{ xs: 'column' }} spacing={2} justifyContent="center">
-                        <label htmlFor="contained-button-file1">
-                          <Input
-                            accept="image/*"
-                            multiple
-                            id="contained-button-file1"
-                            type="file"
-                            onChange={async (e) => {
-                              const { files } = e.target;
-                              for (let i = 0; i < files.length; i += 1) {
-                                image.push(fileToDataUri(files[i]));
-                              }
-                              const data = await Promise.all(image);
-                              setImage(data);
-                            }}
-                          />
-                          <Button
-                            onClick={() => setShow(!show)}
-                            sx={{ mt: 5, mb: 5 }}
-                            variant="contained"
-                            component="span"
-                          >
-                            Upload Image
-                          </Button>
-                        </label>
-                        {show && (
-                          <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
-                            {image.map((item, index) => (
-                              <ImageListItem key={index}>
-                                <img src={item.base64} alt="img" />
-                              </ImageListItem>
-                            ))}
-                          </ImageList>
-                        )}
-                      </Stack>
-                    </Stack>
                   </Card>
                 </Grid>
                 <Grid item xs={12} sm={8} md={4}>
@@ -229,11 +205,12 @@ export default function AddProduct() {
                         <Select
                           sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
                           labelId="BrandID-label"
+                          label="Brand"
                           id="BrandID"
-                          {...getFieldProps('BrandID')}
+                          {...getFieldProps('Brand')}
                           value={brand}
                           onChange={handleChangeBrand}
-                          input={<OutlinedInput label="Field" />}
+                          input={<OutlinedInput label="Brand" />}
                           MenuProps={MenuProps}
                         >
                           {brand2.map((name, i) => (
@@ -248,11 +225,12 @@ export default function AddProduct() {
                         <Select
                           sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
                           labelId="CategoryID-label"
+                          label="Category"
                           id="CategoryID"
                           {...getFieldProps('CategoryID')}
                           value={category}
                           onChange={handleChangeCategory}
-                          input={<OutlinedInput label="Field" />}
+                          input={<OutlinedInput label="Category" />}
                           MenuProps={MenuProps}
                         >
                           {category2.map((name, i) => (
@@ -289,7 +267,7 @@ export default function AddProduct() {
                   </Card>
                   <Card sx={{ p: 3, mt: 5 }}>
                     <Stack direction={{ xs: 'row' }} spacing={2} justifyContent="center">
-                      <Stack direction={{ xs: 'column' }} spacing={2}>
+                      <Stack direction={{ xs: 'row' }} spacing={2}>
                         <TextField
                           type="number"
                           sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
@@ -300,24 +278,8 @@ export default function AddProduct() {
                         <TextField
                           type="number"
                           sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                          label="Import price"
-                          {...getFieldProps('ImportPrice')}
-                          variant="outlined"
-                        />
-                      </Stack>
-                      <Stack direction={{ xs: 'column' }} spacing={2}>
-                        <TextField
-                          type="number"
-                          sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
                           label="Discount %"
                           {...getFieldProps('Discount')}
-                          variant="outlined"
-                        />
-                        <TextField
-                          type="number"
-                          sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                          label="Quantity"
-                          {...getFieldProps('Quantity')}
                           variant="outlined"
                         />
                       </Stack>
@@ -330,7 +292,7 @@ export default function AddProduct() {
                     variant="contained"
                     sx={{ mt: 5 }}
                   >
-                    Add Product
+                    Edit Product
                   </LoadingButton>
                 </Grid>
               </Grid>

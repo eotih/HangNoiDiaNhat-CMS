@@ -1,6 +1,8 @@
 import { useFormik } from 'formik';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 // material
 import { Container, Stack, Typography, Link, Breadcrumbs } from '@mui/material';
 // components
@@ -18,11 +20,14 @@ import { GetProductImageByProductName } from '../functions/Management';
 
 export default function ProductDetails() {
   const { slug } = useParams();
+  const [error, setError] = useState(null);
   const [openFilter, setOpenFilter] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [product, setProduct] = useState([]);
   useEffect(() => {
     GetProductImageByProductName(slug).then((res) => {
       setProduct(res);
+      setIsLoaded(true);
     });
   }, []);
   const formik = useFormik({
@@ -52,6 +57,16 @@ export default function ProductDetails() {
     handleSubmit();
     resetForm();
   };
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+  if (!isLoaded) {
+    return (
+      <Box sx={{ display: 'flex' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
   return (
     <Page title="Dashboard: Products Detail | Minimal-UI">
       <Container>

@@ -35,3 +35,8 @@ export async function GetProductImageByProductName(ProductName) {
   );
   return res.data;
 }
+
+export async function getProductBySlug(Slug) {
+  const res = await axios.get(`${REACT_APP_WEB_API}Management/GetProductBySlug?Slug=${Slug}`);
+  return res.data;
+}

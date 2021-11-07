@@ -79,7 +79,7 @@ const convertQuantity = (quantity) => {
 };
 const convertPriceToPriceSale = (price, priceSale) => price - price * priceSale;
 export default function ShopProductCard({ product }) {
-  const { Name, Thumbnail, Price, Discount, ThuongHieu, Quantity } = product;
+  const { ProductID, Name, Thumbnail, Price, Discount, ThuongHieu, Quantity, Slug } = product;
   return (
     <Card sx={{ height: '100%' }}>
       <Box sx={{ pt: '100%', position: 'relative' }}>
@@ -93,14 +93,14 @@ export default function ShopProductCard({ product }) {
             textTransform: 'uppercase'
           }}
         >
-          <ProductMoreMenu name={Name} />
+          <ProductMoreMenu ProductID={ProductID} name={Name} />
         </Label>
         {convertQuantity(Quantity)}
         <ProductImgStyle alt={Name} src={Thumbnail} />
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
-        <Link to="#" color="inherit" underline="hover" component={RouterLink}>
+        <Link to={`./edit/${Slug}`} color="inherit" underline="hover" component={RouterLink}>
           <Typography variant="subtitle2" noWrap>
             {Name}
           </Typography>
