@@ -3,6 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 // material
 import { Box, Card, Link, Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { ProductMoreMenu } from '.';
 // utils
 import { fCurrency } from '../../../utils/formatNumber';
 //
@@ -26,19 +27,21 @@ ShopProductCard.propTypes = {
 const convertQuantity = (quantity) => {
   if (quantity === 0) {
     return (
-      <Label
-        variant="filled"
-        color="error"
-        sx={{
-          zIndex: 9,
-          top: 16,
-          right: 16,
-          position: 'absolute',
-          textTransform: 'uppercase'
-        }}
-      >
-        Out of stock
-      </Label>
+      <>
+        <Label
+          variant="filled"
+          color="warning"
+          sx={{
+            zIndex: 9,
+            top: 16,
+            left: 16,
+            position: 'absolute',
+            textTransform: 'uppercase'
+          }}
+        >
+          Low stock
+        </Label>
+      </>
     );
   }
   if (quantity < 5) {
@@ -49,7 +52,7 @@ const convertQuantity = (quantity) => {
         sx={{
           zIndex: 9,
           top: 16,
-          right: 16,
+          left: 16,
           position: 'absolute',
           textTransform: 'uppercase'
         }}
@@ -65,7 +68,7 @@ const convertQuantity = (quantity) => {
       sx={{
         zIndex: 9,
         top: 16,
-        right: 16,
+        left: 16,
         position: 'absolute',
         textTransform: 'uppercase'
       }}
@@ -78,8 +81,20 @@ const convertPriceToPriceSale = (price, priceSale) => price - price * priceSale;
 export default function ShopProductCard({ product }) {
   const { Name, Thumbnail, Price, Discount, ThuongHieu, Quantity } = product;
   return (
-    <Card>
+    <Card sx={{ height: '100%' }}>
       <Box sx={{ pt: '100%', position: 'relative' }}>
+        <Label
+          variant="filled"
+          sx={{
+            zIndex: 9,
+            top: 16,
+            right: 16,
+            position: 'absolute',
+            textTransform: 'uppercase'
+          }}
+        >
+          <ProductMoreMenu name={Name} />
+        </Label>
         {convertQuantity(Quantity)}
         <ProductImgStyle alt={Name} src={Thumbnail} />
       </Box>

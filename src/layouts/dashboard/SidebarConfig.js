@@ -82,12 +82,12 @@ const sidebarConfig = [
         title: 'Contact',
         path: '/management/contact'
       },
+      // {
+      //   title: 'Product List',
+      //   path: '/management/product'
+      // },
       {
-        title: 'Product List',
-        path: '/management/product'
-      },
-      {
-        title: 'Product Card',
+        title: 'Products',
         path: '/management/products'
       },
     ]
@@ -119,7 +119,7 @@ const sidebarConfig = [
       }
     ]
   },
-  
+
   {
     title: 'Article',
     path: '/article',

@@ -27,7 +27,7 @@ import Contact from './pages/Contact';
 import Shipper from './pages/Shipper';
 import Product from './pages/Product';
 import ShippingDepartment from './pages/ShippingDepartment';
-import { AddProduct } from './components/_dashboard/product';
+import { AddProduct } from './components/_dashboard/products';
 import { AddPost, EditPost } from './components/_dashboard/post';
 import Order from './pages/Order';
 import OrderDetail from './pages/OrderDetail';
@@ -107,7 +107,7 @@ export default function Router() {
         { path: 'products', element: <Products /> },
         { path: 'products/detail/:slug', element: <ProductDetails /> },
         { path: 'order/detail/:id', element: <OrderDetail /> },
-        { path: 'product/add', element: <AddProduct /> }
+        { path: 'products/add', element: <AddProduct /> }
       ]
     },
     {

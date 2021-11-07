@@ -1,7 +1,10 @@
 import { useFormik } from 'formik';
 import { useState, useEffect } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import plusFill from '@iconify/icons-eva/plus-fill';
+import { Icon } from '@iconify/react';
 // material
-import { Container, Stack, Typography, Link, Breadcrumbs } from '@mui/material';
+import { Container, Stack, Typography, Link, Breadcrumbs, Button } from '@mui/material';
 // components
 import Page from '../components/Page';
 import {
@@ -15,7 +18,7 @@ import { getAllProduct } from '../functions/Management';
 
 // ----------------------------------------------------------------------
 
-export default function EcommerceShop() {
+export default function Products() {
   const [openFilter, setOpenFilter] = useState(false);
   const [product, setProduct] = useState([]);
   useEffect(() => {
@@ -53,16 +56,26 @@ export default function EcommerceShop() {
   return (
     <Page title="Dashboard: Products | Minimal-UI">
       <Container>
-        <Typography variant="h4" sx={{ mb: 5 }}>
-          Products
-          <Breadcrumbs aria-label="breadcrumb">
-            <Link underline="hover" color="inherit" href="/">
-              Dashboard
-            </Link>
-            <Typography color="text.primary">Products</Typography>
-          </Breadcrumbs>
-        </Typography>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Typography variant="h4" sx={{ mb: 5 }}>
+            Products
+            <Breadcrumbs aria-label="breadcrumb">
+              <Link underline="hover" color="inherit" href="/">
+                Dashboard
+              </Link>
+              <Typography color="text.primary">Products</Typography>
+            </Breadcrumbs>
+          </Typography>
 
+          <Button
+            to="./add"
+            variant="contained"
+            component={RouterLink}
+            startIcon={<Icon icon={plusFill} />}
+          >
+            New Product
+          </Button>
+        </Stack>
         <Stack
           direction="row"
           flexWrap="wrap-reverse"

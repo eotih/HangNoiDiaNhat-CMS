@@ -31,10 +31,12 @@ import React, { useState, useEffect } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css';
+import axios from 'axios';
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
 import Page from '../../Page';
-import { getAllUtilities, getAllBrands, getAllCategory } from '../../../functions/Component';
+import { getAllBrands, getAllCategory } from '../../../functions/Component';
+import { infoUserLogin } from '../../../functions/Organization';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -48,13 +50,13 @@ const MenuProps = {
 };
 
 export default function AddProduct() {
-  const [utilities, setUtilities] = useState([]);
-  const [utilities2, setUtilities2] = useState([]);
   const [brand, setBrand] = useState([]);
   const [brand2, setBrand2] = useState([]);
   const [category, setCategory] = useState([]);
   const [category2, setCategory2] = useState([]);
   const [image, setImage] = useState([]);
+  const [account, setAccount] = useState([]);
+  const [show, setShow] = useState(false);
 
   const handleEditorChange = (content) => {
     formik.setFieldValue('Details', content);
@@ -67,19 +69,11 @@ export default function AddProduct() {
     setBrand(event.target.value);
     formik.setFieldValue('BrandID', event.target.value);
   };
-  const handleChangeUtilities = (event) => {
-    const {
-      target: { value }
-    } = event;
-    console.log(value);
-    setUtilities2(
-      // On autofill we get a the stringified value.
-      typeof value === 'string' ? value.split(',') : value
-    );
-  };
   useEffect(() => {
-    getAllUtilities().then((res) => {
-      setUtilities(res);
+    infoUserLogin().then((res) => {
+      res.map((item) => {
+        setAccount(item.AccountID);
+      });
     });
     getAllBrands().then((res) => {
       setBrand2(res);
@@ -104,9 +98,43 @@ export default function AddProduct() {
       Name: ''
     },
     onSubmit: () => {
-      console.log(formik.values);
+      axios
+        .post(`${process.env.REACT_APP_WEB_API}Management/AddOrEditProduct`, {
+          BrandID: formik.values.BrandID,
+          CategoryID: formik.values.CategoryID,
+          Discount: formik.values.Discount,
+          Price: formik.values.Price,
+          ImportPrice: formik.values.ImportPrice,
+          Quantity: formik.values.Quantity,
+          Details: formik.values.Details,
+          Name: formik.values.Name,
+          AccountID: account
+        })
+        .then((res) => {
+          if (res.data.Status === 'Success') {
+            for (let i = 0; i < image.length; i++) {
+              uploadImageProduct(image[i].base64, formik.values.Name);
+            }
+          } else {
+            alert('Add Failed');
+          }
+        });
     }
   });
+  const uploadImageProduct = (image, name) => {
+    axios
+      .post(`${process.env.REACT_APP_WEB_API}Management/AddOrEditProductImage`, {
+        Image2: image,
+        ProductName: name
+      })
+      .then((res) => {
+        if (res.data.Status === 'Success') {
+          window.location.reload();
+        } else {
+          console.log('Add Failed');
+        }
+      });
+  };
   const { handleSubmit, getFieldProps } = formik;
   const fileToDataUri = (image) =>
     new Promise((res) => {
@@ -127,7 +155,7 @@ export default function AddProduct() {
       <Container maxWidth="xl">
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h3" sx={{ mb: 5 }}>
-            Add product
+            Create a new product
           </Typography>
         </Stack>
         <FormikProvider value={formik}>
@@ -203,17 +231,24 @@ export default function AddProduct() {
                               setImage(data);
                             }}
                           />
-                          <Button sx={{ mt: 5 }} variant="contained" component="span">
+                          <Button
+                            onClick={() => setShow(!show)}
+                            sx={{ mt: 5, mb: 5 }}
+                            variant="contained"
+                            component="span"
+                          >
                             Upload Image
                           </Button>
                         </label>
-                        <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
-                          {image.map((item, index) => (
-                            <ImageListItem key={index}>
-                              <img src={item.base64} alt="img" />
-                            </ImageListItem>
-                          ))}
-                        </ImageList>
+                        {show && (
+                          <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
+                            {image.map((item, index) => (
+                              <ImageListItem key={index}>
+                                <img src={item.base64} alt="img" />
+                              </ImageListItem>
+                            ))}
+                          </ImageList>
+                        )}
                       </Stack>
                     </Stack>
                   </Card>
@@ -221,27 +256,6 @@ export default function AddProduct() {
                 <Grid item xs={12} sm={8} md={4}>
                   <Card sx={{ p: 3, pb: 1 }}>
                     <Stack direction={{ xs: 'column' }} spacing={3}>
-                      <FormControl>
-                        <InputLabel id="demo-multiple-checkbox-label">Utilities</InputLabel>
-                        <Select
-                          sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                          labelId="demo-multiple-checkbox-label"
-                          id="demo-multiple-checkbox"
-                          multiple
-                          value={utilities2}
-                          onChange={handleChangeUtilities}
-                          input={<OutlinedInput label="Tag" />}
-                          renderValue={(selected) => selected.join(', ')}
-                          MenuProps={MenuProps}
-                        >
-                          {utilities.map((name, i) => (
-                            <MenuItem key={name.UtilityID} value={name.UtilityID}>
-                              <Checkbox checked={utilities2.indexOf(name.Name) > -1} />
-                              <ListItemText primary={name.Name} />
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
                       <FormControl>
                         <InputLabel id="Brand-label">Brand</InputLabel>
                         <Select

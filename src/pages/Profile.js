@@ -23,6 +23,7 @@ import {
   InputLabel
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import md5 from 'md5';
 import { LoadingButton } from '@mui/lab';
 import { infoUserLogin } from 'src/functions/Organization';
 import axios from 'axios';
@@ -33,6 +34,9 @@ export default function EditAccount() {
   const [role, setRole] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [roles, setRoles] = useState([]);
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [repeatNewPassword, setRepeatNewPassword] = useState('');
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -71,6 +75,7 @@ export default function EditAccount() {
     onSubmit: () => {
       axios
         .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditAccount`, {
+          AccountID: formik.values.AccountID,
           FullName: formik.values.FullName,
           Image: formik.values.Image,
           Phone: formik.values.Phone,
@@ -79,11 +84,11 @@ export default function EditAccount() {
           RoleID: formik.values.RoleID
         })
         .then((res) => {
-          if (res.data.Status === 'Success') {
-            alert('Thêm thành công');
+          if (res.data.Status === 'Updated') {
+            alert('Account Edit Successfully');
             window.location.reload();
           } else {
-            alert('Thêm thất bại');
+            alert('Edit Failed');
           }
         })
         .catch((err) => {
@@ -92,6 +97,33 @@ export default function EditAccount() {
     }
   });
   const { handleSubmit, getFieldProps } = formik;
+  const handleChangePassword = () => {
+    const { Password } = formik.values;
+    if (oldPassword === '' || newPassword === '' || repeatNewPassword === '') {
+      alert('Please fill your password / New Password / Repeat New Password');
+    } else if (newPassword !== repeatNewPassword) {
+      alert('New Password and Repeat New Password do not match');
+    } else if (Password !== md5(oldPassword)) {
+      alert('Old Password and New Password do not match');
+    } else {
+      axios
+        .post(`${process.env.REACT_APP_WEB_API}Organization/ChangePassword`, {
+          AccountID: formik.values.AccountID,
+          Password: newPassword
+        })
+        .then((res) => {
+          if (res.data.Status === 'Updated') {
+            alert('Thay đổi mật khẩu thành công');
+            window.location.reload();
+          } else {
+            alert('Thay đổi mật khẩu thất bại');
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
   useEffect(() => {
     getAllRole().then((res) => {
       setRoles(res);
@@ -124,24 +156,33 @@ export default function EditAccount() {
               <Typography variant="h5">Change Password</Typography>
               <TextField
                 fullWidth
+                onChange={(e) => {
+                  setOldPassword(e.target.value);
+                }}
                 label="Old Password"
                 type={showPassword ? 'text' : 'password'}
                 variant="outlined"
               />
               <TextField
                 fullWidth
+                onChange={(e) => {
+                  setNewPassword(e.target.value);
+                }}
                 label="New Password"
                 type={showPassword ? 'text' : 'password'}
-                {...getFieldProps('Password')}
                 variant="outlined"
               />
               <TextField
                 fullWidth
+                onChange={(e) => {
+                  setRepeatNewPassword(e.target.value);
+                }}
                 label="Repeat new password"
                 type={showPassword ? 'text' : 'password'}
+                // {...getFieldProps('Password')}
                 variant="outlined"
               />
-              <Button fullWidth variant="contained" component="span">
+              <Button onClick={handleChangePassword} fullWidth variant="contained" component="span">
                 Change Password
               </Button>
             </Stack>
