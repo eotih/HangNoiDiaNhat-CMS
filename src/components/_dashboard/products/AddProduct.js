@@ -13,7 +13,7 @@ export default function AddProduct() {
   function getStepContent(step) {
     switch (step) {
       case 0:
-        return <MainInformation />;
+        return <MainInformation onHandleNext={handleNext} />;
       case 1:
         return <Utilities />;
       default:
@@ -93,7 +93,7 @@ export default function AddProduct() {
           ) : (
             <>
               <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
-              <form>{getStepContent(activeStep)}</form>
+              {getStepContent(activeStep)}
               <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                 <Button
                   color="inherit"
