@@ -105,18 +105,18 @@ const sidebarConfig = [
         title: 'Shipping Department',
         path: '/delivery/shipping-department'
       },
-      {
-        title: 'Pick Up Orders',
-        path: '/delivery/pick-up'
-      },
+      // {
+      //   title: 'Pick Up Orders',
+      //   path: '/delivery/pick-up'
+      // },
       {
         title: 'Services',
         path: '/delivery/services'
       },
-      {
-        title: 'Tracking order',
-        path: '/delivery/tracking-order'
-      }
+      // {
+      //   title: 'Tracking order',
+      //   path: '/delivery/tracking-order'
+      // }
     ]
   },
 

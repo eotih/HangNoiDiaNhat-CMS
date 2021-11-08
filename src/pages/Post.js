@@ -23,6 +23,7 @@ export default function Post() {
   const [post, setPost] = useState([]);
   useEffect(() => {
     getAllPosts().then((res) => {
+      console.log(res);
       setPost(res);
     });
   }, []);

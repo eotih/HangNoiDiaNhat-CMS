@@ -3,6 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 // material
 import { Box, Card, Link, Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { PostMoreMenu } from '.';
 import Label from '../../Label';
 
 // ----------------------------------------------------------------------
@@ -29,7 +30,7 @@ const convertState = (state) => {
         sx={{
           zIndex: 9,
           top: 16,
-          right: 16,
+          left: 16,
           position: 'absolute',
           textTransform: 'uppercase'
         }}
@@ -46,7 +47,7 @@ const convertState = (state) => {
         sx={{
           zIndex: 9,
           top: 16,
-          right: 16,
+          left: 16,
           position: 'absolute',
           textTransform: 'uppercase'
         }}
@@ -62,7 +63,7 @@ const convertState = (state) => {
       sx={{
         zIndex: 9,
         top: 16,
-        right: 16,
+        left: 16,
         position: 'absolute',
         textTransform: 'uppercase'
       }}
@@ -72,10 +73,22 @@ const convertState = (state) => {
   );
 };
 export default function PostCard({ product }) {
-  const { Title, Thumbnail, TrangThai, LinhVuc, Slug } = product;
+  const { PostID, Title, Thumbnail, TrangThai, LinhVuc, Slug } = product;
   return (
     <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>
+        <Label
+          variant="filled"
+          sx={{
+            zIndex: 9,
+            top: 16,
+            right: 16,
+            position: 'absolute',
+            textTransform: 'uppercase'
+          }}
+        >
+          <PostMoreMenu Post={product} />
+        </Label>
         {convertState(TrangThai)}
         <ProductImgStyle alt={Title} src={Thumbnail} />
       </Box>
