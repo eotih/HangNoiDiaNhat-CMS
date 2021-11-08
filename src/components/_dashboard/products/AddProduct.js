@@ -1,359 +1,121 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import {
-  Container,
-  Stack,
-  Typography,
-  Box,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Input,
-  ImageList,
-  ImageListItem,
-  Button,
-  Card,
-  Grid,
-  Avatar,
-  ListItemText,
-  OutlinedInput
-} from '@mui/material';
-import React, { useState, useEffect } from 'react';
-import { useFormik, Form, FormikProvider } from 'formik';
-import SunEditor from 'suneditor-react';
-import 'suneditor/dist/css/suneditor.min.css';
-import axios from 'axios';
-import { LoadingButton } from '@mui/lab';
-import { styled } from '@mui/material/styles';
+import { Container, Typography, Box, Button, Stepper, Step, StepLabel, Stack } from '@mui/material';
+import React, { useState } from 'react';
 import Page from '../../Page';
-import { getAllBrands, getAllCategory } from '../../../functions/Component';
-import { infoUserLogin } from '../../../functions/Organization';
+import { MainInformation, Utilities } from '.';
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250
+const steps = ['Main Information', 'Choose Utilities'];
+export default function AddProduct() {
+  const [activeStep, setActiveStep] = useState(0);
+  const [skipped, setSkipped] = useState(new Set());
+
+  function getStepContent(step) {
+    switch (step) {
+      case 0:
+        return <MainInformation />;
+      case 1:
+        return <Utilities />;
+      default:
+        return 'unknown step';
     }
   }
-};
 
-export default function AddProduct() {
-  const [brand, setBrand] = useState([]);
-  const [brand2, setBrand2] = useState([]);
-  const [category, setCategory] = useState([]);
-  const [category2, setCategory2] = useState([]);
-  const [image, setImage] = useState([]);
-  const [show, setShow] = useState(false);
+  const isStepOptional = (step) => step === null;
 
-  const handleEditorChange = (content) => {
-    formik.setFieldValue('Details', content);
-  };
-  const handleChangeCategory = (event) => {
-    setCategory(event.target.value);
-    formik.setFieldValue('CategoryID', event.target.value);
-  };
-  const handleChangeBrand = (event) => {
-    setBrand(event.target.value);
-    formik.setFieldValue('BrandID', event.target.value);
-  };
-  useEffect(() => {
-    infoUserLogin().then((res) => {
-      res.map((item) => {
-        formik.setFieldValue('AccountID', item.AccountID);
-      });
-    });
-    getAllBrands().then((res) => {
-      setBrand2(res);
-    });
-    getAllCategory().then((res) => {
-      setCategory2(res);
-    });
-  }, []);
+  const isStepSkipped = (step) => skipped.has(step);
 
-  const Input = styled('input')({
-    display: 'none'
-  });
-  const formik = useFormik({
-    initialValues: {
-      AccountID: '',
-      BrandID: '',
-      CategoryID: '',
-      Discount: '',
-      Price: '',
-      ImportPrice: '',
-      Quantity: '',
-      Details: '',
-      Name: ''
-    },
-    onSubmit: () => {
-      axios
-        .post(`${process.env.REACT_APP_WEB_API}Management/AddOrEditProduct`, formik.values)
-        .then((res) => {
-          if (res.data.Status === 'Success') {
-            for (let i = 0; i < image.length; i += 1) {
-              uploadImageProduct(image[i].base64, formik.values.Name);
-            }
-          } else {
-            alert('Add Failed');
-          }
-        });
+  const handleNext = () => {
+    let newSkipped = skipped;
+    if (isStepSkipped(activeStep)) {
+      newSkipped = new Set(newSkipped.values());
+      newSkipped.delete(activeStep);
     }
-  });
-  const uploadImageProduct = (image, name) => {
-    axios
-      .post(`${process.env.REACT_APP_WEB_API}Management/AddOrEditProductImage`, {
-        Image2: image,
-        ProductName: name
-      })
-      .then((res) => {
-        if (res.data.Status === 'Success') {
-          window.location.reload();
-        } else {
-          console.log('Add Failed');
-        }
-      });
+
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setSkipped(newSkipped);
   };
-  const { handleSubmit, getFieldProps } = formik;
-  const fileToDataUri = (image) =>
-    new Promise((res) => {
-      const reader = new FileReader();
-      const { type, name, size } = image;
-      reader.addEventListener('load', () => {
-        res({
-          base64: reader.result,
-          name,
-          type,
-          size
-        });
-      });
-      reader.readAsDataURL(image);
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleSkip = () => {
+    if (!isStepOptional(activeStep)) {
+      throw new Error("You can't skip a step that isn't optional.");
+    }
+
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setSkipped((prevSkipped) => {
+      const newSkipped = new Set(prevSkipped.values());
+      newSkipped.add(activeStep);
+      return newSkipped;
     });
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+  };
   return (
     <Page title="Dashboard: Add Products ">
       <Container maxWidth="xl">
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h3" sx={{ mb: 5 }}>
-            Create a new product
-          </Typography>
+          <Typography variant="h3">Create a new product</Typography>
         </Stack>
-        <FormikProvider value={formik}>
-          <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-            <Box sx={{ flexGrow: 1 }}>
-              <Grid container spacing={3}>
-                <Grid item xs={12} md={8}>
-                  <Card sx={{ p: 3, pb: 1 }}>
-                    <Stack direction={{ xs: 'column' }} spacing={2}>
-                      <TextField
-                        {...getFieldProps('Name')}
-                        label="Product Name"
-                        sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                        variant="outlined"
-                      />
-                      <Typography variant="h7">Product Description</Typography>
-                      <SunEditor
-                        onChange={handleEditorChange}
-                        autoFocus
-                        height="100%"
-                        setOptions={{
-                          showPathLabel: false,
-                          minHeight: '50vh',
-                          maxHeight: '50vh',
-                          placeholder: 'Enter your text here!!!',
-                          buttonList: [
-                            ['undo', 'redo'],
-                            ['font', 'fontSize', 'formatBlock'],
-                            ['paragraphStyle'],
-                            ['bold', 'underline', 'italic', 'strike', 'subscript', 'superscript'],
-                            ['fontColor', 'hiliteColor'],
-                            ['removeFormat'],
-                            '/', // Line break
-                            ['outdent', 'indent'],
-                            ['align', 'horizontalRule', 'list', 'lineHeight'],
-                            ['table', 'link', 'image']
-                          ],
-                          formats: ['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
-                          font: [
-                            'Arial',
-                            'Calibri',
-                            'Comic Sans',
-                            'Courier',
-                            'Garamond',
-                            'Georgia',
-                            'Impact',
-                            'Lucida Console',
-                            'Palatino Linotype',
-                            'Segoe UI',
-                            'Tahoma',
-                            'Times New Roman',
-                            'Trebuchet MS'
-                          ]
-                        }}
-                        // {...getFieldProps('Details')}
-                        variant="outlined"
-                      />
-                    </Stack>
-                    <Stack direction={{ xs: 'column', sm: 'row' }}>
-                      <Stack direction={{ xs: 'column' }} spacing={2} justifyContent="center">
-                        <label htmlFor="contained-button-file1">
-                          <Input
-                            accept="image/*"
-                            multiple
-                            id="contained-button-file1"
-                            type="file"
-                            onChange={async (e) => {
-                              const { files } = e.target;
-                              for (let i = 0; i < files.length; i += 1) {
-                                image.push(fileToDataUri(files[i]));
-                              }
-                              const data = await Promise.all(image);
-                              setImage(data);
-                            }}
-                          />
-                          <Button
-                            onClick={() => setShow(!show)}
-                            sx={{ mt: 5, mb: 5 }}
-                            variant="contained"
-                            component="span"
-                          >
-                            Upload Image
-                          </Button>
-                        </label>
-                        {show && (
-                          <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
-                            {image.map((item, index) => (
-                              <ImageListItem key={index}>
-                                <img src={item.base64} alt="img" />
-                              </ImageListItem>
-                            ))}
-                          </ImageList>
-                        )}
-                      </Stack>
-                    </Stack>
-                  </Card>
-                </Grid>
-                <Grid item xs={12} sm={8} md={4}>
-                  <Card sx={{ p: 3, pb: 1 }}>
-                    <Stack direction={{ xs: 'column' }} spacing={3}>
-                      <FormControl>
-                        <InputLabel id="Brand-label">Brand</InputLabel>
-                        <Select
-                          sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                          labelId="BrandID-label"
-                          label="Brand"
-                          id="BrandID"
-                          {...getFieldProps('Brand')}
-                          value={brand}
-                          onChange={handleChangeBrand}
-                          input={<OutlinedInput label="Brand" />}
-                          MenuProps={MenuProps}
-                        >
-                          {brand2.map((name, i) => (
-                            <MenuItem key={name.BrandID} value={name.BrandID}>
-                              <ListItemText primary={name.Name} />
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      <FormControl>
-                        <InputLabel id="Category-label">Category</InputLabel>
-                        <Select
-                          sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                          labelId="CategoryID-label"
-                          label="Category"
-                          id="CategoryID"
-                          {...getFieldProps('CategoryID')}
-                          value={category}
-                          onChange={handleChangeCategory}
-                          input={<OutlinedInput label="Category" />}
-                          MenuProps={MenuProps}
-                        >
-                          {category2.map((name, i) => (
-                            <MenuItem key={name.CategoryID} value={name.CategoryID}>
-                              <ListItemText primary={name.Name} />
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      <Stack direction="row" alignItems="center" justifyContent="center">
-                        <label htmlFor="contained-button-file">
-                          <Input
-                            id="contained-button-file"
-                            type="file"
-                            onChange={(e) => {
-                              const { files } = e.target;
-                              const reader = new FileReader();
-                              reader.readAsDataURL(files[0]);
-                              reader.onload = (e) => {
-                                formik.setFieldValue('Thumbnail', e.target.result);
-                              };
-                            }}
-                          />
-                          <Button variant="contained" component="span">
-                            Upload Thumbnail
-                          </Button>
-                        </label>
-                        <Avatar
-                          src={formik.values.Thumbnail}
-                          sx={{ width: '100px', height: '100%', ml: 5 }}
-                        />
-                      </Stack>
-                    </Stack>
-                  </Card>
-                  <Card sx={{ p: 3, mt: 5 }}>
-                    <Stack direction={{ xs: 'row' }} spacing={2} justifyContent="center">
-                      <Stack direction={{ xs: 'column' }} spacing={2}>
-                        <TextField
-                          type="number"
-                          sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                          label="Price"
-                          {...getFieldProps('Price')}
-                          variant="outlined"
-                        />
-                        <TextField
-                          type="number"
-                          sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                          label="Import price"
-                          {...getFieldProps('ImportPrice')}
-                          variant="outlined"
-                        />
-                      </Stack>
-                      <Stack direction={{ xs: 'column' }} spacing={2}>
-                        <TextField
-                          type="number"
-                          sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                          label="Discount %"
-                          {...getFieldProps('Discount')}
-                          variant="outlined"
-                        />
-                        <TextField
-                          type="number"
-                          sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                          label="Quantity"
-                          {...getFieldProps('Quantity')}
-                          variant="outlined"
-                        />
-                      </Stack>
-                    </Stack>
-                  </Card>
-                  <LoadingButton
-                    fullWidth
-                    size="large"
-                    type="submit"
-                    variant="contained"
-                    sx={{ mt: 5 }}
-                  >
-                    Add Product
-                  </LoadingButton>
-                </Grid>
-              </Grid>
-            </Box>
-          </Form>
-        </FormikProvider>
+        <Box sx={{ width: '100%' }}>
+          <Stepper activeStep={activeStep}>
+            {steps.map((label, index) => {
+              const stepProps = {};
+              const labelProps = {};
+              if (isStepOptional(index)) {
+                labelProps.optional = <Typography variant="caption">Optional</Typography>;
+              }
+              if (isStepSkipped(index)) {
+                stepProps.completed = false;
+              }
+              return (
+                <Step key={label} {...stepProps}>
+                  <StepLabel {...labelProps}>{label}</StepLabel>
+                </Step>
+              );
+            })}
+          </Stepper>
+          {activeStep === steps.length ? (
+            <>
+              <Typography sx={{ mt: 2, mb: 1 }}>
+                All steps completed - you&apos;re finished
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                <Box sx={{ flex: '1 1 auto' }} />
+                <Button onClick={handleReset}>Reset</Button>
+              </Box>
+            </>
+          ) : (
+            <>
+              <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
+              <form>{getStepContent(activeStep)}</form>
+              <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                <Button
+                  color="inherit"
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  sx={{ mr: 1 }}
+                >
+                  Back
+                </Button>
+                <Box sx={{ flex: '1 1 auto' }} />
+                {isStepOptional(activeStep) && (
+                  <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
+                    Skip
+                  </Button>
+                )}
+                <Button onClick={handleNext}>
+                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                </Button>
+              </Box>
+            </>
+          )}
+        </Box>
       </Container>
     </Page>
   );
