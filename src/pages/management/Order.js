@@ -23,10 +23,10 @@ import {
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import { getAllOrder } from 'src/functions/Management';
-import Page from '../components/Page';
-import Scrollbar from '../components/Scrollbar';
-import SearchNotFound from '../components/SearchNotFound';
-import { OrderListHead, OrderListToolbar, OrderMoreMenu } from '../components/_dashboard/order';
+import Page from '../../components/Page';
+import Scrollbar from '../../components/Scrollbar';
+import SearchNotFound from '../../components/SearchNotFound';
+import { OrderListHead, OrderListToolbar, OrderMoreMenu } from '../../components/_dashboard/order';
 
 // ----------------------------------------------------------------------
 

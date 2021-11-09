@@ -18,10 +18,10 @@ import { useFormik, Form, FormikProvider } from 'formik';
 import React, { useState, useEffect, memo } from 'react';
 import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css';
-import { LoadingButton } from '@mui/lab';
 import axios from 'axios';
 import { styled } from '@mui/material/styles';
 import { getAllBrands, getAllCategory } from '../../../functions/Component';
+import { UploadImage } from '.';
 import { infoUserLogin } from '../../../functions/Organization';
 //----------------------------------
 function MainInformation({ onHandleNext }) {
@@ -29,8 +29,7 @@ function MainInformation({ onHandleNext }) {
   const [category, setCategory] = useState([]);
   const [brand2, setBrand2] = useState([]);
   const [category2, setCategory2] = useState([]);
-  const [image, setImage] = useState([]);
-  const [show, setShow] = useState(false);
+  const [images, setImages] = useState([]);
   const handleChange1 = (event) => {
     setBrand(event.target.value);
     formik.setFieldValue('BrandID', event.target.value);
@@ -76,8 +75,8 @@ function MainInformation({ onHandleNext }) {
         .post(`${process.env.REACT_APP_WEB_API}Management/AddOrEditProduct`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
-            for (let i = 0; i < image.length; i += 1) {
-              uploadImageProduct(image[i].base64, formik.values.Name);
+            for (let i = 0; i < images.length; i += 1) {
+              uploadImageProduct(images[i].base64, formik.values.Name);
             }
             onHandleNext();
           } else {
@@ -100,20 +99,9 @@ function MainInformation({ onHandleNext }) {
         }
       });
   };
-  const fileToDataUri = (image) =>
-    new Promise((res) => {
-      const reader = new FileReader();
-      const { type, name, size } = image;
-      reader.addEventListener('load', () => {
-        res({
-          base64: reader.result,
-          name,
-          type,
-          size
-        });
-      });
-      reader.readAsDataURL(image);
-    });
+  const handleInfo = (event) => {
+    setImages(event);
+  };
   const { handleSubmit, getFieldProps } = formik;
   return (
     <>
@@ -264,61 +252,7 @@ function MainInformation({ onHandleNext }) {
                 </Stack>
               </Card>
               <Card sx={{ mt: 5 }}>
-                <Grid container spacing={3}>
-                  <Grid item xs={12}>
-                    <Card sx={{ p: 5 }}>
-                      <Stack direction={{ xs: 'column' }} spacing={2}>
-                        <Typography variant="h3">Upload image for product</Typography>
-                        <label htmlFor="contained-button-file1">
-                          <Input
-                            accept="image/*"
-                            multiple
-                            id="contained-button-file1"
-                            type="file"
-                            onChange={async (e) => {
-                              const { files } = e.target;
-                              for (let i = 0; i < files.length; i += 1) {
-                                image.push(fileToDataUri(files[i]));
-                              }
-                              const data = await Promise.all(image);
-                              setImage(data);
-                            }}
-                          />
-                          <Button
-                            onClick={() => setShow(!show)}
-                            variant="contained"
-                            component="span"
-                          >
-                            Upload Image
-                          </Button>
-                        </label>
-                        <Stack direction="row" alignItems="center" justifyContent="center">
-                          {show && (
-                            <Stack direction="row" spacing={2}>
-                              {image.map((item, index) => (
-                                <Avatar
-                                  sx={{ width: 56, height: 56 }}
-                                  key={index}
-                                  src={item.base64}
-                                  alt="img"
-                                />
-                              ))}
-                            </Stack>
-                          )}
-                        </Stack>
-                      </Stack>
-                    </Card>
-                    <LoadingButton
-                      fullWidth
-                      size="large"
-                      type="submit"
-                      variant="contained"
-                      sx={{ mt: 5 }}
-                    >
-                      Add Product
-                    </LoadingButton>
-                  </Grid>
-                </Grid>
+                <UploadImage onSubmitProduct={handleInfo} />
               </Card>
             </Grid>
           </Grid>

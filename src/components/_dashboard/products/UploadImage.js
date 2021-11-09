@@ -1,15 +1,6 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import {
-  Stack,
-  Grid,
-  Card,
-  Button,
-  ImageList,
-  ImageListItem,
-  Input,
-  Typography
-} from '@mui/material';
+import { Stack, Grid, Card, Button, Typography } from '@mui/material';
 import React, { useState, memo } from 'react';
 import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
@@ -17,7 +8,7 @@ import Avatar from '@mui/material/Avatar';
 
 //--------------------------------------------------------
 
-export default function UploadImage({ onSubmitProduct }) {
+function UploadImage({ onSubmitProduct }) {
   const [image, setImage] = useState([]);
   const [show, setShow] = useState(false);
   const fileToDataUri = (image) =>
@@ -80,7 +71,7 @@ export default function UploadImage({ onSubmitProduct }) {
             </Stack>
           </Card>
           <LoadingButton
-            onClick={onSubmitProduct}
+            onClick={() => onSubmitProduct(image)}
             fullWidth
             size="large"
             type="submit"
@@ -94,3 +85,4 @@ export default function UploadImage({ onSubmitProduct }) {
     </>
   );
 }
+export default memo(UploadImage);

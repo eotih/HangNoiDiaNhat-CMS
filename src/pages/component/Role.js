@@ -16,9 +16,9 @@ import {
   Checkbox,
   TableRow,
   TableBody,
+  TableCell,
   Link,
   Breadcrumbs,
-  TableCell,
   Container,
   Modal,
   TextField,
@@ -31,24 +31,19 @@ import { LoadingButton } from '@mui/lab';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 import Box from '@mui/material/Box';
-import { getAllCustomer } from 'src/functions/Management';
-import Page from '../components/Page';
-import Scrollbar from '../components/Scrollbar';
-import SearchNotFound from '../components/SearchNotFound';
-import {
-  CustomerListHead,
-  CustomerListToolbar,
-  CustomerMoreMenu
-} from '../components/_dashboard/customer';
+import { getAllRole } from 'src/functions/Component';
+import Page from '../../components/Page';
+import Scrollbar from '../../components/Scrollbar';
+import SearchNotFound from '../../components/SearchNotFound';
+import { RoleListHead, RoleListToolbar, RoleMoreMenu } from '../../components/_dashboard/role';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'CustomerID', label: 'CustomerID', alignRight: false },
-  { id: 'FullName', label: 'FullName', alignRight: false },
-  { id: 'Email', label: 'Email', alignRight: false },
-  { id: 'Phone', label: 'Phone', alignRight: false },
-  { id: 'Address', label: 'Address', alignRight: false },
+  { id: 'RoleID', label: 'RoleID', alignRight: false },
+  { id: 'RoleName', label: 'RoleName', alignRight: false },
+  { id: 'CreatedAt', label: 'CreatedAt', alignRight: false },
+  { id: 'UpdatedAt', label: 'UpdatedAt', alignRight: false },
   { id: '' }
 ];
 
@@ -83,7 +78,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function User() {
+export default function Role() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [page, setPage] = useState(0);
@@ -96,19 +91,15 @@ export default function User() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [role, setRole] = useState([]);
-  const [customer, setCustomer] = useState([]);
   useEffect(() => {
-    getAllCustomer().then((res) => {
+    getAllRole().then((res) => {
       setIsLoaded(true);
-      setCustomer(res);
+      setRole(res);
     });
   }, []);
-  const handleChange = (event) => {
-    setRole(event.target.value);
-  };
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - customer.length) : 0;
-  const filteredCustomer = applySortFilter(customer, getComparator(order, orderBy), filterName);
-  const isUserNotFound = filteredCustomer.length === 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - role.length) : 0;
+  const filteredUsers = applySortFilter(role, getComparator(order, orderBy), filterName);
+  const isUserNotFound = filteredUsers.length === 0;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -159,31 +150,25 @@ export default function User() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = customer.map((n) => n.name);
+      const newSelecteds = role.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
-
   const formik = useFormik({
     initialValues: {
-      FullName: '',
-      Phone: '',
-      Email: '',
-      Address: '',
-      Password: '',
-      remember: true
+      RoleName: ''
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Management/AddOrEditCustomer`, formik.values)
+        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditRole`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
-            alert('Add Customer Successfully');
+            alert('Thêm thành công');
             window.location.reload();
           } else {
-            alert('Add Failed');
+            alert('Thêm thất bại');
           }
         })
         .catch((err) => {
@@ -204,12 +189,11 @@ export default function User() {
     );
   }
   return (
-    <Page title="Customer | HangnoidiaNhat">
+    <Page title="Role | HangnoidiaNhat">
       <Modal
         open={open}
         sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' },
-          '& .MuiSelect-root': { m: 1, width: '25ch' }
+          '& .MuiTextField-root': { m: 1, width: '25ch' }
         }}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
@@ -220,27 +204,13 @@ export default function User() {
             <Box sx={style}>
               <Stack spacing={3}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add Customer
+                  Add Role
                 </Typography>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />
-                  <TextField label="Phone" {...getFieldProps('Phone')} variant="outlined" />
-                </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
-                  <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
-                </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField
-                    fullWidth
-                    type="password"
-                    label="Password"
-                    {...getFieldProps('Password')}
-                    variant="outlined"
-                  />
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+                  <TextField label="RoleName" {...getFieldProps('RoleName')} variant="outlined" />
                 </Stack>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                  Add Customer
+                  Add Role
                 </LoadingButton>
               </Stack>
             </Box>
@@ -250,12 +220,12 @@ export default function User() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Customer
+            Role
             <Breadcrumbs aria-label="breadcrumb">
               <Link underline="hover" color="inherit" href="/">
                 Dashboard
               </Link>
-              <Typography color="text.primary">Customer</Typography>
+              <Typography color="text.primary">Role</Typography>
             </Breadcrumbs>
           </Typography>
           <Button
@@ -265,12 +235,12 @@ export default function User() {
             to="#"
             startIcon={<Icon icon={plusFill} />}
           >
-            New Customer
+            New Role
           </Button>
         </Stack>
 
         <Card>
-          <CustomerListToolbar
+          <RoleListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -279,48 +249,45 @@ export default function User() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <CustomerListHead
+                <RoleListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={customer.length}
+                  rowCount={role.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredCustomer
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      const { CustomerID, Address, FullName, Email, Phone } = row;
-                      const isItemSelected = selected.indexOf(FullName) !== -1;
+                  {role.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                    const { RoleID, RoleName, CreatedAt, UpdatedAt } = row;
+                    const isItemSelected = selected.indexOf(RoleName) !== -1;
 
-                      return (
-                        <TableRow
-                          hover
-                          key={CustomerID}
-                          tabIndex={-1}
-                          role="checkbox"
-                          selected={isItemSelected}
-                          aria-checked={isItemSelected}
-                        >
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              checked={isItemSelected}
-                              onChange={(event) => handleClick(event, FullName)}
-                            />
-                          </TableCell>
-                          <TableCell align="left">{CustomerID}</TableCell>
-                          <TableCell align="left">{FullName}</TableCell>
-                          <TableCell align="left">{Email}</TableCell>
-                          <TableCell align="left">{Phone}</TableCell>
-                          <TableCell align="left">{Address}</TableCell>
-                          <TableCell align="right">
-                            <CustomerMoreMenu dulieu={row} />
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
+                    return (
+                      <TableRow
+                        hover
+                        key={RoleID}
+                        tabIndex={-1}
+                        role="checkbox"
+                        selected={isItemSelected}
+                        aria-checked={isItemSelected}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            checked={isItemSelected}
+                            onChange={(event) => handleClick(event, RoleName)}
+                          />
+                        </TableCell>
+                        <TableCell align="left">{RoleID}</TableCell>
+                        <TableCell align="left">{RoleName}</TableCell>
+                        <TableCell align="left">{CreatedAt}</TableCell>
+                        <TableCell align="left">{UpdatedAt}</TableCell>
+                        <TableCell align="right">
+                          <RoleMoreMenu dulieu={row} />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
@@ -343,7 +310,7 @@ export default function User() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={customer.length}
+            count={role.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

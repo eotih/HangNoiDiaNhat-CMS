@@ -45,7 +45,6 @@ export default function ProductMoreMenu(Product) {
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const handleDelete = () => {
     if (confirm('Are you sure you want to delete')) {
       axios
@@ -54,8 +53,16 @@ export default function ProductMoreMenu(Product) {
         )
         .then((res) => {
           if (res.data.Status === 'Deleted') {
-            alert('Product deleted successfully');
-            window.location.reload();
+            axios
+              .delete(
+                `${process.env.REACT_APP_WEB_API}Management/DeleteImageWhereProductName?ProductName=${Product.name}`
+              )
+              .then((response) => {
+                if (response.data.Status === 'Deleted') {
+                  alert('Product Deleted');
+                  window.location.reload();
+                }
+              });
           } else {
             alert('Product not deleted');
           }
@@ -78,36 +85,6 @@ export default function ProductMoreMenu(Product) {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: 'left' }}
       >
-        {/* <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <FormikProvider value={formik}>
-            <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-              <Box sx={style}>
-                <Stack spacing={3}>
-                  <Typography id="modal-modal-title" variant="h6" component="h2">
-                    Edit stock
-                  </Typography>
-                  <TextField
-                    type="number"
-                    {...getFieldProps('FullName')}
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start">+</InputAdornment>
-                    }}
-                    label="Stock"
-                    variant="outlined"
-                  />
-                  <Button variant="contained" component={RouterLink}>
-                    Edit Stock
-                  </Button>
-                </Stack>
-              </Box>
-            </Form>
-          </FormikProvider>
-        </Modal> */}
         <MenuItem onClick={handleOpen} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>
             <Icon icon={pluscirclefill} width={24} height={24} />

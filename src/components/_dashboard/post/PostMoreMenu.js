@@ -3,7 +3,6 @@
 import * as React from 'react';
 import { Icon } from '@iconify/react';
 import { useRef, useState, useEffect } from 'react';
-import editFill from '@iconify/icons-eva/edit-fill';
 import trash from '@iconify/icons-eva/trash-2-outline';
 import { useFormik, Form, FormikProvider } from 'formik';
 import checkmark from '@iconify/icons-eva/checkmark-circle-outline';
@@ -149,12 +148,6 @@ export default function PostMoreMenu(Post) {
             <Icon icon={checkmark} width={24} height={24} />
           </ListItemIcon>
           <ListItemText primary="Approve" primaryTypographyProps={{ variant: 'body2' }} />
-        </MenuItem>
-        <MenuItem sx={{ color: 'text.secondary' }}>
-          <ListItemIcon>
-            <Icon icon={editFill} width={24} height={24} />
-          </ListItemIcon>
-          <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
         <MenuItem onClick={handleDelete} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>

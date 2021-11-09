@@ -40,3 +40,7 @@ export async function getProductBySlug(Slug) {
   const res = await axios.get(`${REACT_APP_WEB_API}Management/GetProductBySlug?Slug=${Slug}`);
   return res.data;
 }
+export async function GetProductWhereProductDetailNull() {
+  const res = await axios.get(`${REACT_APP_WEB_API}Management/GetProductWhereProductDetailNull`);
+  return res.data;
+}

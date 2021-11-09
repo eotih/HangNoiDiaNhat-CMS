@@ -18,33 +18,36 @@ import {
   TableBody,
   TableCell,
   Container,
+  Modal,
+  Input,
+  TextField,
   Link,
   Breadcrumbs,
-  Modal,
-  TextField,
   Typography,
+  Avatar,
   TableContainer,
   TablePagination
 } from '@mui/material';
 // components
 import { LoadingButton } from '@mui/lab';
+import { styled } from '@mui/material/styles';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 import Box from '@mui/material/Box';
-import { getAllServices } from 'src/functions/Delivery';
-import Page from '../components/Page';
-import Scrollbar from '../components/Scrollbar';
-import SearchNotFound from '../components/SearchNotFound';
+import { getAllBanner } from 'src/functions/Organization';
+import Page from '../../components/Page';
+import Scrollbar from '../../components/Scrollbar';
+import SearchNotFound from '../../components/SearchNotFound';
 import {
-  ServiceMoreMenu,
-  ServiceListToolbar,
-  ServiceListHead
-} from '../components/_dashboard/service';
+  BannerMoreMenu,
+  BannerListToolbar,
+  BannerListHead
+} from '../../components/_dashboard/banner';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'ServiceID', label: 'ServiceID', alignRight: false },
+  { id: 'BrandID', label: 'BrandID', alignRight: false },
   { id: 'Name', label: 'Name', alignRight: false },
   { id: 'CreatedAt', label: 'CreatedAt', alignRight: false },
   { id: 'UpdatedAt', label: 'UpdatedAt', alignRight: false },
@@ -82,7 +85,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Service() {
+export default function Category() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [page, setPage] = useState(0);
@@ -94,23 +97,25 @@ export default function Service() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [service, setService] = useState([]);
+  const [banner, setBanner] = useState([]);
   useEffect(() => {
-    getAllServices().then((res) => {
+    getAllBanner().then((res) => {
       setIsLoaded(true);
-      setService(res);
+      setBanner(res);
     });
   }, []);
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - service.length) : 0;
-  const filteredUsers = applySortFilter(service, getComparator(order, orderBy), filterName);
-  const isUserNotFound = filteredUsers.length === 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - banner.length) : 0;
+  const filteredBanners = applySortFilter(banner, getComparator(order, orderBy), filterName);
+  const isUserNotFound = filteredBanners.length === 0;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
-
+  const Input = styled('input')({
+    display: 'none'
+  });
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
@@ -154,7 +159,7 @@ export default function Service() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = service.map((n) => n.name);
+      const newSelecteds = banner.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -162,14 +167,15 @@ export default function Service() {
   };
   const formik = useFormik({
     initialValues: {
-      Name: ''
+      Name: '',
+      Image: ''
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Delivery/AddOrEditService`, formik.values)
+        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditBanner`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
-            alert('Add Service Successfully');
+            alert('Add Banner Successfully');
             window.location.reload();
           } else {
             alert('Add Failed');
@@ -193,7 +199,7 @@ export default function Service() {
     );
   }
   return (
-    <Page title="Service | HangnoidiaNhat">
+    <Page title="Category | HangnoidiaNhat">
       <Modal
         open={open}
         sx={{
@@ -208,13 +214,37 @@ export default function Service() {
             <Box sx={style}>
               <Stack spacing={3}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add Service
+                  Add Banner
                 </Typography>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
                   <TextField label="Name" {...getFieldProps('Name')} variant="outlined" />
                 </Stack>
+                <Stack
+                  direction={{ xs: 'column', sm: 'row' }}
+                  spacing={2}
+                  justifyContent="flex-end"
+                >
+                  <Avatar src={formik.values.Image} sx={{ width: 50, height: 50 }} />
+                  <label htmlFor="contained-button-file">
+                    <Input
+                      id="contained-button-file"
+                      type="file"
+                      onChange={(e) => {
+                        const { files } = e.target;
+                        const reader = new FileReader();
+                        reader.readAsDataURL(files[0]);
+                        reader.onload = (e) => {
+                          formik.setFieldValue('Image', e.target.result);
+                        };
+                      }}
+                    />
+                    <Button variant="contained" component="span">
+                      Upload Image
+                    </Button>
+                  </label>
+                </Stack>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                  Add Service
+                  Add Banner
                 </LoadingButton>
               </Stack>
             </Box>
@@ -224,12 +254,12 @@ export default function Service() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Service
+            Banner
             <Breadcrumbs aria-label="breadcrumb">
               <Link underline="hover" color="inherit" href="/">
                 Dashboard
               </Link>
-              <Typography color="text.primary">Service</Typography>
+              <Typography color="text.primary">Banner</Typography>
             </Breadcrumbs>
           </Typography>
           <Button
@@ -239,12 +269,12 @@ export default function Service() {
             to="#"
             startIcon={<Icon icon={plusFill} />}
           >
-            New Service
+            New Banner
           </Button>
         </Stack>
 
         <Card>
-          <ServiceListToolbar
+          <BannerListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -253,26 +283,26 @@ export default function Service() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <ServiceListHead
+                <BannerListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={service.length}
+                  rowCount={banner.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {service
+                  {filteredBanners
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { ServiceID, Name, CreatedAt, UpdatedAt } = row;
+                      const { BannerID, Name, Image, CreatedAt, UpdatedAt } = row;
                       const isItemSelected = selected.indexOf(Name) !== -1;
 
                       return (
                         <TableRow
                           hover
-                          key={ServiceID}
+                          key={BannerID}
                           tabIndex={-1}
                           role="checkbox"
                           selected={isItemSelected}
@@ -284,12 +314,19 @@ export default function Service() {
                               onChange={(event) => handleClick(event, Name)}
                             />
                           </TableCell>
-                          <TableCell align="left">{ServiceID}</TableCell>
-                          <TableCell align="left">{Name}</TableCell>
+                          <TableCell align="left">{BannerID}</TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack direction="row" alignItems="center" spacing={2}>
+                              <Avatar alt={Name} src={Image} />
+                              <Typography variant="subtitle2" noWrap>
+                                {Name}
+                              </Typography>
+                            </Stack>
+                          </TableCell>
                           <TableCell align="left">{CreatedAt}</TableCell>
                           <TableCell align="left">{UpdatedAt}</TableCell>
                           <TableCell align="right">
-                            <ServiceMoreMenu dulieu={row} />
+                            <BannerMoreMenu dulieu={row} />
                           </TableCell>
                         </TableRow>
                       );
@@ -316,7 +353,7 @@ export default function Service() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={service.length}
+            count={banner.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

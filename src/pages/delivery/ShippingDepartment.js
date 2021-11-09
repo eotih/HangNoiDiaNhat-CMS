@@ -19,35 +19,35 @@ import {
   TableCell,
   Container,
   Modal,
-  Input,
+  TextField,
   Link,
   Breadcrumbs,
-  TextField,
   Typography,
-  Avatar,
   TableContainer,
   TablePagination
 } from '@mui/material';
 // components
 import { LoadingButton } from '@mui/lab';
-import { styled } from '@mui/material/styles';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 import Box from '@mui/material/Box';
-import { getAllField } from 'src/functions/Article';
-import Page from '../components/Page';
-import Scrollbar from '../components/Scrollbar';
-import SearchNotFound from '../components/SearchNotFound';
-import { FieldMoreMenu, FieldListToolbar, FieldListHead } from '../components/_dashboard/field';
+import { getAllShippingDepartment } from 'src/functions/Delivery';
+import Page from '../../components/Page';
+import Scrollbar from '../../components/Scrollbar';
+import SearchNotFound from '../../components/SearchNotFound';
+import {
+  ShippingDepartmentListHead,
+  ShippingDepartmentListToolbar,
+  ShippingDepartmentMoreMenu
+} from '../../components/_dashboard/shipper-department';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'FieldID', label: 'FieldID', alignRight: false },
-  { id: 'Name', label: 'Name', alignRight: false },
-  { id: 'Slug', label: 'Slug', alignRight: false },
-  { id: 'CreatedAt', label: 'CreatedAt', alignRight: false },
-  { id: 'UpdatedAt', label: 'UpdatedAt', alignRight: false },
+  { id: 'FullName', label: 'FullName', alignRight: false },
+  { id: 'Email', label: 'Email', alignRight: false },
+  { id: 'Phone', label: 'Phone', alignRight: false },
+  { id: 'Address', label: 'Address', alignRight: false },
   { id: '' }
 ];
 
@@ -82,7 +82,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Field() {
+export default function ShippingDepartment() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [page, setPage] = useState(0);
@@ -94,25 +94,29 @@ export default function Field() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [field, setField] = useState([]);
+  const [role, setRole] = useState([]);
+  const [ShippingDepartment, setShippingDepartment] = useState([]);
   useEffect(() => {
-    getAllField().then((res) => {
+    getAllShippingDepartment().then((res) => {
       setIsLoaded(true);
-      setField(res);
+      setShippingDepartment(res);
     });
   }, []);
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - field.length) : 0;
-  const filteredFields = applySortFilter(field, getComparator(order, orderBy), filterName);
-  const isUserNotFound = filteredFields.length === 0;
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - ShippingDepartment.length) : 0;
+  const filteredShippingDepartment = applySortFilter(
+    ShippingDepartment,
+    getComparator(order, orderBy),
+    filterName
+  );
+  const isUserNotFound = filteredShippingDepartment.length === 0;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
-  const Input = styled('input')({
-    display: 'none'
-  });
+
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
@@ -156,7 +160,7 @@ export default function Field() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = field.map((n) => n.name);
+      const newSelecteds = ShippingDepartment.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -164,15 +168,18 @@ export default function Field() {
   };
   const formik = useFormik({
     initialValues: {
-      Name: '',
-      Thumbnail: ''
+      FullName: '',
+      Phone: '',
+      Email: '',
+      Address: '',
+      remember: true
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Article/AddOrEditField`, formik.values)
+        .post(`${process.env.REACT_APP_WEB_API}Delivery/AddOrEditShippingDepartment`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
-            alert('Add Field Successfully');
+            alert('Add ShippingDepartment Successfully');
             window.location.reload();
           } else {
             alert('Add Failed');
@@ -196,11 +203,12 @@ export default function Field() {
     );
   }
   return (
-    <Page title="Field | HangnoidiaNhat">
+    <Page title="ShippingDepartment | HangnoidiaNhat">
       <Modal
         open={open}
         sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' }
+          '& .MuiTextField-root': { m: 1, width: '25ch' },
+          '& .MuiSelect-root': { m: 1, width: '25ch' }
         }}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
@@ -211,43 +219,18 @@ export default function Field() {
             <Box sx={style}>
               <Stack spacing={3}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add Field
-                  <Breadcrumbs aria-label="breadcrumb">
-                    <Link underline="hover" color="inherit" href="/">
-                      Dashboard
-                    </Link>
-                    <Typography color="text.primary">Field</Typography>
-                  </Breadcrumbs>
+                  Add ShippingDepartment
                 </Typography>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
-                  <TextField label="Name" {...getFieldProps('Name')} variant="outlined" />
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />
+                  <TextField label="Phone" {...getFieldProps('Phone')} variant="outlined" />
                 </Stack>
-                <Stack
-                  direction={{ xs: 'column', sm: 'row' }}
-                  spacing={2}
-                  justifyContent="flex-end"
-                >
-                  <Avatar src={formik.values.Thumbnail} sx={{ width: 50, height: 50 }} />
-                  <label htmlFor="contained-button-file">
-                    <Input
-                      id="contained-button-file"
-                      type="file"
-                      onChange={(e) => {
-                        const { files } = e.target;
-                        const reader = new FileReader();
-                        reader.readAsDataURL(files[0]);
-                        reader.onload = (e) => {
-                          formik.setFieldValue('Thumbnail', e.target.result);
-                        };
-                      }}
-                    />
-                    <Button variant="contained" component="span">
-                      Upload Thumbnail
-                    </Button>
-                  </label>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
+                  <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
                 </Stack>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                  Add Field
+                  Add ShippingDepartment
                 </LoadingButton>
               </Stack>
             </Box>
@@ -257,7 +240,13 @@ export default function Field() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Field
+            ShippingDepartment
+            <Breadcrumbs aria-label="breadcrumb">
+              <Link underline="hover" color="inherit" href="/">
+                Dashboard
+              </Link>
+              <Typography color="text.primary">ShippingDepartment</Typography>
+            </Breadcrumbs>
           </Typography>
           <Button
             onClick={handleOpen}
@@ -266,12 +255,12 @@ export default function Field() {
             to="#"
             startIcon={<Icon icon={plusFill} />}
           >
-            New Field
+            New ShippingDepartment
           </Button>
         </Stack>
 
         <Card>
-          <FieldListToolbar
+          <ShippingDepartmentListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -280,26 +269,26 @@ export default function Field() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <FieldListHead
+                <ShippingDepartmentListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={field.length}
+                  rowCount={ShippingDepartment.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredFields
+                  {filteredShippingDepartment
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { FieldID, Name, Slug, Thumbnail, CreatedAt, UpdatedAt } = row;
-                      const isItemSelected = selected.indexOf(Name) !== -1;
+                      const { ShippingDepartmentID, Address, FullName, Email, Phone } = row;
+                      const isItemSelected = selected.indexOf(FullName) !== -1;
 
                       return (
                         <TableRow
                           hover
-                          key={FieldID}
+                          key={ShippingDepartmentID}
                           tabIndex={-1}
                           role="checkbox"
                           selected={isItemSelected}
@@ -308,23 +297,15 @@ export default function Field() {
                           <TableCell padding="checkbox">
                             <Checkbox
                               checked={isItemSelected}
-                              onChange={(event) => handleClick(event, Name)}
+                              onChange={(event) => handleClick(event, FullName)}
                             />
                           </TableCell>
-                          <TableCell align="left">{FieldID}</TableCell>
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <Avatar alt={Name} src={Thumbnail} />
-                              <Typography variant="subtitle2" noWrap>
-                                {Name}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
-                          <TableCell align="left">{Slug}</TableCell>
-                          <TableCell align="left">{CreatedAt}</TableCell>
-                          <TableCell align="left">{UpdatedAt}</TableCell>
+                          <TableCell align="left">{FullName}</TableCell>
+                          <TableCell align="left">{Email}</TableCell>
+                          <TableCell align="left">{Phone}</TableCell>
+                          <TableCell align="left">{Address}</TableCell>
                           <TableCell align="right">
-                            <FieldMoreMenu dulieu={row} />
+                            <ShippingDepartmentMoreMenu dulieu={row} />
                           </TableCell>
                         </TableRow>
                       );
@@ -351,7 +332,7 @@ export default function Field() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={field.length}
+            count={ShippingDepartment.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

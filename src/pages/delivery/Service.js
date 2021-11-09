@@ -17,9 +17,9 @@ import {
   TableRow,
   TableBody,
   TableCell,
+  Container,
   Link,
   Breadcrumbs,
-  Container,
   Modal,
   TextField,
   Typography,
@@ -31,16 +31,20 @@ import { LoadingButton } from '@mui/lab';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 import Box from '@mui/material/Box';
-import { getAllState } from 'src/functions/Component';
-import Page from '../components/Page';
-import Scrollbar from '../components/Scrollbar';
-import SearchNotFound from '../components/SearchNotFound';
-import { StateListHead, StateListToolbar, StateMoreMenu } from '../components/_dashboard/state';
+import { getAllServices } from 'src/functions/Delivery';
+import Page from '../../components/Page';
+import Scrollbar from '../../components/Scrollbar';
+import SearchNotFound from '../../components/SearchNotFound';
+import {
+  ServiceMoreMenu,
+  ServiceListToolbar,
+  ServiceListHead
+} from '../../components/_dashboard/service';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'StateID', label: 'StateID', alignRight: false },
+  { id: 'ServiceID', label: 'ServiceID', alignRight: false },
   { id: 'Name', label: 'Name', alignRight: false },
   { id: 'CreatedAt', label: 'CreatedAt', alignRight: false },
   { id: 'UpdatedAt', label: 'UpdatedAt', alignRight: false },
@@ -78,7 +82,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Role() {
+export default function Service() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [page, setPage] = useState(0);
@@ -90,15 +94,15 @@ export default function Role() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [state, setState] = useState([]);
+  const [service, setService] = useState([]);
   useEffect(() => {
-    getAllState().then((res) => {
+    getAllServices().then((res) => {
       setIsLoaded(true);
-      setState(res);
+      setService(res);
     });
   }, []);
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - state.length) : 0;
-  const filteredUsers = applySortFilter(state, getComparator(order, orderBy), filterName);
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - service.length) : 0;
+  const filteredUsers = applySortFilter(service, getComparator(order, orderBy), filterName);
   const isUserNotFound = filteredUsers.length === 0;
 
   const handleRequestSort = (event, property) => {
@@ -150,7 +154,7 @@ export default function Role() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = state.map((n) => n.name);
+      const newSelecteds = service.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -162,10 +166,10 @@ export default function Role() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditState`, formik.values)
+        .post(`${process.env.REACT_APP_WEB_API}Delivery/AddOrEditService`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
-            alert('Add State Successfully');
+            alert('Add Service Successfully');
             window.location.reload();
           } else {
             alert('Add Failed');
@@ -189,7 +193,7 @@ export default function Role() {
     );
   }
   return (
-    <Page title="State | HangnoidiaNhat">
+    <Page title="Service | HangnoidiaNhat">
       <Modal
         open={open}
         sx={{
@@ -204,13 +208,13 @@ export default function Role() {
             <Box sx={style}>
               <Stack spacing={3}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add State
+                  Add Service
                 </Typography>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
                   <TextField label="Name" {...getFieldProps('Name')} variant="outlined" />
                 </Stack>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                  Add State
+                  Add Service
                 </LoadingButton>
               </Stack>
             </Box>
@@ -220,12 +224,12 @@ export default function Role() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            State
+            Service
             <Breadcrumbs aria-label="breadcrumb">
               <Link underline="hover" color="inherit" href="/">
                 Dashboard
               </Link>
-              <Typography color="text.primary">State</Typography>
+              <Typography color="text.primary">Service</Typography>
             </Breadcrumbs>
           </Typography>
           <Button
@@ -235,12 +239,12 @@ export default function Role() {
             to="#"
             startIcon={<Icon icon={plusFill} />}
           >
-            New State
+            New Service
           </Button>
         </Stack>
 
         <Card>
-          <StateListToolbar
+          <ServiceListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -249,45 +253,47 @@ export default function Role() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <StateListHead
+                <ServiceListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={state.length}
+                  rowCount={service.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {state.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { StateID, Name, CreatedAt, UpdatedAt } = row;
-                    const isItemSelected = selected.indexOf(Name) !== -1;
+                  {service
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => {
+                      const { ServiceID, Name, CreatedAt, UpdatedAt } = row;
+                      const isItemSelected = selected.indexOf(Name) !== -1;
 
-                    return (
-                      <TableRow
-                        hover
-                        key={StateID}
-                        tabIndex={-1}
-                        role="checkbox"
-                        selected={isItemSelected}
-                        aria-checked={isItemSelected}
-                      >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            checked={isItemSelected}
-                            onChange={(event) => handleClick(event, Name)}
-                          />
-                        </TableCell>
-                        <TableCell align="left">{StateID}</TableCell>
-                        <TableCell align="left">{Name}</TableCell>
-                        <TableCell align="left">{CreatedAt}</TableCell>
-                        <TableCell align="left">{UpdatedAt}</TableCell>
-                        <TableCell align="right">
-                          <StateMoreMenu dulieu={row} />
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                      return (
+                        <TableRow
+                          hover
+                          key={ServiceID}
+                          tabIndex={-1}
+                          role="checkbox"
+                          selected={isItemSelected}
+                          aria-checked={isItemSelected}
+                        >
+                          <TableCell padding="checkbox">
+                            <Checkbox
+                              checked={isItemSelected}
+                              onChange={(event) => handleClick(event, Name)}
+                            />
+                          </TableCell>
+                          <TableCell align="left">{ServiceID}</TableCell>
+                          <TableCell align="left">{Name}</TableCell>
+                          <TableCell align="left">{CreatedAt}</TableCell>
+                          <TableCell align="left">{UpdatedAt}</TableCell>
+                          <TableCell align="right">
+                            <ServiceMoreMenu dulieu={row} />
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
@@ -310,7 +316,7 @@ export default function Role() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={state.length}
+            count={service.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

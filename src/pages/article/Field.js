@@ -12,51 +12,42 @@ import {
   Card,
   Table,
   Stack,
-  Avatar,
   Button,
   Checkbox,
   TableRow,
   TableBody,
   TableCell,
-  MenuItem,
   Container,
   Modal,
   Input,
-  TextField,
   Link,
   Breadcrumbs,
-  Select,
+  TextField,
   Typography,
+  Avatar,
   TableContainer,
-  TablePagination,
-  FormControl,
-  InputLabel
+  TablePagination
 } from '@mui/material';
 // components
-import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
+import { styled } from '@mui/material/styles';
 import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
 import axios from 'axios';
-import { getAllAccount } from 'src/functions/Organization';
-import { getAllRole } from 'src/functions/Component';
-import Page from '../components/Page';
-import Scrollbar from '../components/Scrollbar';
-import SearchNotFound from '../components/SearchNotFound';
-import {
-  AccountListHead,
-  AccountListToolbar,
-  AccountMoreMenu
-} from '../components/_dashboard/account';
+import Box from '@mui/material/Box';
+import { getAllField } from 'src/functions/Article';
+import Page from '../../components/Page';
+import Scrollbar from '../../components/Scrollbar';
+import SearchNotFound from '../../components/SearchNotFound';
+import { FieldMoreMenu, FieldListToolbar, FieldListHead } from '../../components/_dashboard/field';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'FullName', label: 'FullName', alignRight: false },
-  { id: 'Email', label: 'Email', alignRight: false },
-  { id: 'Phone', label: 'Phone', alignRight: false },
-  { id: 'Address', label: 'Address', alignRight: false },
-  { id: 'Role', label: 'Role', alignRight: false },
+  { id: 'FieldID', label: 'FieldID', alignRight: false },
+  { id: 'Name', label: 'Name', alignRight: false },
+  { id: 'Slug', label: 'Slug', alignRight: false },
+  { id: 'CreatedAt', label: 'CreatedAt', alignRight: false },
+  { id: 'UpdatedAt', label: 'UpdatedAt', alignRight: false },
   { id: '' }
 ];
 
@@ -91,7 +82,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function User() {
+export default function Field() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [page, setPage] = useState(0);
@@ -100,36 +91,28 @@ export default function User() {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [account, setAccount] = useState([]);
-  const [role, setRole] = useState([]);
-  const [roles, setRoles] = useState([]);
+  const [field, setField] = useState([]);
   useEffect(() => {
-    getAllAccount().then((res) => {
+    getAllField().then((res) => {
       setIsLoaded(true);
-      setAccount(res);
-    });
-    getAllRole().then((res) => {
-      setIsLoaded(true);
-      setRoles(res);
+      setField(res);
     });
   }, []);
-  const handleChange = (event) => {
-    formik.setFieldValue('RoleID', event.target.value);
-    setRole(event.target.value);
-  };
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - account.length) : 0;
-  const filteredAccount = applySortFilter(account, getComparator(order, orderBy), filterName);
-  const isUserNotFound = filteredAccount.length === 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - field.length) : 0;
+  const filteredFields = applySortFilter(field, getComparator(order, orderBy), filterName);
+  const isUserNotFound = filteredFields.length === 0;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
-
+  const Input = styled('input')({
+    display: 'none'
+  });
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
@@ -173,35 +156,26 @@ export default function User() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = account.map((n) => n.name);
+      const newSelecteds = field.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
-  const Input = styled('input')({
-    display: 'none'
-  });
   const formik = useFormik({
     initialValues: {
-      FullName: '',
-      Image: '',
-      Phone: '',
-      Email: '',
-      Password: '',
-      RoleID: '',
-      Address: '',
-      remember: true
+      Name: '',
+      Thumbnail: ''
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditAccount`, formik.values)
+        .post(`${process.env.REACT_APP_WEB_API}Article/AddOrEditField`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
-            alert('Thêm thành công');
+            alert('Add Field Successfully');
             window.location.reload();
           } else {
-            alert('Thêm thất bại');
+            alert('Add Failed');
           }
         })
         .catch((err) => {
@@ -222,12 +196,11 @@ export default function User() {
     );
   }
   return (
-    <Page title="Account | HangnoidiaNhat">
+    <Page title="Field | HangnoidiaNhat">
       <Modal
         open={open}
         sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' },
-          '& .MuiSelect-root': { m: 1, width: '25ch' }
+          '& .MuiTextField-root': { m: 1, width: '25ch' }
         }}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
@@ -238,47 +211,23 @@ export default function User() {
             <Box sx={style}>
               <Stack spacing={3}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add Account
+                  Add Field
+                  <Breadcrumbs aria-label="breadcrumb">
+                    <Link underline="hover" color="inherit" href="/">
+                      Dashboard
+                    </Link>
+                    <Typography color="text.primary">Field</Typography>
+                  </Breadcrumbs>
                 </Typography>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />
-                  <TextField label="Phone" {...getFieldProps('Phone')} variant="outlined" />
-                </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
-                  <TextField
-                    type="password"
-                    label="Password"
-                    {...getFieldProps('Password')}
-                    variant="outlined"
-                  />
-                </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
-                  <FormControl>
-                    <InputLabel id="select-label">Role</InputLabel>
-                    <Select
-                      labelId="select-label"
-                      label="Role"
-                      {...getFieldProps('RoleID')}
-                      variant="outlined"
-                      value={role}
-                      onChange={handleChange}
-                    >
-                      {roles.map((item) => (
-                        <MenuItem key={item.RoleID} value={item.RoleID}>
-                          {item.RoleName}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+                  <TextField label="Name" {...getFieldProps('Name')} variant="outlined" />
                 </Stack>
                 <Stack
                   direction={{ xs: 'column', sm: 'row' }}
                   spacing={2}
                   justifyContent="flex-end"
                 >
-                  <Avatar src={formik.values.Image} sx={{ width: 50, height: 50 }} />
+                  <Avatar src={formik.values.Thumbnail} sx={{ width: 50, height: 50 }} />
                   <label htmlFor="contained-button-file">
                     <Input
                       id="contained-button-file"
@@ -288,17 +237,17 @@ export default function User() {
                         const reader = new FileReader();
                         reader.readAsDataURL(files[0]);
                         reader.onload = (e) => {
-                          formik.setFieldValue('Image', e.target.result);
+                          formik.setFieldValue('Thumbnail', e.target.result);
                         };
                       }}
                     />
                     <Button variant="contained" component="span">
-                      Upload Image
+                      Upload Thumbnail
                     </Button>
                   </label>
                 </Stack>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                  Add Account
+                  Add Field
                 </LoadingButton>
               </Stack>
             </Box>
@@ -308,13 +257,7 @@ export default function User() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Account
-            <Breadcrumbs aria-label="breadcrumb">
-              <Link underline="hover" color="inherit" href="/">
-                Dashboard
-              </Link>
-              <Typography color="text.primary">Account</Typography>
-            </Breadcrumbs>
+            Field
           </Typography>
           <Button
             onClick={handleOpen}
@@ -323,11 +266,12 @@ export default function User() {
             to="#"
             startIcon={<Icon icon={plusFill} />}
           >
-            New Account
+            New Field
           </Button>
         </Stack>
+
         <Card>
-          <AccountListToolbar
+          <FieldListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -336,26 +280,26 @@ export default function User() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <AccountListHead
+                <FieldListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={account.length}
+                  rowCount={field.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredAccount
+                  {filteredFields
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { AccountID, Image, Address, FullName, Email, RoleID, Phone } = row;
-                      const isItemSelected = selected.indexOf(FullName) !== -1;
+                      const { FieldID, Name, Slug, Thumbnail, CreatedAt, UpdatedAt } = row;
+                      const isItemSelected = selected.indexOf(Name) !== -1;
 
                       return (
                         <TableRow
                           hover
-                          key={AccountID}
+                          key={FieldID}
                           tabIndex={-1}
                           role="checkbox"
                           selected={isItemSelected}
@@ -364,23 +308,23 @@ export default function User() {
                           <TableCell padding="checkbox">
                             <Checkbox
                               checked={isItemSelected}
-                              onChange={(event) => handleClick(event, FullName)}
+                              onChange={(event) => handleClick(event, Name)}
                             />
                           </TableCell>
+                          <TableCell align="left">{FieldID}</TableCell>
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
-                              <Avatar alt={FullName} src={Image} />
+                              <Avatar alt={Name} src={Thumbnail} />
                               <Typography variant="subtitle2" noWrap>
-                                {FullName}
+                                {Name}
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{Email}</TableCell>
-                          <TableCell align="left">{Phone}</TableCell>
-                          <TableCell align="left">{Address}</TableCell>
-                          <TableCell align="left">{RoleID}</TableCell>
+                          <TableCell align="left">{Slug}</TableCell>
+                          <TableCell align="left">{CreatedAt}</TableCell>
+                          <TableCell align="left">{UpdatedAt}</TableCell>
                           <TableCell align="right">
-                            <AccountMoreMenu dulieu={row} />
+                            <FieldMoreMenu dulieu={row} />
                           </TableCell>
                         </TableRow>
                       );
@@ -407,7 +351,7 @@ export default function User() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={account.length}
+            count={field.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

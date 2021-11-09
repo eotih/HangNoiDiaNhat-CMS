@@ -6,15 +6,15 @@ import Box from '@mui/material/Box';
 // material
 import { Container, Stack, Typography, Link, Breadcrumbs } from '@mui/material';
 // components
-import Page from '../components/Page';
+import Page from '../../components/Page';
 import {
   ProductDetailSort,
   ProductDetailList,
   ProductDetailCartWidget,
   ProductDetailFilterSidebar
-} from '../components/_dashboard/product_details';
+} from '../../components/_dashboard/product_details';
 //
-import { GetProductImageByProductName } from '../functions/Management';
+import { GetProductImageByProductName } from '../../functions/Management';
 
 // ----------------------------------------------------------------------
 

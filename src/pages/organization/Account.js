@@ -12,46 +12,51 @@ import {
   Card,
   Table,
   Stack,
+  Avatar,
   Button,
   Checkbox,
   TableRow,
   TableBody,
   TableCell,
+  MenuItem,
   Container,
-  Link,
-  Breadcrumbs,
   Modal,
   Input,
   TextField,
+  Link,
+  Breadcrumbs,
+  Select,
   Typography,
-  Avatar,
   TableContainer,
-  TablePagination
+  TablePagination,
+  FormControl,
+  InputLabel
 } from '@mui/material';
 // components
-import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
+import { LoadingButton } from '@mui/lab';
 import CircularProgress from '@mui/material/CircularProgress';
-import axios from 'axios';
 import Box from '@mui/material/Box';
-import { getAllCategory } from 'src/functions/Component';
-import Page from '../components/Page';
-import Scrollbar from '../components/Scrollbar';
-import SearchNotFound from '../components/SearchNotFound';
+import axios from 'axios';
+import { getAllAccount } from 'src/functions/Organization';
+import { getAllRole } from 'src/functions/Component';
+import Page from '../../components/Page';
+import Scrollbar from '../../components/Scrollbar';
+import SearchNotFound from '../../components/SearchNotFound';
 import {
-  CategoryMoreMenu,
-  CategoryListToolbar,
-  CategoryListHead
-} from '../components/_dashboard/category';
+  AccountListHead,
+  AccountListToolbar,
+  AccountMoreMenu
+} from '../../components/_dashboard/account';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'CategoryID', label: 'CategoryID', alignRight: false },
-  { id: 'Name', label: 'Name', alignRight: false },
-  { id: 'Slug', label: 'Slug', alignRight: false },
-  { id: 'CreatedAt', label: 'CreatedAt', alignRight: false },
-  { id: 'UpdatedAt', label: 'UpdatedAt', alignRight: false },
+  { id: 'FullName', label: 'FullName', alignRight: false },
+  { id: 'Email', label: 'Email', alignRight: false },
+  { id: 'Phone', label: 'Phone', alignRight: false },
+  { id: 'Address', label: 'Address', alignRight: false },
+  { id: 'Role', label: 'Role', alignRight: false },
   { id: '' }
 ];
 
@@ -86,7 +91,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Category() {
+export default function User() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [page, setPage] = useState(0);
@@ -95,28 +100,36 @@ export default function Category() {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [category, setCategory] = useState([]);
+  const [account, setAccount] = useState([]);
+  const [role, setRole] = useState([]);
+  const [roles, setRoles] = useState([]);
   useEffect(() => {
-    getAllCategory().then((res) => {
+    getAllAccount().then((res) => {
       setIsLoaded(true);
-      setCategory(res);
+      setAccount(res);
+    });
+    getAllRole().then((res) => {
+      setIsLoaded(true);
+      setRoles(res);
     });
   }, []);
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - category.length) : 0;
-  const filteredCategories = applySortFilter(category, getComparator(order, orderBy), filterName);
-  const isUserNotFound = filteredCategories.length === 0;
+  const handleChange = (event) => {
+    formik.setFieldValue('RoleID', event.target.value);
+    setRole(event.target.value);
+  };
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - account.length) : 0;
+  const filteredAccount = applySortFilter(account, getComparator(order, orderBy), filterName);
+  const isUserNotFound = filteredAccount.length === 0;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
-  const Input = styled('input')({
-    display: 'none'
-  });
+
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
@@ -160,26 +173,35 @@ export default function Category() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = category.map((n) => n.name);
+      const newSelecteds = account.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
+  const Input = styled('input')({
+    display: 'none'
+  });
   const formik = useFormik({
     initialValues: {
-      Name: '',
-      Thumbnail: ''
+      FullName: '',
+      Image: '',
+      Phone: '',
+      Email: '',
+      Password: '',
+      RoleID: '',
+      Address: '',
+      remember: true
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditCategory`, formik.values)
+        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditAccount`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
-            alert('Add Category Successfully');
+            alert('Thêm thành công');
             window.location.reload();
           } else {
-            alert('Add Failed');
+            alert('Thêm thất bại');
           }
         })
         .catch((err) => {
@@ -200,11 +222,12 @@ export default function Category() {
     );
   }
   return (
-    <Page title="Category | HangnoidiaNhat">
+    <Page title="Account | HangnoidiaNhat">
       <Modal
         open={open}
         sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' }
+          '& .MuiTextField-root': { m: 1, width: '25ch' },
+          '& .MuiSelect-root': { m: 1, width: '25ch' }
         }}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
@@ -215,17 +238,47 @@ export default function Category() {
             <Box sx={style}>
               <Stack spacing={3}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add Category
+                  Add Account
                 </Typography>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
-                  <TextField label="Name" {...getFieldProps('Name')} variant="outlined" />
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />
+                  <TextField label="Phone" {...getFieldProps('Phone')} variant="outlined" />
+                </Stack>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
+                  <TextField
+                    type="password"
+                    label="Password"
+                    {...getFieldProps('Password')}
+                    variant="outlined"
+                  />
+                </Stack>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
+                  <FormControl>
+                    <InputLabel id="select-label">Role</InputLabel>
+                    <Select
+                      labelId="select-label"
+                      label="Role"
+                      {...getFieldProps('RoleID')}
+                      variant="outlined"
+                      value={role}
+                      onChange={handleChange}
+                    >
+                      {roles.map((item) => (
+                        <MenuItem key={item.RoleID} value={item.RoleID}>
+                          {item.RoleName}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </Stack>
                 <Stack
                   direction={{ xs: 'column', sm: 'row' }}
                   spacing={2}
                   justifyContent="flex-end"
                 >
-                  <Avatar src={formik.values.Thumbnail} sx={{ width: 50, height: 50 }} />
+                  <Avatar src={formik.values.Image} sx={{ width: 50, height: 50 }} />
                   <label htmlFor="contained-button-file">
                     <Input
                       id="contained-button-file"
@@ -235,17 +288,17 @@ export default function Category() {
                         const reader = new FileReader();
                         reader.readAsDataURL(files[0]);
                         reader.onload = (e) => {
-                          formik.setFieldValue('Thumbnail', e.target.result);
+                          formik.setFieldValue('Image', e.target.result);
                         };
                       }}
                     />
                     <Button variant="contained" component="span">
-                      Upload Thumbnail
+                      Upload Image
                     </Button>
                   </label>
                 </Stack>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                  Add Category
+                  Add Account
                 </LoadingButton>
               </Stack>
             </Box>
@@ -255,12 +308,12 @@ export default function Category() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Category
+            Account
             <Breadcrumbs aria-label="breadcrumb">
               <Link underline="hover" color="inherit" href="/">
                 Dashboard
               </Link>
-              <Typography color="text.primary">Category</Typography>
+              <Typography color="text.primary">Account</Typography>
             </Breadcrumbs>
           </Typography>
           <Button
@@ -270,12 +323,11 @@ export default function Category() {
             to="#"
             startIcon={<Icon icon={plusFill} />}
           >
-            New Category
+            New Account
           </Button>
         </Stack>
-
         <Card>
-          <CategoryListToolbar
+          <AccountListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -284,26 +336,26 @@ export default function Category() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <CategoryListHead
+                <AccountListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={category.length}
+                  rowCount={account.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredCategories
+                  {filteredAccount
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { CategoryID, Name, Slug, Thumbnail, CreatedAt, UpdatedAt } = row;
-                      const isItemSelected = selected.indexOf(Name) !== -1;
+                      const { AccountID, Image, Address, FullName, Email, RoleID, Phone } = row;
+                      const isItemSelected = selected.indexOf(FullName) !== -1;
 
                       return (
                         <TableRow
                           hover
-                          key={CategoryID}
+                          key={AccountID}
                           tabIndex={-1}
                           role="checkbox"
                           selected={isItemSelected}
@@ -312,23 +364,23 @@ export default function Category() {
                           <TableCell padding="checkbox">
                             <Checkbox
                               checked={isItemSelected}
-                              onChange={(event) => handleClick(event, Name)}
+                              onChange={(event) => handleClick(event, FullName)}
                             />
                           </TableCell>
-                          <TableCell align="left">{CategoryID}</TableCell>
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
-                              <Avatar alt={Name} src={Thumbnail} />
+                              <Avatar alt={FullName} src={Image} />
                               <Typography variant="subtitle2" noWrap>
-                                {Name}
+                                {FullName}
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{Slug}</TableCell>
-                          <TableCell align="left">{CreatedAt}</TableCell>
-                          <TableCell align="left">{UpdatedAt}</TableCell>
+                          <TableCell align="left">{Email}</TableCell>
+                          <TableCell align="left">{Phone}</TableCell>
+                          <TableCell align="left">{Address}</TableCell>
+                          <TableCell align="left">{RoleID}</TableCell>
                           <TableCell align="right">
-                            <CategoryMoreMenu dulieu={row} />
+                            <AccountMoreMenu dulieu={row} />
                           </TableCell>
                         </TableRow>
                       );
@@ -355,7 +407,7 @@ export default function Category() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={category.length}
+            count={account.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

@@ -2,46 +2,52 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable import/no-unresolved */
 import { filter } from 'lodash';
+import { Icon } from '@iconify/react';
 import React, { useState, useEffect } from 'react';
+import { useFormik, Form, FormikProvider } from 'formik';
+import plusFill from '@iconify/icons-eva/plus-fill';
+import { Link as RouterLink } from 'react-router-dom';
 // material
 import {
   Card,
   Table,
   Stack,
+  Button,
   Checkbox,
   TableRow,
-  Link,
-  Breadcrumbs,
   TableBody,
   TableCell,
   Container,
+  Modal,
+  Link,
+  Breadcrumbs,
+  Input,
+  TextField,
   Typography,
+  Avatar,
   TableContainer,
   TablePagination
 } from '@mui/material';
 // components
+import { LoadingButton } from '@mui/lab';
+import { styled } from '@mui/material/styles';
 import CircularProgress from '@mui/material/CircularProgress';
+import axios from 'axios';
 import Box from '@mui/material/Box';
-import { getAllContact } from 'src/functions/Management';
-import Page from '../components/Page';
-import Scrollbar from '../components/Scrollbar';
-import SearchNotFound from '../components/SearchNotFound';
-import {
-  ContactListHead,
-  ContactListToolbar,
-  ContactMoreMenu
-} from '../components/_dashboard/contact';
+import { getAllBrands } from 'src/functions/Component';
+import Page from '../../components/Page';
+import Scrollbar from '../../components/Scrollbar';
+import SearchNotFound from '../../components/SearchNotFound';
+import { BrandMoreMenu, BrandListToolbar, BrandListHead } from '../../components/_dashboard/brand';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'ContactID', label: 'ContactID', alignRight: false },
-  { id: 'FullName', label: 'FullName', alignRight: false },
-  { id: 'Email', label: 'Email', alignRight: false },
-  { id: 'Phone', label: 'Phone', alignRight: false },
-  { id: 'Address', label: 'Address', alignRight: false },
-  { id: 'Subtitle', label: 'Subtitle', alignRight: false },
-  { id: 'Details', label: 'Details', alignRight: false },
+  { id: 'BrandID', label: 'BrandID', alignRight: false },
+  { id: 'Name', label: 'Name', alignRight: false },
+  { id: 'Slug', label: 'Slug', alignRight: false },
+  { id: 'CreatedAt', label: 'CreatedAt', alignRight: false },
+  { id: 'UpdatedAt', label: 'UpdatedAt', alignRight: false },
   { id: '' }
 ];
 
@@ -76,7 +82,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function User() {
+export default function Category() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [page, setPage] = useState(0);
@@ -85,23 +91,28 @@ export default function User() {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [contact, setContact] = useState([]);
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [brand, setBrand] = useState([]);
   useEffect(() => {
-    getAllContact().then((res) => {
+    getAllBrands().then((res) => {
       setIsLoaded(true);
-      setContact(res);
+      setBrand(res);
     });
   }, []);
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - contact.length) : 0;
-  const filteredContact = applySortFilter(contact, getComparator(order, orderBy), filterName);
-  const isUserNotFound = filteredContact.length === 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - brand.length) : 0;
+  const filteredBrands = applySortFilter(brand, getComparator(order, orderBy), filterName);
+  const isUserNotFound = filteredBrands.length === 0;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
-
+  const Input = styled('input')({
+    display: 'none'
+  });
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
@@ -133,14 +144,47 @@ export default function User() {
     setFilterName(event.target.value);
   };
 
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4
+  };
+
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = contact.map((n) => n.name);
+      const newSelecteds = brand.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
+  const formik = useFormik({
+    initialValues: {
+      Name: '',
+      Thumbnail: ''
+    },
+    onSubmit: () => {
+      axios
+        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditBrand`, formik.values)
+        .then((res) => {
+          if (res.data.Status === 'Success') {
+            alert('Add Brand Successfully');
+            window.location.reload();
+          } else {
+            alert('Add Failed');
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  });
+
+  const { handleSubmit, getFieldProps } = formik;
   if (error) {
     return <div>Error: {error.message}</div>;
   }
@@ -152,22 +196,82 @@ export default function User() {
     );
   }
   return (
-    <Page title="Contact | HangnoidiaNhat">
+    <Page title="Brand | HangnoidiaNhat">
+      <Modal
+        open={open}
+        sx={{
+          '& .MuiTextField-root': { m: 1, width: '25ch' }
+        }}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <FormikProvider value={formik}>
+          <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+            <Box sx={style}>
+              <Stack spacing={3}>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  Add Brand
+                </Typography>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+                  <TextField label="Name" {...getFieldProps('Name')} variant="outlined" />
+                </Stack>
+                <Stack
+                  direction={{ xs: 'column', sm: 'row' }}
+                  spacing={2}
+                  justifyContent="flex-end"
+                >
+                  <Avatar src={formik.values.Thumbnail} sx={{ width: 50, height: 50 }} />
+                  <label htmlFor="contained-button-file">
+                    <Input
+                      id="contained-button-file"
+                      type="file"
+                      onChange={(e) => {
+                        const { files } = e.target;
+                        const reader = new FileReader();
+                        reader.readAsDataURL(files[0]);
+                        reader.onload = (e) => {
+                          formik.setFieldValue('Thumbnail', e.target.result);
+                        };
+                      }}
+                    />
+                    <Button variant="contained" component="span">
+                      Upload Thumbnail
+                    </Button>
+                  </label>
+                </Stack>
+                <LoadingButton fullWidth size="large" type="submit" variant="contained">
+                  Add Brand
+                </LoadingButton>
+              </Stack>
+            </Box>
+          </Form>
+        </FormikProvider>
+      </Modal>
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Customer
+            Brand
             <Breadcrumbs aria-label="breadcrumb">
               <Link underline="hover" color="inherit" href="/">
                 Dashboard
               </Link>
-              <Typography color="text.primary">Contact</Typography>
+              <Typography color="text.primary">Brand</Typography>
             </Breadcrumbs>
           </Typography>
+          <Button
+            onClick={handleOpen}
+            variant="contained"
+            component={RouterLink}
+            to="#"
+            startIcon={<Icon icon={plusFill} />}
+          >
+            New Brand
+          </Button>
         </Stack>
 
         <Card>
-          <ContactListToolbar
+          <BrandListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -176,26 +280,26 @@ export default function User() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <ContactListHead
+                <BrandListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={contact.length}
+                  rowCount={brand.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredContact
+                  {filteredBrands
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { ContactID, Address, FullName, Email, Phone, Subtitle, Details } = row;
-                      const isItemSelected = selected.indexOf(FullName) !== -1;
+                      const { BrandID, Name, Slug, Thumbnail, CreatedAt, UpdatedAt } = row;
+                      const isItemSelected = selected.indexOf(Name) !== -1;
 
                       return (
                         <TableRow
                           hover
-                          key={ContactID}
+                          key={BrandID}
                           tabIndex={-1}
                           role="checkbox"
                           selected={isItemSelected}
@@ -204,18 +308,24 @@ export default function User() {
                           <TableCell padding="checkbox">
                             <Checkbox
                               checked={isItemSelected}
-                              onChange={(event) => handleClick(event, FullName)}
+                              onChange={(event) => handleClick(event, Name)}
                             />
                           </TableCell>
-                          <TableCell align="left">{ContactID}</TableCell>
-                          <TableCell align="left">{FullName}</TableCell>
-                          <TableCell align="left">{Email}</TableCell>
-                          <TableCell align="left">{Phone}</TableCell>
-                          <TableCell align="left">{Address}</TableCell>
-                          <TableCell align="left">{Subtitle}</TableCell>
-                          <TableCell align="left">{Details}</TableCell>
+                          <TableCell align="left">{BrandID}</TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack direction="row" alignItems="center" spacing={2}>
+                              <img
+                                style={{ width: '100px', height: '100%' }}
+                                alt={Name}
+                                src={Thumbnail}
+                              />
+                            </Stack>
+                          </TableCell>
+                          <TableCell align="left">{Slug}</TableCell>
+                          <TableCell align="left">{CreatedAt}</TableCell>
+                          <TableCell align="left">{UpdatedAt}</TableCell>
                           <TableCell align="right">
-                            <ContactMoreMenu dulieu={row} />
+                            <BrandMoreMenu dulieu={row} />
                           </TableCell>
                         </TableRow>
                       );
@@ -242,7 +352,7 @@ export default function User() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={contact.length}
+            count={brand.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

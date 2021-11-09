@@ -15,11 +15,11 @@ import {
   Button,
   Checkbox,
   TableRow,
-  Link,
-  Breadcrumbs,
   TableBody,
   TableCell,
   Container,
+  Link,
+  Breadcrumbs,
   Modal,
   TextField,
   Typography,
@@ -28,24 +28,22 @@ import {
 } from '@mui/material';
 // components
 import { LoadingButton } from '@mui/lab';
+import { styled } from '@mui/material/styles';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 import Box from '@mui/material/Box';
-import { getAllPayment } from 'src/functions/Component';
-import Page from '../components/Page';
-import Scrollbar from '../components/Scrollbar';
-import SearchNotFound from '../components/SearchNotFound';
-import {
-  PaymentMoreMenu,
-  PaymentListToolbar,
-  PaymentListHead
-} from '../components/_dashboard/payment';
+import { getAllUtilities } from 'src/functions/Component';
+import Page from '../../components/Page';
+import Scrollbar from '../../components/Scrollbar';
+import SearchNotFound from '../../components/SearchNotFound';
+import { UtilMoreMenu, UtilListToolbar, UtilListHead } from '../../components/_dashboard/utilities';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'PaymentID', label: 'PaymentID', alignRight: false },
+  { id: 'UtilityID', label: 'UtilityID', alignRight: false },
   { id: 'Name', label: 'Name', alignRight: false },
+  { id: 'Slug', label: 'Slug', alignRight: false },
   { id: 'CreatedAt', label: 'CreatedAt', alignRight: false },
   { id: 'UpdatedAt', label: 'UpdatedAt', alignRight: false },
   { id: '' }
@@ -82,7 +80,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Payment() {
+export default function Brand() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [page, setPage] = useState(0);
@@ -94,23 +92,25 @@ export default function Payment() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [Payment, setPayment] = useState([]);
+  const [util, setUtil] = useState([]);
   useEffect(() => {
-    getAllPayment().then((res) => {
+    getAllUtilities().then((res) => {
       setIsLoaded(true);
-      setPayment(res);
+      setUtil(res);
     });
   }, []);
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - Payment.length) : 0;
-  const filteredPayment = applySortFilter(Payment, getComparator(order, orderBy), filterName);
-  const isUserNotFound = filteredPayment.length === 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - util.length) : 0;
+  const filteredUsers = applySortFilter(util, getComparator(order, orderBy), filterName);
+  const isUserNotFound = filteredUsers.length === 0;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
-
+  const Input = styled('input')({
+    display: 'none'
+  });
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
@@ -154,7 +154,7 @@ export default function Payment() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = Payment.map((n) => n.name);
+      const newSelecteds = util.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -166,10 +166,10 @@ export default function Payment() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditPayment`, formik.values)
+        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditUtil`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
-            alert('Add Payment Successfully');
+            alert('Add Utilities Successfully');
             window.location.reload();
           } else {
             alert('Add Failed');
@@ -193,7 +193,7 @@ export default function Payment() {
     );
   }
   return (
-    <Page title="Payment | HangnoidiaNhat">
+    <Page title="Utilities | HangnoidiaNhat">
       <Modal
         open={open}
         sx={{
@@ -208,13 +208,13 @@ export default function Payment() {
             <Box sx={style}>
               <Stack spacing={3}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add Payment
+                  Add Utilities
                 </Typography>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
                   <TextField label="Name" {...getFieldProps('Name')} variant="outlined" />
                 </Stack>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                  Add Payment
+                  Add Utilities
                 </LoadingButton>
               </Stack>
             </Box>
@@ -224,12 +224,12 @@ export default function Payment() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Payment
+            Utilities
             <Breadcrumbs aria-label="breadcrumb">
               <Link underline="hover" color="inherit" href="/">
                 Dashboard
               </Link>
-              <Typography color="text.primary">Payment</Typography>
+              <Typography color="text.primary">Utilities</Typography>
             </Breadcrumbs>
           </Typography>
           <Button
@@ -239,12 +239,12 @@ export default function Payment() {
             to="#"
             startIcon={<Icon icon={plusFill} />}
           >
-            New Payment
+            New Utilities
           </Button>
         </Stack>
 
         <Card>
-          <PaymentListToolbar
+          <UtilMoreMenu
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -253,47 +253,46 @@ export default function Payment() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <PaymentListHead
+                <UtilListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={Payment.length}
+                  rowCount={util.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredPayment
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      const { PaymentID, Name, CreatedAt, UpdatedAt } = row;
-                      const isItemSelected = selected.indexOf(Name) !== -1;
+                  {util.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                    const { UtilityID, Name, Slug, CreatedAt, UpdatedAt } = row;
+                    const isItemSelected = selected.indexOf(Name) !== -1;
 
-                      return (
-                        <TableRow
-                          hover
-                          key={PaymentID}
-                          tabIndex={-1}
-                          role="checkbox"
-                          selected={isItemSelected}
-                          aria-checked={isItemSelected}
-                        >
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              checked={isItemSelected}
-                              onChange={(event) => handleClick(event, Name)}
-                            />
-                          </TableCell>
-                          <TableCell align="left">{PaymentID}</TableCell>
-                          <TableCell align="left">{Name}</TableCell>
-                          <TableCell align="left">{CreatedAt}</TableCell>
-                          <TableCell align="left">{UpdatedAt}</TableCell>
-                          <TableCell align="right">
-                            <PaymentMoreMenu dulieu={row} />
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
+                    return (
+                      <TableRow
+                        hover
+                        key={UtilityID}
+                        tabIndex={-1}
+                        role="checkbox"
+                        selected={isItemSelected}
+                        aria-checked={isItemSelected}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            checked={isItemSelected}
+                            onChange={(event) => handleClick(event, Name)}
+                          />
+                        </TableCell>
+                        <TableCell align="left">{UtilityID}</TableCell>
+                        <TableCell align="left">{Name}</TableCell>
+                        <TableCell align="left">{Slug}</TableCell>
+                        <TableCell align="left">{CreatedAt}</TableCell>
+                        <TableCell align="left">{UpdatedAt}</TableCell>
+                        <TableCell align="right">
+                          <UtilMoreMenu dulieu={row} />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
@@ -316,7 +315,7 @@ export default function Payment() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={Payment.length}
+            count={util.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

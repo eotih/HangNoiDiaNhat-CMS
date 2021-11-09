@@ -4,35 +4,41 @@ import { Navigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
+// Organization
+import Organization from './pages/organization/Organization';
+import Account from './pages/organization/Account';
+import Banner from './pages/organization/Banner';
+import Profile from './pages/organization/Profile';
+// Management
+import Products from './pages/management/Products';
+import Blog from './pages/management/Blog';
+import Customer from './pages/management/Customer';
+import Contact from './pages/management/Contact';
+import Order from './pages/management/Order';
+import OrderDetail from './pages/management/OrderDetail';
+import ProductDetails from './pages/management/ProductDetails';
+import Product from './pages/management/Product';
+// Component
+import Role from './pages/component/Role';
+import Payment from './pages/component/Payment';
+import Category from './pages/component/Category';
+import State from './pages/component/State';
+import Brand from './pages/component/Brand';
+import Utilities from './pages/component/Utilities';
+import { AddProduct, EditProduct } from './components/_dashboard/products';
+import { AddPost, EditPost } from './components/_dashboard/post';
+// Delivery
+import Service from './pages/delivery/Service';
+import Shipper from './pages/delivery/Shipper';
+import ShippingDepartment from './pages/delivery/ShippingDepartment';
+// Article
+import Field from './pages/article/Field';
+import Post from './pages/article/Post';
+// Page
 import Login from './pages/Login';
 import Register from './pages/Register';
 import DashboardApp from './pages/DashboardApp';
-import Products from './pages/Products';
-import Blog from './pages/Blog';
 import User from './pages/User';
-import Account from './pages/Account';
-import Profile from './pages/Profile';
-import Role from './pages/Role';
-import Payment from './pages/Payment';
-import Service from './pages/Service';
-import Category from './pages/Category';
-import Brand from './pages/Brand';
-import Utilities from './pages/Utilities';
-import State from './pages/State';
-import Banner from './pages/Banner';
-import Field from './pages/Field';
-import Organization from './pages/Organization';
-import Customer from './pages/Customer';
-import Contact from './pages/Contact';
-import Shipper from './pages/Shipper';
-import Product from './pages/Product';
-import ShippingDepartment from './pages/ShippingDepartment';
-import { AddProduct, EditProduct } from './components/_dashboard/products';
-import { AddPost, EditPost } from './components/_dashboard/post';
-import Order from './pages/Order';
-import OrderDetail from './pages/OrderDetail';
-import Post from './pages/Post';
-import ProductDetails from './pages/ProductDetails';
 import NotFound from './pages/Page404';
 
 // ----------------------------------------------------------------------

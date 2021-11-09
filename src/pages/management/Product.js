@@ -27,15 +27,15 @@ import {
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import { getAllProduct } from 'src/functions/Management';
-import Page from '../components/Page';
-import Label from '../components/Label';
-import Scrollbar from '../components/Scrollbar';
-import SearchNotFound from '../components/SearchNotFound';
+import Page from '../../components/Page';
+import Label from '../../components/Label';
+import Scrollbar from '../../components/Scrollbar';
+import SearchNotFound from '../../components/SearchNotFound';
 import {
   ProductListHead,
   ProductListToolbar,
   ProductMoreMenu
-} from '../components/_dashboard/product';
+} from '../../components/_dashboard/product';
 
 // ----------------------------------------------------------------------
 

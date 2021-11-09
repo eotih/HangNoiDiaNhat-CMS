@@ -15,39 +15,39 @@ import {
   Button,
   Checkbox,
   TableRow,
+  Link,
+  Breadcrumbs,
   TableBody,
   TableCell,
   Container,
   Modal,
-  Link,
-  Breadcrumbs,
-  Input,
   TextField,
   Typography,
-  Avatar,
   TableContainer,
   TablePagination
 } from '@mui/material';
 // components
 import { LoadingButton } from '@mui/lab';
-import { styled } from '@mui/material/styles';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 import Box from '@mui/material/Box';
-import { getAllBrands } from 'src/functions/Component';
-import Page from '../components/Page';
-import Scrollbar from '../components/Scrollbar';
-import SearchNotFound from '../components/SearchNotFound';
-import { BrandMoreMenu, BrandListToolbar, BrandListHead } from '../components/_dashboard/brand';
+import { getAllOrganization } from 'src/functions/Organization';
+import Page from '../../components/Page';
+import Scrollbar from '../../components/Scrollbar';
+import SearchNotFound from '../../components/SearchNotFound';
+import {
+  OrganizationListHead,
+  OrganizationListToolbar,
+  OrganizationMoreMenu
+} from '../../components/_dashboard/organization';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'BrandID', label: 'BrandID', alignRight: false },
-  { id: 'Name', label: 'Name', alignRight: false },
-  { id: 'Slug', label: 'Slug', alignRight: false },
-  { id: 'CreatedAt', label: 'CreatedAt', alignRight: false },
-  { id: 'UpdatedAt', label: 'UpdatedAt', alignRight: false },
+  { id: 'FullName', label: 'FullName', alignRight: false },
+  { id: 'Email', label: 'Email', alignRight: false },
+  { id: 'Phone', label: 'Phone', alignRight: false },
+  { id: 'Address', label: 'Address', alignRight: false },
   { id: '' }
 ];
 
@@ -82,7 +82,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Category() {
+export default function User() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [page, setPage] = useState(0);
@@ -94,25 +94,27 @@ export default function Category() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [brand, setBrand] = useState([]);
+  const [organization, setOrganization] = useState([]);
   useEffect(() => {
-    getAllBrands().then((res) => {
+    getAllOrganization().then((res) => {
       setIsLoaded(true);
-      setBrand(res);
+      setOrganization(res);
     });
   }, []);
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - brand.length) : 0;
-  const filteredBrands = applySortFilter(brand, getComparator(order, orderBy), filterName);
-  const isUserNotFound = filteredBrands.length === 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - organization.length) : 0;
+  const filteredOrganization = applySortFilter(
+    organization,
+    getComparator(order, orderBy),
+    filterName
+  );
+  const isUserNotFound = filteredOrganization.length === 0;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
-  const Input = styled('input')({
-    display: 'none'
-  });
+
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
@@ -156,23 +158,27 @@ export default function Category() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = brand.map((n) => n.name);
+      const newSelecteds = organization.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
+
   const formik = useFormik({
     initialValues: {
-      Name: '',
-      Thumbnail: ''
+      FullName: '',
+      Phone: '',
+      Email: '',
+      Address: '',
+      remember: true
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditBrand`, formik.values)
+        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditOrganization`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
-            alert('Add Brand Successfully');
+            alert('Add Organization Successfully');
             window.location.reload();
           } else {
             alert('Add Failed');
@@ -196,11 +202,12 @@ export default function Category() {
     );
   }
   return (
-    <Page title="Brand | HangnoidiaNhat">
+    <Page title="Organization | HangnoidiaNhat">
       <Modal
         open={open}
         sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' }
+          '& .MuiTextField-root': { m: 1, width: '25ch' },
+          '& .MuiSelect-root': { m: 1, width: '25ch' }
         }}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
@@ -211,37 +218,18 @@ export default function Category() {
             <Box sx={style}>
               <Stack spacing={3}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add Brand
+                  Add Organization
                 </Typography>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
-                  <TextField label="Name" {...getFieldProps('Name')} variant="outlined" />
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <TextField label="FullName" {...getFieldProps('FullName')} variant="outlined" />
+                  <TextField label="Phone" {...getFieldProps('Phone')} variant="outlined" />
                 </Stack>
-                <Stack
-                  direction={{ xs: 'column', sm: 'row' }}
-                  spacing={2}
-                  justifyContent="flex-end"
-                >
-                  <Avatar src={formik.values.Thumbnail} sx={{ width: 50, height: 50 }} />
-                  <label htmlFor="contained-button-file">
-                    <Input
-                      id="contained-button-file"
-                      type="file"
-                      onChange={(e) => {
-                        const { files } = e.target;
-                        const reader = new FileReader();
-                        reader.readAsDataURL(files[0]);
-                        reader.onload = (e) => {
-                          formik.setFieldValue('Thumbnail', e.target.result);
-                        };
-                      }}
-                    />
-                    <Button variant="contained" component="span">
-                      Upload Thumbnail
-                    </Button>
-                  </label>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <TextField label="Email" {...getFieldProps('Email')} variant="outlined" />
+                  <TextField label="Address" {...getFieldProps('Address')} variant="outlined" />
                 </Stack>
                 <LoadingButton fullWidth size="large" type="submit" variant="contained">
-                  Add Brand
+                  Add Organization
                 </LoadingButton>
               </Stack>
             </Box>
@@ -251,12 +239,12 @@ export default function Category() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Brand
+            Organization
             <Breadcrumbs aria-label="breadcrumb">
               <Link underline="hover" color="inherit" href="/">
                 Dashboard
               </Link>
-              <Typography color="text.primary">Brand</Typography>
+              <Typography color="text.primary">Organization</Typography>
             </Breadcrumbs>
           </Typography>
           <Button
@@ -266,12 +254,12 @@ export default function Category() {
             to="#"
             startIcon={<Icon icon={plusFill} />}
           >
-            New Brand
+            New Organization
           </Button>
         </Stack>
 
         <Card>
-          <BrandListToolbar
+          <OrganizationListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -280,26 +268,26 @@ export default function Category() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <BrandListHead
+                <OrganizationListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={brand.length}
+                  rowCount={organization.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredBrands
+                  {filteredOrganization
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { BrandID, Name, Slug, Thumbnail, CreatedAt, UpdatedAt } = row;
-                      const isItemSelected = selected.indexOf(Name) !== -1;
+                      const { OrganizationID, Address, FullName, Email, Phone } = row;
+                      const isItemSelected = selected.indexOf(FullName) !== -1;
 
                       return (
                         <TableRow
                           hover
-                          key={BrandID}
+                          key={OrganizationID}
                           tabIndex={-1}
                           role="checkbox"
                           selected={isItemSelected}
@@ -308,24 +296,15 @@ export default function Category() {
                           <TableCell padding="checkbox">
                             <Checkbox
                               checked={isItemSelected}
-                              onChange={(event) => handleClick(event, Name)}
+                              onChange={(event) => handleClick(event, FullName)}
                             />
                           </TableCell>
-                          <TableCell align="left">{BrandID}</TableCell>
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <img
-                                style={{ width: '100px', height: '100%' }}
-                                alt={Name}
-                                src={Thumbnail}
-                              />
-                            </Stack>
-                          </TableCell>
-                          <TableCell align="left">{Slug}</TableCell>
-                          <TableCell align="left">{CreatedAt}</TableCell>
-                          <TableCell align="left">{UpdatedAt}</TableCell>
+                          <TableCell align="left">{FullName}</TableCell>
+                          <TableCell align="left">{Email}</TableCell>
+                          <TableCell align="left">{Phone}</TableCell>
+                          <TableCell align="left">{Address}</TableCell>
                           <TableCell align="right">
-                            <BrandMoreMenu dulieu={row} />
+                            <OrganizationMoreMenu dulieu={row} />
                           </TableCell>
                         </TableRow>
                       );
@@ -352,7 +331,7 @@ export default function Category() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={brand.length}
+            count={organization.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
