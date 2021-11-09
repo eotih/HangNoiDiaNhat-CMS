@@ -35,7 +35,7 @@ const sidebarConfig = [
     ]
   },
   {
-    title: 'Component  ',
+    title: 'Component',
     path: '/component',
     icon: getIcon(briefcasefill),
     children: [
@@ -119,7 +119,6 @@ const sidebarConfig = [
       // }
     ]
   },
-
   {
     title: 'Article',
     path: '/article',

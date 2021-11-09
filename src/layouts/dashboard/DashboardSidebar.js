@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
@@ -44,8 +45,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const [account, setAccount] = useState([]);
   useEffect(() => {
     infoUserLogin().then((user) => {
-      // eslint-disable-next-line array-callback-return
-      const data = user.map((user) => {
+      user.map((user) => {
         setAccount(user);
       });
     });
@@ -70,17 +70,19 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
 
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none" component={RouterLink} to="#">
-          <AccountStyle>
-            <Avatar src={account.Image} alt="photoURL" />
-            <Box sx={{ ml: 2 }}>
-              <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {account.FullName}
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {account.Email}
-              </Typography>
-            </Box>
-          </AccountStyle>
+          {account ? (
+            <AccountStyle>
+              <Avatar src={account.Image} alt="photoURL" />
+              <Box sx={{ ml: 2 }}>
+                <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
+                  {account.FullName}
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  {account.Email}
+                </Typography>
+              </Box>
+            </AccountStyle>
+          ) : null}
         </Link>
       </Box>
 

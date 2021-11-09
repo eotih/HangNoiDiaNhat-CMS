@@ -25,10 +25,10 @@ export default function DashboardApp() {
         </Box>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <NoiCom1L />
+            <NoiCom05L />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <NoiCom05L />
+            <NoiCom1L />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <NoiCom1L8 />

@@ -84,14 +84,16 @@ export default function AccountPopover() {
         anchorEl={anchorRef.current}
         sx={{ width: 220 }}
       >
-        <Box sx={{ my: 1.5, px: 2.5 }}>
-          <Typography variant="subtitle1" noWrap>
-            {account.FullName}
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.Email}
-          </Typography>
-        </Box>
+        {account ? (
+          <Box sx={{ my: 1.5, px: 2.5 }}>
+            <Typography variant="subtitle1" noWrap>
+              {account.FullName}
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+              {account.Email}
+            </Typography>
+          </Box>
+        ) : null}
 
         <Divider sx={{ my: 1 }} />
 
