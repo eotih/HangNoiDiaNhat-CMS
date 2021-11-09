@@ -21,7 +21,8 @@ import {
   TextField
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import axios from 'axios';
+
+import axios from '../../../functions/Axios';
 
 // ----------------------------------------------------------------------
 

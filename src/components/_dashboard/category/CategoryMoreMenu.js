@@ -24,7 +24,7 @@ import {
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
-import axios from 'axios';
+import axios from '../../../functions/Axios';
 
 // ----------------------------------------------------------------------
 

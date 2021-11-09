@@ -7,7 +7,8 @@ import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@mui/material';
-import axios from 'axios';
+
+import axios from '../../../functions/Axios';
 
 // ----------------------------------------------------------------------
 

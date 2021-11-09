@@ -16,7 +16,6 @@ import {
   ListItemText
 } from '@mui/material';
 import { useFormik, Form, FormikProvider } from 'formik';
-import axios from 'axios';
 import { GetProductWhereProductDetailNull } from '../../../functions/Management';
 import { getAllUtilities } from '../../../functions/Component';
 
