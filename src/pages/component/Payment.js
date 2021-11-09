@@ -29,7 +29,6 @@ import {
 // components
 import { LoadingButton } from '@mui/lab';
 import CircularProgress from '@mui/material/CircularProgress';
-import axios from 'axios';
 import Box from '@mui/material/Box';
 import { getAllPayment } from 'src/functions/Component';
 import Page from '../../components/Page';
@@ -40,6 +39,7 @@ import {
   PaymentListToolbar,
   PaymentListHead
 } from '../../components/_dashboard/payment';
+import axios from '../../functions/Axios';
 
 // ----------------------------------------------------------------------
 
@@ -166,7 +166,7 @@ export default function Payment() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditPayment`, formik.values)
+        .post(`Component/AddOrEditPayment`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
             alert('Add Payment Successfully');

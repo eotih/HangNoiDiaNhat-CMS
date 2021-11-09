@@ -21,7 +21,8 @@ import {
   TextField
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import axios from 'axios';
+
+import axios from '../../../functions/Axios';
 
 // ----------------------------------------------------------------------
 
@@ -41,14 +42,7 @@ export default function CustomerMoreMenu(Customer) {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Management/AddOrEditCustomer`, {
-          FullName: formik.values.FullName,
-          CustomerID: formik.values.CustomerID,
-          Email: formik.values.Email,
-          Address: formik.values.Address,
-          Password: formik.values.Password,
-          Phone: formik.values.Phone
-        })
+        .post('Management/AddOrEditCustomer', formik.values)
         .then((res) => {
           if (res.data.Status === 'Updated') {
             alert('Edit Customer Successfully');
@@ -102,9 +96,7 @@ export default function CustomerMoreMenu(Customer) {
           onClick={() => {
             if (confirm('Are you sure you want to delete this Customer?')) {
               axios
-                .delete(
-                  `${process.env.REACT_APP_WEB_API}Management/DeleteCustomer?CustomerID=${Customer.dulieu.CustomerID}`
-                )
+                .delete(`Management/DeleteCustomer?CustomerID=${Customer.dulieu.CustomerID}`)
                 .then((res) => {
                   if (res.data.Status === 'Deleted') {
                     alert('Customer Deleted');

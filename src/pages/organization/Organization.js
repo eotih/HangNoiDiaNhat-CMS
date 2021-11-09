@@ -29,11 +29,11 @@ import {
 // components
 import { LoadingButton } from '@mui/lab';
 import CircularProgress from '@mui/material/CircularProgress';
-import axios from 'axios';
 import Box from '@mui/material/Box';
 import { getAllOrganization } from 'src/functions/Organization';
 import Page from '../../components/Page';
 import Scrollbar from '../../components/Scrollbar';
+import axios from '../../functions/Axios';
 import SearchNotFound from '../../components/SearchNotFound';
 import {
   OrganizationListHead,
@@ -175,7 +175,7 @@ export default function User() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditOrganization`, formik.values)
+        .post(`Organization/AddOrEditOrganization`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
             alert('Add Organization Successfully');

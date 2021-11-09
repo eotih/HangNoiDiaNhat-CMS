@@ -21,7 +21,7 @@ import {
   TextField
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import axios from 'axios';
+import axios from '../../../functions/Axios';
 
 // ----------------------------------------------------------------------
 
@@ -40,13 +40,7 @@ export default function OrganizationMoreMenu(Organization) {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditOrganization`, {
-          FullName: formik.values.FullName,
-          OrganizationID: formik.values.OrganizationID,
-          Email: formik.values.Email,
-          Address: formik.values.Address,
-          Phone: formik.values.Phone
-        })
+        .post(`Organization/AddOrEditOrganization`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Updated') {
             alert('Edit Organization Successfully');
@@ -100,7 +94,7 @@ export default function OrganizationMoreMenu(Organization) {
             if (confirm('Are you sure you want to delete this Organization?')) {
               axios
                 .delete(
-                  `${process.env.REACT_APP_WEB_API}Organization/DeleteOrganization?OrganizationID=${Organization.dulieu.OrganizationID}`
+                  `Organization/DeleteOrganization?OrganizationID=${Organization.dulieu.OrganizationID}`
                 )
                 .then((res) => {
                   if (res.data.Status === 'Deleted') {

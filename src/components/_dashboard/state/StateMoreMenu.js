@@ -37,10 +37,7 @@ export default function StateMoreMenu(State) {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditState`, {
-          Name: formik.values.Name,
-          StateID: formik.values.StateID
-        })
+        .post(`Component/AddOrEditState`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Updated') {
             alert('State Edited');
@@ -89,18 +86,14 @@ export default function StateMoreMenu(State) {
         <MenuItem
           onClick={() => {
             if (confirm('Are you sure you want to delete this State?')) {
-              axios
-                .delete(
-                  `${process.env.REACT_APP_WEB_API}Component/DeleteState?StateID=${State.dulieu.StateID}`
-                )
-                .then((res) => {
-                  if (res.data.Status === 'Deleted') {
-                    alert('State Deleted');
-                    window.location.reload();
-                  } else {
-                    alert('Deleted Fail');
-                  }
-                });
+              axios.delete(`Component/DeleteState?StateID=${State.dulieu.StateID}`).then((res) => {
+                if (res.data.Status === 'Deleted') {
+                  alert('State Deleted');
+                  window.location.reload();
+                } else {
+                  alert('Deleted Fail');
+                }
+              });
             }
           }}
           sx={{ color: 'text.secondary' }}

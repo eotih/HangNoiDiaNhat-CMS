@@ -47,16 +47,14 @@ export default function PostMoreMenu(Post) {
   const handleClose = () => setOpen(false);
   const handleDelete = () => {
     if (confirm('Are you sure you want to delete')) {
-      axios
-        .delete(`${process.env.REACT_APP_WEB_API}Article/DeletePost?PostID=${Post.Post.PostID}`)
-        .then((res) => {
-          if (res.data.Status === 'Deleted') {
-            alert('Post deleted successfully');
-            window.location.reload();
-          } else {
-            alert('Post not deleted');
-          }
-        });
+      axios.delete(`Article/DeletePost?PostID=${Post.Post.PostID}`).then((res) => {
+        if (res.data.Status === 'Deleted') {
+          alert('Post deleted successfully');
+          window.location.reload();
+        } else {
+          alert('Post not deleted');
+        }
+      });
     }
   };
   const handleOpen = () => {
@@ -79,16 +77,14 @@ export default function PostMoreMenu(Post) {
       StateID: ''
     },
     onSubmit: () => {
-      axios
-        .post(`${process.env.REACT_APP_WEB_API}Article/EditStateOfPost`, formik.values)
-        .then((res) => {
-          if (res.data.Status === 'Updated') {
-            alert('Edit State Successfully');
-            window.location.reload();
-          } else {
-            alert('Edit State Failed');
-          }
-        });
+      axios.post('Article/EditStateOfPost', formik.values).then((res) => {
+        if (res.data.Status === 'Updated') {
+          alert('Edit State Successfully');
+          window.location.reload();
+        } else {
+          alert('Edit State Failed');
+        }
+      });
     }
   });
   const { handleSubmit, getFieldProps } = formik;

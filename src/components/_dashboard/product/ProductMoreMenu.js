@@ -9,7 +9,7 @@ import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@mui/material';
-import axios from 'axios';
+import axios from '../../../functions/Axios';
 
 // ----------------------------------------------------------------------
 
@@ -39,9 +39,7 @@ export default function ProductMoreMenu(Product) {
           onClick={() => {
             if (confirm('Are you sure you want to delete this Product?')) {
               axios
-                .delete(
-                  `${process.env.REACT_APP_WEB_API}Management/DeleteProduct?ProductID=${Product.dulieu.ProductID}`
-                )
+                .delete(`Management/DeleteProduct?ProductID=${Product.dulieu.ProductID}`)
                 .then((res) => {
                   if (res.data.Status === 'Deleted') {
                     alert('Product Deleted');

@@ -11,7 +11,6 @@ import external from '@iconify/icons-eva/external-link-fill';
 import { Link as RouterLink } from 'react-router-dom';
 import pluscirclefill from '@iconify/icons-eva/plus-circle-fill';
 import morehorizontalfill from '@iconify/icons-eva/more-horizontal-fill';
-import axios from 'axios';
 // material
 import {
   Menu,
@@ -26,7 +25,7 @@ import {
   //   TextField,
   //   Stack
 } from '@mui/material';
-
+import axios from '../../../functions/Axios';
 // ----------------------------------------------------------------------
 
 const style = {
@@ -47,26 +46,20 @@ export default function ProductMoreMenu(Product) {
   const handleOpen = () => setOpen(true);
   const handleDelete = () => {
     if (confirm('Are you sure you want to delete')) {
-      axios
-        .delete(
-          `${process.env.REACT_APP_WEB_API}Management/DeleteProduct?ProductID=${Product.ProductID}`
-        )
-        .then((res) => {
-          if (res.data.Status === 'Deleted') {
-            axios
-              .delete(
-                `${process.env.REACT_APP_WEB_API}Management/DeleteImageWhereProductName?ProductName=${Product.name}`
-              )
-              .then((response) => {
-                if (response.data.Status === 'Deleted') {
-                  alert('Product Deleted');
-                  window.location.reload();
-                }
-              });
-          } else {
-            alert('Product not deleted');
-          }
-        });
+      axios.delete(`Management/DeleteProduct?ProductID=${Product.ProductID}`).then((res) => {
+        if (res.data.Status === 'Deleted') {
+          axios
+            .delete(`Management/DeleteImageWhereProductName?ProductName=${Product.name}`)
+            .then((response) => {
+              if (response.data.Status === 'Deleted') {
+                alert('Product Deleted');
+                window.location.reload();
+              }
+            });
+        } else {
+          alert('Product not deleted');
+        }
+      });
     }
   };
   return (

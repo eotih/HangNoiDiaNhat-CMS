@@ -32,13 +32,13 @@ import {
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
 import CircularProgress from '@mui/material/CircularProgress';
-import axios from 'axios';
 import Box from '@mui/material/Box';
 import { getAllField } from 'src/functions/Article';
 import Page from '../../components/Page';
 import Scrollbar from '../../components/Scrollbar';
 import SearchNotFound from '../../components/SearchNotFound';
 import { FieldMoreMenu, FieldListToolbar, FieldListHead } from '../../components/_dashboard/field';
+import axios from '../../functions/Axios';
 
 // ----------------------------------------------------------------------
 
@@ -169,7 +169,7 @@ export default function Field() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Article/AddOrEditField`, formik.values)
+        .post(`Article/AddOrEditField`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
             alert('Add Field Successfully');

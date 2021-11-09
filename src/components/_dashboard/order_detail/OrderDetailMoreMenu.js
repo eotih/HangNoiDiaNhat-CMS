@@ -48,7 +48,7 @@ export default function OrderDetailMoreMenu(State) {
     onSubmit: () => {
       console.log(formik.values);
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Management/EditStateInOrderDetail`, {
+        .post(`Management/EditStateInOrderDetail`, {
           OrderID: formik.values.OrderID,
           StateID: formik.values.StateID
         })
@@ -105,18 +105,14 @@ export default function OrderDetailMoreMenu(State) {
         <MenuItem
           onClick={() => {
             if (confirm('Are you sure you want to delete this Order?')) {
-              axios
-                .delete(
-                  `${process.env.REACT_APP_WEB_API}Management/DeleteOrder?OrderID=${State.dulieu.OrderID}`
-                )
-                .then((res) => {
-                  if (res.data.Status === 'Deleted') {
-                    alert('Order Deleted');
-                    window.location.reload();
-                  } else {
-                    alert('Deleted Fail');
-                  }
-                });
+              axios.delete(`Management/DeleteOrder?OrderID=${State.dulieu.OrderID}`).then((res) => {
+                if (res.data.Status === 'Deleted') {
+                  alert('Order Deleted');
+                  window.location.reload();
+                } else {
+                  alert('Deleted Fail');
+                }
+              });
             }
           }}
           sx={{ color: 'text.secondary' }}

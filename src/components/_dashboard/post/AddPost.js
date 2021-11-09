@@ -26,9 +26,9 @@ import React, { useState, useEffect } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css';
-import axios from 'axios';
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
+import axios from '../../../functions/Axios';
 import { getAllField } from '../../../functions/Article';
 import Page from '../../Page';
 
@@ -69,21 +69,14 @@ export default function AddPost() {
       Thumbnail: ''
     },
     onSubmit: () => {
-      axios
-        .post(`${process.env.REACT_APP_WEB_API}Article/AddOrEditPost`, {
-          FieldID: formik.values.FieldID,
-          Title: formik.values.Title,
-          Details: formik.values.Details,
-          Thumbnail: formik.values.Thumbnail
-        })
-        .then((res) => {
-          if (res.data.Status === 'Success') {
-            alert('Add Post Successfully');
-            window.location.reload();
-          } else {
-            alert('Add Post Failed');
-          }
-        });
+      axios.post(`Article/AddOrEditPost`, formik.values).then((res) => {
+        if (res.data.Status === 'Success') {
+          alert('Add Post Successfully');
+          window.location.reload();
+        } else {
+          alert('Add Post Failed');
+        }
+      });
     }
   });
 

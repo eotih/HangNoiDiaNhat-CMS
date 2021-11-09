@@ -24,7 +24,7 @@ import {
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
-import axios from 'axios';
+import axios from '../../../functions/Axios';
 
 // ----------------------------------------------------------------------
 
@@ -41,11 +41,7 @@ export default function BannerMoreMenu(Banner) {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditBanner`, {
-          Name: formik.values.Name,
-          BannerID: formik.values.BannerID,
-          Image: formik.values.Image
-        })
+        .post('Organization/AddOrEditBanner', formik.values)
         .then((res) => {
           if (res.data.Status === 'Updated') {
             alert('Edit Banner Successfully');
@@ -99,9 +95,7 @@ export default function BannerMoreMenu(Banner) {
           onClick={() => {
             if (confirm('Are you sure you want to delete this banner?')) {
               axios
-                .delete(
-                  `${process.env.REACT_APP_WEB_API}Organization/DeleteBanner?BannerID=${Banner.dulieu.BannerID}`
-                )
+                .delete(`Organization/DeleteBanner?BannerID=${Banner.dulieu.BannerID}`)
                 .then((res) => {
                   if (res.data.Status === 'Deleted') {
                     alert('Banner Deleted');

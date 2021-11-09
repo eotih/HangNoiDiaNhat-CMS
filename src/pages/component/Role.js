@@ -29,13 +29,13 @@ import {
 // components
 import { LoadingButton } from '@mui/lab';
 import CircularProgress from '@mui/material/CircularProgress';
-import axios from 'axios';
 import Box from '@mui/material/Box';
 import { getAllRole } from 'src/functions/Component';
 import Page from '../../components/Page';
 import Scrollbar from '../../components/Scrollbar';
 import SearchNotFound from '../../components/SearchNotFound';
 import { RoleListHead, RoleListToolbar, RoleMoreMenu } from '../../components/_dashboard/role';
+import axios from '../../functions/Axios';
 
 // ----------------------------------------------------------------------
 
@@ -162,7 +162,7 @@ export default function Role() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditRole`, formik.values)
+        .post(`Component/AddOrEditRole`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
             alert('Thêm thành công');

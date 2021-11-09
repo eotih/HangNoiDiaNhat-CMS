@@ -30,10 +30,10 @@ import {
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
 import CircularProgress from '@mui/material/CircularProgress';
-import axios from 'axios';
 import Box from '@mui/material/Box';
 import { getAllUtilities } from 'src/functions/Component';
 import Page from '../../components/Page';
+import axios from '../../functions/Axios';
 import Scrollbar from '../../components/Scrollbar';
 import SearchNotFound from '../../components/SearchNotFound';
 import { UtilMoreMenu, UtilListToolbar, UtilListHead } from '../../components/_dashboard/utilities';
@@ -166,7 +166,7 @@ export default function Brand() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditUtil`, formik.values)
+        .post(`Component/AddOrEditUtil`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
             alert('Add Utilities Successfully');

@@ -29,9 +29,9 @@ import {
 // components
 import { LoadingButton } from '@mui/lab';
 import CircularProgress from '@mui/material/CircularProgress';
-import axios from 'axios';
 import Box from '@mui/material/Box';
 import { getAllCustomer } from 'src/functions/Management';
+import axios from '../../functions/Axios';
 import Page from '../../components/Page';
 import Scrollbar from '../../components/Scrollbar';
 import SearchNotFound from '../../components/SearchNotFound';
@@ -177,7 +177,7 @@ export default function User() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Management/AddOrEditCustomer`, formik.values)
+        .post(`Management/AddOrEditCustomer`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
             alert('Add Customer Successfully');

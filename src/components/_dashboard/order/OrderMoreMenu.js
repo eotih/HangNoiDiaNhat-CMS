@@ -26,7 +26,7 @@ import {
   Typography
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import axios from 'axios';
+import axios from '../../../functions/Axios';
 import { getAllState } from '../../../functions/Component';
 
 // ----------------------------------------------------------------------
@@ -51,10 +51,7 @@ export default function OrderMoreMenu(State) {
     onSubmit: () => {
       console.log(formik.values);
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Management/EditStateOfOrder`, {
-          OrderID: formik.values.OrderID,
-          StateID: formik.values.StateID
-        })
+        .post('Management/EditStateOfOrder', formik.values)
         .then((res) => {
           if (res.data.Status === 'Updated') {
             alert('State Edited');
@@ -108,25 +105,21 @@ export default function OrderMoreMenu(State) {
         <MenuItem
           onClick={() => {
             if (confirm('Are you sure you want to delete this Order?')) {
-              axios
-                .delete(
-                  `${process.env.REACT_APP_WEB_API}Management/DeleteOrder?OrderID=${State.dulieu.OrderID}`
-                )
-                .then((res) => {
-                  if (res.data.Status === 'Deleted') {
-                    axios
-                      .delete(
-                        `${process.env.REACT_APP_WEB_API}Management/DeleteOrderDetailsByOrderID?OrderID=${State.dulieu.OrderID}`
-                      )
-                      .then((res) => {
-                        console.log(res.data.Status);
-                      });
-                    alert('Order Deleted');
-                    window.location.reload();
-                  } else {
-                    alert('Deleted Fail');
-                  }
-                });
+              axios.delete(`Management/DeleteOrder?OrderID=${State.dulieu.OrderID}`).then((res) => {
+                if (res.data.Status === 'Deleted') {
+                  axios
+                    .delete(
+                      `Management/DeleteOrderDetailsByOrderID?OrderID=${State.dulieu.OrderID}`
+                    )
+                    .then((res) => {
+                      console.log(res.data.Status);
+                    });
+                  alert('Order Deleted');
+                  window.location.reload();
+                } else {
+                  alert('Deleted Fail');
+                }
+              });
             }
           }}
           sx={{ color: 'text.secondary' }}

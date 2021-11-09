@@ -31,10 +31,10 @@ import {
 import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
 import CircularProgress from '@mui/material/CircularProgress';
-import axios from 'axios';
 import Box from '@mui/material/Box';
 import { getAllShipper } from 'src/functions/Delivery';
 import Page from '../../components/Page';
+import axios from '../../functions/Axios';
 import Scrollbar from '../../components/Scrollbar';
 import SearchNotFound from '../../components/SearchNotFound';
 import {
@@ -194,7 +194,7 @@ export default function User() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Delivery/AddOrEditShipper`, formik.values)
+        .post(`Delivery/AddOrEditShipper`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
             alert('Add Shipper Successfully');

@@ -25,9 +25,9 @@ import SunEditor from 'suneditor-react';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import 'suneditor/dist/css/suneditor.min.css';
-import axios from 'axios';
-import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
+import { LoadingButton } from '@mui/lab';
+import axios from '../../../functions/Axios';
 import { getAllField, getPostBySlug } from '../../../functions/Article';
 import Page from '../../Page';
 
@@ -84,22 +84,14 @@ export default function EditPost() {
       Thumbnail: ''
     },
     onSubmit: () => {
-      axios
-        .post(`${process.env.REACT_APP_WEB_API}Article/AddOrEditPost`, {
-          FieldID: formik.values.FieldID,
-          PostID: formik.values.PostID,
-          Title: formik.values.Title,
-          Details: formik.values.Details,
-          Thumbnail: formik.values.Thumbnail
-        })
-        .then((res) => {
-          if (res.data.Status === 'Updated') {
-            alert('Edit Post Successfully');
-            window.location.href = '../';
-          } else {
-            alert('Edit Post Failed');
-          }
-        });
+      axios.post(`Article/AddOrEditPost`, formik.values).then((res) => {
+        if (res.data.Status === 'Updated') {
+          alert('Edit Post Successfully');
+          window.location.href = '../';
+        } else {
+          alert('Edit Post Failed');
+        }
+      });
     }
   });
 

@@ -29,10 +29,10 @@ import {
 // components
 import { LoadingButton } from '@mui/lab';
 import CircularProgress from '@mui/material/CircularProgress';
-import axios from 'axios';
 import Box from '@mui/material/Box';
 import { getAllServices } from 'src/functions/Delivery';
 import Page from '../../components/Page';
+import axios from '../../functions/Axios';
 import Scrollbar from '../../components/Scrollbar';
 import SearchNotFound from '../../components/SearchNotFound';
 import {
@@ -166,7 +166,7 @@ export default function Service() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Delivery/AddOrEditService`, formik.values)
+        .post(`Delivery/AddOrEditService`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Success') {
             alert('Add Service Successfully');

@@ -41,11 +41,7 @@ export default function CategoryMoreMenu(Category) {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditCategory`, {
-          Name: formik.values.Name,
-          CategoryID: formik.values.CategoryID,
-          Thumbnail: formik.values.Thumbnail
-        })
+        .post('Component/AddOrEditCategory', formik.values)
         .then((res) => {
           if (res.data.Status === 'Updated') {
             alert('Edit Category Successfully');
@@ -99,9 +95,7 @@ export default function CategoryMoreMenu(Category) {
           onClick={() => {
             if (confirm('Are you sure you want to delete this Category?')) {
               axios
-                .delete(
-                  `${process.env.REACT_APP_WEB_API}Component/DeleteCategory?CategoryID=${Category.dulieu.CategoryID}`
-                )
+                .delete(`Component/DeleteCategory?CategoryID=${Category.dulieu.CategoryID}`)
                 .then((res) => {
                   if (res.data.Status === 'Deleted') {
                     alert('Category Deleted');

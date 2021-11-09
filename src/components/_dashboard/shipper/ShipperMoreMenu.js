@@ -24,7 +24,7 @@ import {
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
-import axios from 'axios';
+import axios from '../../../functions/Axios';
 
 // ----------------------------------------------------------------------
 
@@ -48,16 +48,7 @@ export default function ShipperMoreMenu(Shipper) {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Delivery/AddOrEditShipper`, {
-          ShipperID: formik.values.ShipperID,
-          FullName: formik.values.FullName,
-          Password: formik.values.Password,
-          Phone: formik.values.Phone,
-          Email: formik.values.Email,
-          BackSideFigure: formik.values.BackSideFigure,
-          Address: formik.values.Address,
-          FrontFigure: formik.values.FrontFigure
-        })
+        .post(`Delivery/AddOrEditShipper`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Updated') {
             alert('Shipper Edited');
@@ -118,9 +109,7 @@ export default function ShipperMoreMenu(Shipper) {
           onClick={() => {
             if (confirm('Are you sure you want to delete this Shipper?')) {
               axios
-                .delete(
-                  `${process.env.REACT_APP_WEB_API}Delivery/DeleteShipper?ShipperID=${Shipper.dulieu.ShipperID}`
-                )
+                .delete(`Delivery/DeleteShipper?ShipperID=${Shipper.dulieu.ShipperID}`)
                 .then((res) => {
                   if (res.data.Status === 'Deleted') {
                     alert('Shipper Deleted');

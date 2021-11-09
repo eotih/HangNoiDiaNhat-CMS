@@ -21,7 +21,7 @@ import {
   TextField
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import axios from 'axios';
+import axios from '../../../functions/Axios';
 
 // ----------------------------------------------------------------------
 
@@ -37,10 +37,7 @@ export default function PaymentMoreMenu(Payment) {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditPayment`, {
-          Name: formik.values.Name,
-          PaymentID: formik.values.PaymentID
-        })
+        .post(`Component/AddOrEditPayment`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Updated') {
             alert('Payment Edited');
@@ -90,9 +87,7 @@ export default function PaymentMoreMenu(Payment) {
           onClick={() => {
             if (confirm('Are you sure you want to delete this Payment?')) {
               axios
-                .delete(
-                  `${process.env.REACT_APP_WEB_API}Component/DeletePayment?PaymentID=${Payment.dulieu.PaymentID}`
-                )
+                .delete(`Component/DeletePayment?PaymentID=${Payment.dulieu.PaymentID}`)
                 .then((res) => {
                   if (res.data.Status === 'Deleted') {
                     alert('Payment Deleted');

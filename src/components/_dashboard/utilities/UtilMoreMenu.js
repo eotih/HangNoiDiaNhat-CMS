@@ -21,7 +21,7 @@ import {
   TextField
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import axios from 'axios';
+import axios from '../../../functions/Axios';
 
 // ----------------------------------------------------------------------
 
@@ -37,10 +37,7 @@ export default function UtilMoreMenu(Utility) {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditUtil`, {
-          Name: formik.values.Name,
-          UtilityID: formik.values.UtilityID
-        })
+        .post(`Component/AddOrEditUtil`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Updated') {
             alert('Edit Utility Successfully');
@@ -90,9 +87,7 @@ export default function UtilMoreMenu(Utility) {
           onClick={() => {
             if (confirm('Are you sure you want to delete this Utility?')) {
               axios
-                .delete(
-                  `${process.env.REACT_APP_WEB_API}Component/DeleteUtil?UtilityID=${Utility.dulieu.UtilityID}`
-                )
+                .delete(`Component/DeleteUtil?UtilityID=${Utility.dulieu.UtilityID}`)
                 .then((res) => {
                   if (res.data.Status === 'Deleted') {
                     alert('Utility Deleted');

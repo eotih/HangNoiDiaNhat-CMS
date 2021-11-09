@@ -27,7 +27,7 @@ import {
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
-import axios from 'axios';
+import axios from '../../../functions/Axios';
 import { getAllRole } from '../../../functions/Component';
 
 // ----------------------------------------------------------------------
@@ -58,16 +58,7 @@ export default function AccountMoreMenu(Account) {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditAccount`, {
-          AccountID: formik.values.AccountID,
-          FullName: formik.values.FullName,
-          Image: formik.values.Image,
-          Phone: formik.values.Phone,
-          Email: formik.values.Email,
-          Password: formik.values.Password,
-          Address: formik.values.Address,
-          RoleID: formik.values.RoleID
-        })
+        .post('Organization/AddOrEditAccount', formik.values)
         .then((res) => {
           if (res.data.Status === 'Updated') {
             alert('Account Edited');
@@ -131,9 +122,7 @@ export default function AccountMoreMenu(Account) {
           onClick={() => {
             if (confirm('Are you sure you want to delete this account?')) {
               axios
-                .delete(
-                  `${process.env.REACT_APP_WEB_API}Organization/DeleteAccount?AccountID=${Account.dulieu.AccountID}`
-                )
+                .delete(`Organization/DeleteAccount?AccountID=${Account.dulieu.AccountID}`)
                 .then((res) => {
                   if (res.data.Status === 'Deleted') {
                     alert('Account Deleted');

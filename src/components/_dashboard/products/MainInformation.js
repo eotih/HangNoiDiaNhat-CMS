@@ -18,8 +18,8 @@ import { useFormik, Form, FormikProvider } from 'formik';
 import React, { useState, useEffect, memo } from 'react';
 import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css';
-import axios from 'axios';
 import { styled } from '@mui/material/styles';
+import axios from '../../../functions/Axios';
 import { getAllBrands, getAllCategory } from '../../../functions/Component';
 import { UploadImage } from '.';
 import { infoUserLogin } from '../../../functions/Organization';
@@ -71,23 +71,21 @@ function MainInformation({ onHandleNext }) {
       Name: ''
     },
     onSubmit: () => {
-      axios
-        .post(`${process.env.REACT_APP_WEB_API}Management/AddOrEditProduct`, formik.values)
-        .then((res) => {
-          if (res.data.Status === 'Success') {
-            for (let i = 0; i < images.length; i += 1) {
-              uploadImageProduct(images[i].base64, formik.values.Name);
-            }
-            onHandleNext();
-          } else {
-            alert('Add Failed');
+      axios.post(`Management/AddOrEditProduct`, formik.values).then((res) => {
+        if (res.data.Status === 'Success') {
+          for (let i = 0; i < images.length; i += 1) {
+            uploadImageProduct(images[i].base64, formik.values.Name);
           }
-        });
+          onHandleNext();
+        } else {
+          alert('Add Failed');
+        }
+      });
     }
   });
   const uploadImageProduct = (image, name) => {
     axios
-      .post(`${process.env.REACT_APP_WEB_API}Management/AddOrEditProductImage`, {
+      .post(`Management/AddOrEditProductImage`, {
         Image2: image,
         ProductName: name
       })

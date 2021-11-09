@@ -1,15 +1,14 @@
-import axios from 'axios';
+import axios from './Axios';
 
-const { REACT_APP_WEB_API } = process.env;
 export async function getAllServices() {
-  const res = await axios.get(`${REACT_APP_WEB_API}Delivery/SelectAllService`);
+  const res = await axios.get('Delivery/SelectAllService');
   return res.data;
 }
 export async function getAllShipper() {
-  const res = await axios.get(`${REACT_APP_WEB_API}Delivery/SelectAllShipper`);
+  const res = await axios.get('Delivery/SelectAllShipper');
   return res.data;
 }
 export async function getAllShippingDepartment() {
-  const res = await axios.get(`${REACT_APP_WEB_API}Delivery/SelectAllShippingDepartment`);
+  const res = await axios.get('Delivery/SelectAllShippingDepartment');
   return res.data;
 }

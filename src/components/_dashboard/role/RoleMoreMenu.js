@@ -21,7 +21,7 @@ import {
   TextField
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import axios from 'axios';
+import axios from '../../../functions/Axios';
 
 // ----------------------------------------------------------------------
 
@@ -37,10 +37,7 @@ export default function RoleMoreMenu(Role) {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditRole`, {
-          RoleName: formik.values.RoleName,
-          RoleID: formik.values.RoleID
-        })
+        .post(`Component/AddOrEditRole`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Updated') {
             alert('Role Edited');
@@ -89,18 +86,14 @@ export default function RoleMoreMenu(Role) {
         <MenuItem
           onClick={() => {
             if (confirm('Are you sure you want to delete this Role?')) {
-              axios
-                .delete(
-                  `${process.env.REACT_APP_WEB_API}Component/DeleteRole?RoleID=${Role.dulieu.RoleID}`
-                )
-                .then((res) => {
-                  if (res.data.Status === 'Deleted') {
-                    alert('Role Deleted');
-                    window.location.reload();
-                  } else {
-                    alert('Deleted Fail');
-                  }
-                });
+              axios.delete(`Component/DeleteRole?RoleID=${Role.dulieu.RoleID}`).then((res) => {
+                if (res.data.Status === 'Deleted') {
+                  alert('Role Deleted');
+                  window.location.reload();
+                } else {
+                  alert('Deleted Fail');
+                }
+              });
             }
           }}
           sx={{ color: 'text.secondary' }}

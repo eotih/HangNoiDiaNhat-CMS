@@ -24,7 +24,7 @@ import {
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
-import axios from 'axios';
+import axios from '../../../functions/Axios';
 
 // ----------------------------------------------------------------------
 
@@ -41,11 +41,7 @@ export default function FieldMoreMenu(Field) {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Article/AddOrEditField`, {
-          Name: formik.values.Name,
-          FieldID: formik.values.FieldID,
-          Thumbnail: formik.values.Thumbnail
-        })
+        .post('Article/AddOrEditField', formik.values)
         .then((res) => {
           if (res.data.Status === 'Updated') {
             alert('Edit Field Successfully');
@@ -99,9 +95,7 @@ export default function FieldMoreMenu(Field) {
           onClick={() => {
             if (confirm('Are you sure you want to delete this Field?')) {
               axios
-                .delete(
-                  `${process.env.REACT_APP_WEB_API}Article/DeleteField?FieldID=${Field.dulieu.FieldID}`
-                )
+                .delete(`Article/DeleteField?FieldID=${Field.dulieu.FieldID}`)
                 .then((res) => {
                   if (res.data.Status === 'Deleted') {
                     alert('Field Deleted');

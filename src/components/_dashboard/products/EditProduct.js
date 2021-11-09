@@ -25,9 +25,9 @@ import SunEditor from 'suneditor-react';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import 'suneditor/dist/css/suneditor.min.css';
-import axios from 'axios';
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
+import axios from '../../../functions/Axios';
 import { getProductBySlug } from '../../../functions/Management';
 import { getAllBrands, getAllCategory } from '../../../functions/Component';
 import Page from '../../Page';
@@ -108,16 +108,14 @@ export default function EditProduct() {
       Details: ''
     },
     onSubmit: () => {
-      axios
-        .post(`${process.env.REACT_APP_WEB_API}Management/AddOrEditProduct`, formik.values)
-        .then((res) => {
-          if (res.data.Status === 'Updated') {
-            alert('Edit Product Successfully');
-            window.location.href = '../';
-          } else {
-            alert('Edit Product Failed');
-          }
-        });
+      axios.post(`Management/AddOrEditProduct`, formik.values).then((res) => {
+        if (res.data.Status === 'Updated') {
+          alert('Edit Product Successfully');
+          window.location.href = '../';
+        } else {
+          alert('Edit Product Failed');
+        }
+      });
     }
   });
   const { handleSubmit, getFieldProps } = formik;

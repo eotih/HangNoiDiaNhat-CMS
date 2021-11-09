@@ -21,7 +21,7 @@ import {
   TextField
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import axios from 'axios';
+import axios from '../../../functions/Axios';
 
 // ----------------------------------------------------------------------
 
@@ -42,13 +42,7 @@ export default function ShippingDepartmentMoreMenu(Department) {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Delivery/AddOrEditShippingDepartment`, {
-          ShippingDepartmentID: formik.values.ShippingDepartmentID,
-          FullName: formik.values.FullName,
-          Phone: formik.values.Phone,
-          Email: formik.values.Email,
-          Address: formik.values.Address
-        })
+        .post(`Delivery/AddOrEditShippingDepartment`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Updated') {
             alert('Shipper Edited');
@@ -105,7 +99,7 @@ export default function ShippingDepartmentMoreMenu(Department) {
             if (confirm('Are you sure you want to delete this Shipper?')) {
               axios
                 .delete(
-                  `${process.env.REACT_APP_WEB_API}Delivery/DeleteShippingDepartment?ShippingDepartmentID=${Department.dulieu.ShippingDepartmentID}`
+                  `Delivery/DeleteShippingDepartment?ShippingDepartmentID=${Department.dulieu.ShippingDepartmentID}`
                 )
                 .then((res) => {
                   if (res.data.Status === 'Deleted') {

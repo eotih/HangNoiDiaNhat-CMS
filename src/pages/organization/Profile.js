@@ -21,8 +21,7 @@ import { styled } from '@mui/material/styles';
 import md5 from 'md5';
 import { LoadingButton } from '@mui/lab';
 import { infoUserLogin } from 'src/functions/Organization';
-import axios from 'axios';
-import { getAllRole } from 'src/functions/Component';
+import axios from '../../functions/Axios';
 import Page from '../../components/Page';
 
 export default function EditAccount() {
@@ -59,7 +58,7 @@ export default function EditAccount() {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Organization/AddOrEditAccount`, formik.values)
+        .post(`Organization/AddOrEditAccount`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Updated') {
             alert('Account Edit Successfully');
@@ -84,7 +83,7 @@ export default function EditAccount() {
       alert('Old Password and New Password do not match');
     } else {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Organization/ChangePassword`, {
+        .post(`Organization/ChangePassword`, {
           AccountID: formik.values.AccountID,
           Password: newPassword
         })

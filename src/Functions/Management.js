@@ -1,46 +1,39 @@
-import axios from 'axios';
+import axios from './Axios';
 
-const { REACT_APP_WEB_API } = process.env;
 export async function getAllCustomer() {
-  const res = await axios.get(`${REACT_APP_WEB_API}Management/SelectAllCustomer`);
+  const res = await axios.get(`Management/SelectAllCustomer`);
   return res.data;
 }
 export async function getAllContact() {
-  const res = await axios.get(`${REACT_APP_WEB_API}Management/SelectAllContact`);
+  const res = await axios.get(`Management/SelectAllContact`);
   return res.data;
 }
 export async function getAllProduct() {
-  const res = await axios.get(`${REACT_APP_WEB_API}Management/SelectAllProduct`);
+  const res = await axios.get(`Management/SelectAllProduct`);
   return res.data;
 }
 export async function getAllOrder() {
-  const res = await axios.get(`${REACT_APP_WEB_API}Management/SelectAllOrders`);
+  const res = await axios.get(`Management/SelectAllOrders`);
   return res.data;
 }
 export async function getAllOrderDetailByOrderID(OrderID) {
-  const res = await axios.get(
-    `${REACT_APP_WEB_API}Management/GetOrderDetailByOrderID?OrderID=${OrderID}`
-  );
+  const res = await axios.get(`Management/GetOrderDetailByOrderID?OrderID=${OrderID}`);
   return res.data;
 }
 export async function getLengthByCategory(CategoryID) {
-  const res = await axios.get(
-    `${REACT_APP_WEB_API}Management/GetProductByCategoryID?CategoryID=${CategoryID}`
-  );
+  const res = await axios.get(`Management/GetProductByCategoryID?CategoryID=${CategoryID}`);
   return res.data;
 }
 export async function GetProductImageByProductName(ProductName) {
-  const res = await axios.get(
-    `${REACT_APP_WEB_API}Management/GetProductImageByProductName?ProductName=${ProductName}`
-  );
+  const res = await axios.get(`Management/GetProductImageByProductName?ProductName=${ProductName}`);
   return res.data;
 }
 
 export async function getProductBySlug(Slug) {
-  const res = await axios.get(`${REACT_APP_WEB_API}Management/GetProductBySlug?Slug=${Slug}`);
+  const res = await axios.get(`Management/GetProductBySlug?Slug=${Slug}`);
   return res.data;
 }
 export async function GetProductWhereProductDetailNull() {
-  const res = await axios.get(`${REACT_APP_WEB_API}Management/GetProductWhereProductDetailNull`);
+  const res = await axios.get(`Management/GetProductWhereProductDetailNull`);
   return res.data;
 }

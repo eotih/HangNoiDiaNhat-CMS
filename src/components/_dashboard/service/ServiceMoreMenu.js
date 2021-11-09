@@ -21,7 +21,7 @@ import {
   TextField
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import axios from 'axios';
+import axios from '../../../functions/Axios';
 
 // ----------------------------------------------------------------------
 
@@ -37,10 +37,7 @@ export default function ServiceMoreMenu(Service) {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Delivery/AddOrEditService`, {
-          Name: formik.values.Name,
-          ServiceID: formik.values.ServiceID
-        })
+        .post(`Delivery/AddOrEditService`, formik.values)
         .then((res) => {
           if (res.data.Status === 'Updated') {
             alert('Payment Edited');
@@ -90,9 +87,7 @@ export default function ServiceMoreMenu(Service) {
           onClick={() => {
             if (confirm('Are you sure you want to delete this Service?')) {
               axios
-                .delete(
-                  `${process.env.REACT_APP_WEB_API}Delivery/DeleteService?ServiceID=${Service.dulieu.ServiceID}`
-                )
+                .delete(`Delivery/DeleteService?ServiceID=${Service.dulieu.ServiceID}`)
                 .then((res) => {
                   if (res.data.Status === 'Deleted') {
                     alert('Service Deleted');

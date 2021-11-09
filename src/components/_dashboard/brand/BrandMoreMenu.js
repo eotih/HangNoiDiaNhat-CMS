@@ -24,8 +24,7 @@ import {
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
-import axios from 'axios';
-
+import axios from '../../../functions/Axios';
 // ----------------------------------------------------------------------
 
 export default function BrandMoreMenu(Brand) {
@@ -41,11 +40,7 @@ export default function BrandMoreMenu(Brand) {
     },
     onSubmit: () => {
       axios
-        .post(`${process.env.REACT_APP_WEB_API}Component/AddOrEditBrand`, {
-          Name: formik.values.Name,
-          BrandID: formik.values.BrandID,
-          Thumbnail: formik.values.Thumbnail
-        })
+        .post('Component/AddOrEditBrand', formik.values)
         .then((res) => {
           if (res.data.Status === 'Updated') {
             alert('Edit Brand Successfully');
@@ -99,9 +94,7 @@ export default function BrandMoreMenu(Brand) {
           onClick={() => {
             if (confirm('Are you sure you want to delete this brand?')) {
               axios
-                .delete(
-                  `${process.env.REACT_APP_WEB_API}Component/DeleteBrand?BrandID=${Brand.dulieu.BrandID}`
-                )
+                .delete(`Component/DeleteBrand?BrandID=${Brand.dulieu.BrandID}`)
                 .then((res) => {
                   if (res.data.Status === 'Deleted') {
                     alert('Brand Deleted');

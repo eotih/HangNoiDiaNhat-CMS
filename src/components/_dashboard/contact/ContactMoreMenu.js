@@ -34,9 +34,7 @@ export default function ContactMoreMenu(Contact) {
           onClick={() => {
             if (confirm('Are you sure you want to delete this Contact?')) {
               axios
-                .delete(
-                  `${process.env.REACT_APP_WEB_API}Management/DeleteContact?ContactID=${Contact.dulieu.ContactID}`
-                )
+                .delete(`Management/DeleteContact?ContactID=${Contact.dulieu.ContactID}`)
                 .then((res) => {
                   if (res.data.Status === 'Deleted') {
                     alert('Contact Deleted');
