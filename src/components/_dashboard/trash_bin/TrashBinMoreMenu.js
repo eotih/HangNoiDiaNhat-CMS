@@ -51,19 +51,14 @@ export default function PostMoreMenu(Post) {
   const handleClose = () => setOpen(false);
   const handleDelete = () => {
     if (confirm('Are you sure you want to delete')) {
-      axios
-        .post('Article/EditStateOfPost', {
-          StateID: 4,
-          PostID
-        })
-        .then((res) => {
-          if (res.data.Status === 'Updated') {
-            alert('Delete Post Successfully');
-            window.location.reload();
-          } else {
-            alert('Delete Post Failed');
-          }
-        });
+      axios.delete(`Article/DeletePost?PostID=${PostID}`).then((res) => {
+        if (res.data.Status === 'Deleted') {
+          alert('Post deleted successfully');
+          window.location.reload();
+        } else {
+          alert('Post not deleted');
+        }
+      });
     }
   };
   const handleOpen = () => {
@@ -89,7 +84,7 @@ export default function PostMoreMenu(Post) {
       axios.post('Article/EditStateOfPost', formik.values).then((res) => {
         if (res.data.Status === 'Updated') {
           alert('Edit State Successfully');
-          window.location.reload();
+          window.location.href = '../';
         } else {
           alert('Edit State Failed');
         }
@@ -152,13 +147,7 @@ export default function PostMoreMenu(Post) {
           <ListItemIcon>
             <Icon icon={checkmark} width={24} height={24} />
           </ListItemIcon>
-          <ListItemText primary="Approve" primaryTypographyProps={{ variant: 'body2' }} />
-        </MenuItem>
-        <MenuItem to={`edit/${Slug}`} component={RouterLink} sx={{ color: 'text.secondary' }}>
-          <ListItemIcon>
-            <Icon icon={editFill} width={24} height={24} />
-          </ListItemIcon>
-          <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
+          <ListItemText primary="Restore" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
         <MenuItem onClick={handleDelete} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>

@@ -34,6 +34,7 @@ import ShippingDepartment from './pages/delivery/ShippingDepartment';
 // Article
 import Field from './pages/article/Field';
 import Post from './pages/article/Post';
+import TrashBin from './pages/article/TrashBin';
 // Page
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -96,6 +97,7 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'post', element: <Post /> },
+        { path: 'post/trash_bin', element: <TrashBin /> },
         { path: 'post/add', element: <AddPost /> },
         { path: 'post/edit/:slug', element: <EditPost /> },
         { path: 'field', element: <Field /> }

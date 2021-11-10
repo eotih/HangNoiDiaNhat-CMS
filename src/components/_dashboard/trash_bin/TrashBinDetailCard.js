@@ -3,7 +3,10 @@ import { Link as RouterLink } from 'react-router-dom';
 // material
 import { Box, Card, Link, Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { PostMoreMenu } from '.';
+// utils
+import { fCurrency } from '../../../utils/formatNumber';
+import { TrashBinMoreMenu } from '.';
+//
 import Label from '../../Label';
 
 // ----------------------------------------------------------------------
@@ -18,7 +21,7 @@ const ProductImgStyle = styled('img')({
 
 // ----------------------------------------------------------------------
 
-PostCard.propTypes = {
+TrashBinDetailCard.propTypes = {
   product: PropTypes.object
 };
 const convertState = (state) => {
@@ -72,7 +75,7 @@ const convertState = (state) => {
     </Label>
   );
 };
-export default function PostCard({ post }) {
+export default function TrashBinDetailCard({ post }) {
   const { PostID, Title, Thumbnail, TrangThai, LinhVuc, Slug } = post;
   return (
     <Card>
@@ -87,14 +90,14 @@ export default function PostCard({ post }) {
             textTransform: 'uppercase'
           }}
         >
-          <PostMoreMenu Post={post} />
+          <TrashBinMoreMenu Post={post} />
         </Label>
         {convertState(TrangThai)}
         <ProductImgStyle alt={Title} src={Thumbnail} />
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
-        <Link to={`edit/${Slug}`} color="inherit" underline="hover" component={RouterLink}>
+        <Link to={`../edit/${Slug}`} color="inherit" underline="hover" component={RouterLink}>
           <Typography variant="subtitle2" noWrap>
             {Title}
           </Typography>

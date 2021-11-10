@@ -1,19 +1,15 @@
-import { useFormik } from 'formik';
 import { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import plusFill from '@iconify/icons-eva/plus-fill';
+import trash from '@iconify/icons-eva/trash-2-fill';
 import { Icon } from '@iconify/react';
+import Badge from '@mui/material/Badge';
 // material
 import { Container, Stack, Typography, Link, Breadcrumbs, Button, Box } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 // components
 import Page from '../../components/Page';
-import {
-  PostSort,
-  PostList,
-  PostCartWidget,
-  PostFilterSidebar
-} from '../../components/_dashboard/post';
+import { PostSort, PostList, PostCartWidget } from '../../components/_dashboard/post';
 //
 import { getAllPosts } from '../../functions/Article';
 
@@ -22,41 +18,18 @@ import { getAllPosts } from '../../functions/Article';
 export default function Post() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [openFilter, setOpenFilter] = useState(false);
   const [post, setPost] = useState([]);
+  const [countPostDeleted, setCountPostDeleted] = useState([]);
   useEffect(() => {
     getAllPosts().then((res) => {
+      const approved = res.filter((item) => item.StateID !== 4);
+      const deleted = res.filter((item) => item.StateID === 4);
       setIsLoaded(true);
-      setPost(res);
+      setCountPostDeleted(deleted.length);
+      setPost(approved);
     });
   }, []);
-  const formik = useFormik({
-    initialValues: {
-      gender: '',
-      category: '',
-      colors: '',
-      priceRange: '',
-      rating: ''
-    },
-    onSubmit: () => {
-      setOpenFilter(false);
-    }
-  });
 
-  const { resetForm, handleSubmit } = formik;
-
-  const handleOpenFilter = () => {
-    setOpenFilter(true);
-  };
-
-  const handleCloseFilter = () => {
-    setOpenFilter(false);
-  };
-
-  const handleResetFilter = () => {
-    handleSubmit();
-    resetForm();
-  };
   if (error) {
     return <div>Error: {error.message}</div>;
   }
@@ -97,18 +70,22 @@ export default function Post() {
           sx={{ mb: 5 }}
         >
           <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
-            <PostFilterSidebar
-              formik={formik}
-              isOpenFilter={openFilter}
-              onResetFilter={handleResetFilter}
-              onOpenFilter={handleOpenFilter}
-              onCloseFilter={handleCloseFilter}
-            />
             <PostSort />
+            <Badge color="warning" badgeContent={countPostDeleted || '0'}>
+              <Button
+                color="secondary"
+                to="./trash_bin"
+                variant="contained"
+                component={RouterLink}
+                startIcon={<Icon icon={trash} />}
+              >
+                Trash
+              </Button>
+            </Badge>
           </Stack>
         </Stack>
 
-        <PostList products={post} />
+        <PostList posts={post} />
         <PostCartWidget />
       </Container>
     </Page>
