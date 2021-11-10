@@ -109,8 +109,8 @@ export default function EditAccount() {
     formik.setFieldValue('Email', account.Email);
     formik.setFieldValue('Password', account.Password);
     formik.setFieldValue('Address', account.Address);
-    formik.setFieldValue('RoleID', account.Role.RoleID);
-  }, []);
+    formik.setFieldValue('RoleID', account.RoleID);
+  }, [account]);
   return (
     <Page title="Profile">
       <Container>
@@ -193,7 +193,7 @@ export default function EditAccount() {
                           }}
                         />
                         <Button fullWidth variant="contained" component="span">
-                          Upload Thumbnail
+                          Upload Image
                         </Button>
                       </label>
                     </Stack>
