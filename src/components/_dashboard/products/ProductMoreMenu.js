@@ -2,13 +2,13 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import * as React from 'react';
 import { Icon } from '@iconify/react';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import editFill from '@iconify/icons-eva/edit-fill';
+import { Link as RouterLink } from 'react-router-dom';
 import trash from '@iconify/icons-eva/trash-2-outline';
 // import { useFormik, Form, FormikProvider } from 'formik';
 // import InputAdornment from '@mui/material/InputAdornment';
 import external from '@iconify/icons-eva/external-link-fill';
-import { Link as RouterLink } from 'react-router-dom';
 import pluscirclefill from '@iconify/icons-eva/plus-circle-fill';
 import morehorizontalfill from '@iconify/icons-eva/more-horizontal-fill';
 // material
@@ -40,16 +40,17 @@ const style = {
 };
 
 export default function ProductMoreMenu(Product) {
+  const { Slug, Name, ProductID } = Product.Product;
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleDelete = () => {
     if (confirm('Are you sure you want to delete')) {
-      axios.delete(`Management/DeleteProduct?ProductID=${Product.ProductID}`).then((res) => {
+      axios.delete(`Management/DeleteProduct?ProductID=${ProductID}`).then((res) => {
         if (res.data.Status === 'Deleted') {
           axios
-            .delete(`Management/DeleteImageWhereProductName?ProductName=${Product.name}`)
+            .delete(`Management/DeleteImageWhereProductName?ProductName=${Name}`)
             .then((response) => {
               if (response.data.Status === 'Deleted') {
                 alert('Product Deleted');
@@ -86,7 +87,7 @@ export default function ProductMoreMenu(Product) {
         </MenuItem>
         <MenuItem
           component={RouterLink}
-          to={`../products/detail/${Product.name}`}
+          to={`../products/detail/${Name}`}
           onClick={handleOpen}
           sx={{ color: 'text.secondary' }}
         >
@@ -95,7 +96,7 @@ export default function ProductMoreMenu(Product) {
           </ListItemIcon>
           <ListItemText primary="Details" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
-        <MenuItem sx={{ color: 'text.secondary' }}>
+        <MenuItem to={`edit/${Slug}`} component={RouterLink} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>
             <Icon icon={editFill} width={24} height={24} />
           </ListItemIcon>

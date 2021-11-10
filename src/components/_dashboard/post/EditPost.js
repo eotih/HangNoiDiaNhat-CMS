@@ -46,6 +46,7 @@ export default function EditPost() {
   const { slug } = useParams();
   const [field, setField] = useState([]);
   const [field2, setField2] = useState([]);
+  const [content, setContent] = useState('');
   const handleChange = (event) => {
     formik.setFieldValue('FieldID', event.target.value);
     setField(event.target.value);
@@ -60,6 +61,7 @@ export default function EditPost() {
         formik.setFieldValue('Details', res.Details);
         formik.setFieldValue('FieldID', res.LinhVuc.FieldID);
         formik.setFieldValue('Thumbnail', res.Thumbnail);
+        setContent(res.Details);
       })
       .catch((err) => {
         console.log(err);
@@ -67,7 +69,7 @@ export default function EditPost() {
     getAllField().then((res) => {
       setField2(res);
     });
-  }, []);
+  }, [content]);
 
   const handleEditorChange = (content) => {
     formik.setFieldValue('Details', content);
@@ -137,48 +139,57 @@ export default function EditPost() {
                           variant="outlined"
                         />
                         <Typography variant="h7">Post Description</Typography>
-                        <SunEditor
-                          setContents={formik.values.Details}
-                          onChange={handleEditorChange}
-                          autoFocus
-                          height="100%"
-                          setOptions={{
-                            showPathLabel: false,
-                            minHeight: '50vh',
-                            maxHeight: '50vh',
-                            placeholder: 'Enter your text here!!!',
-                            buttonList: [
-                              ['undo', 'redo'],
-                              ['font', 'fontSize', 'formatBlock'],
-                              ['paragraphStyle'],
-                              ['bold', 'underline', 'italic', 'strike', 'subscript', 'superscript'],
-                              ['fontColor', 'hiliteColor'],
-                              ['removeFormat'],
-                              '/', // Line break
-                              ['outdent', 'indent'],
-                              ['align', 'horizontalRule', 'list', 'lineHeight'],
-                              ['table', 'link', 'image']
-                            ],
-                            formats: ['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
-                            font: [
-                              'Arial',
-                              'Calibri',
-                              'Comic Sans',
-                              'Courier',
-                              'Garamond',
-                              'Georgia',
-                              'Impact',
-                              'Lucida Console',
-                              'Palatino Linotype',
-                              'Segoe UI',
-                              'Tahoma',
-                              'Times New Roman',
-                              'Trebuchet MS'
-                            ]
-                          }}
-                          // {...getFieldProps('Details')}
-                          variant="outlined"
-                        />
+                        {content && (
+                          <SunEditor
+                            setContents={content}
+                            onChange={handleEditorChange}
+                            autoFocus
+                            height="100%"
+                            setOptions={{
+                              showPathLabel: false,
+                              minHeight: '50vh',
+                              maxHeight: '50vh',
+                              placeholder: 'Enter your text here!!!',
+                              buttonList: [
+                                ['undo', 'redo'],
+                                ['font', 'fontSize', 'formatBlock'],
+                                ['paragraphStyle'],
+                                [
+                                  'bold',
+                                  'underline',
+                                  'italic',
+                                  'strike',
+                                  'subscript',
+                                  'superscript'
+                                ],
+                                ['fontColor', 'hiliteColor'],
+                                ['removeFormat'],
+                                '/', // Line break
+                                ['outdent', 'indent'],
+                                ['align', 'horizontalRule', 'list', 'lineHeight'],
+                                ['table', 'link', 'image']
+                              ],
+                              formats: ['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+                              font: [
+                                'Arial',
+                                'Calibri',
+                                'Comic Sans',
+                                'Courier',
+                                'Garamond',
+                                'Georgia',
+                                'Impact',
+                                'Lucida Console',
+                                'Palatino Linotype',
+                                'Segoe UI',
+                                'Tahoma',
+                                'Times New Roman',
+                                'Trebuchet MS'
+                              ]
+                            }}
+                            // {...getFieldProps('Details')}
+                            variant="outlined"
+                          />
+                        )}
                       </Stack>
                     </Box>
                   </Card>

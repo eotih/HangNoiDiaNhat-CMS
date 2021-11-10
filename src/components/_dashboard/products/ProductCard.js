@@ -93,7 +93,7 @@ export default function ShopProductCard({ product }) {
             textTransform: 'uppercase'
           }}
         >
-          <ProductMoreMenu ProductID={ProductID} name={Name} />
+          <ProductMoreMenu Product={product} />
         </Label>
         {convertQuantity(Quantity)}
         <ProductImgStyle alt={Name} src={Thumbnail} />
