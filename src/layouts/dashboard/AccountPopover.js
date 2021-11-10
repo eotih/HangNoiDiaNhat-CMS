@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useContext } from 'react';
 import homeFill from '@iconify/icons-eva/home-fill';
 import personFill from '@iconify/icons-eva/person-fill';
 import settings2Fill from '@iconify/icons-eva/settings-2-fill';
@@ -10,7 +10,7 @@ import { Button, Box, Divider, MenuItem, Typography, Avatar, IconButton } from '
 // components
 import MenuPopover from '../../components/MenuPopover';
 //
-import { infoUserLogin } from '../../functions/Organization';
+import { AccountContext } from '../../Context/AccountContext';
 
 // ----------------------------------------------------------------------
 
@@ -35,17 +35,9 @@ const MENU_OPTIONS = [
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
+  const account = useContext(AccountContext);
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
-  const [account, setAccount] = useState([]);
-  useEffect(() => {
-    infoUserLogin().then((user) => {
-      // eslint-disable-next-line array-callback-return
-      const data = user.map((user) => {
-        setAccount(user);
-      });
-    });
-  }, []);
   const handleOpen = () => {
     setOpen(true);
   };

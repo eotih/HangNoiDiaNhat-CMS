@@ -1,6 +1,6 @@
 /* eslint-disable array-callback-return */
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
@@ -11,8 +11,8 @@ import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 import { MHidden } from '../../components/@material-extend';
 //
-import { infoUserLogin } from '../../functions/Organization';
 import sidebarConfig from './SidebarConfig';
+import { AccountContext } from '../../Context/AccountContext';
 
 // ----------------------------------------------------------------------
 
@@ -42,13 +42,8 @@ DashboardSidebar.propTypes = {
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
-  const [account, setAccount] = useState([]);
+  const account = useContext(AccountContext);
   useEffect(() => {
-    infoUserLogin().then((user) => {
-      user.map((user) => {
-        setAccount(user);
-      });
-    });
     if (isOpenSidebar) {
       onCloseSidebar();
     }

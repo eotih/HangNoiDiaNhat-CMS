@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable array-callback-return */
 /* eslint-disable import/no-unresolved */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import {
   Stack,
@@ -20,14 +20,15 @@ import {
 import { styled } from '@mui/material/styles';
 import md5 from 'md5';
 import { LoadingButton } from '@mui/lab';
-import { infoUserLogin } from 'src/functions/Organization';
 import axios from '../../functions/Axios';
 import Page from '../../components/Page';
+import { AccountContext } from '../../Context/AccountContext';
 
 export default function EditAccount() {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [repeatNewPassword, setRepeatNewPassword] = useState('');
+  const account = useContext(AccountContext);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -101,18 +102,14 @@ export default function EditAccount() {
     }
   };
   useEffect(() => {
-    infoUserLogin().then((res) => {
-      res.map((item) => {
-        formik.setFieldValue('AccountID', item.AccountID);
-        formik.setFieldValue('FullName', item.FullName);
-        formik.setFieldValue('Image', item.Image);
-        formik.setFieldValue('Phone', item.Phone);
-        formik.setFieldValue('Email', item.Email);
-        formik.setFieldValue('Password', item.Password);
-        formik.setFieldValue('Address', item.Address);
-        formik.setFieldValue('RoleID', item.Role.RoleID);
-      });
-    });
+    formik.setFieldValue('AccountID', account.AccountID);
+    formik.setFieldValue('FullName', account.FullName);
+    formik.setFieldValue('Image', account.Image);
+    formik.setFieldValue('Phone', account.Phone);
+    formik.setFieldValue('Email', account.Email);
+    formik.setFieldValue('Password', account.Password);
+    formik.setFieldValue('Address', account.Address);
+    formik.setFieldValue('RoleID', account.Role.RoleID);
   }, []);
   return (
     <Page title="Profile">

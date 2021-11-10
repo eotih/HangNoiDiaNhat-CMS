@@ -15,14 +15,14 @@ import {
   Avatar
 } from '@mui/material';
 import { useFormik, Form, FormikProvider } from 'formik';
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect, memo, useContext } from 'react';
 import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css';
 import { styled } from '@mui/material/styles';
 import axios from '../../../functions/Axios';
 import { getAllBrands, getAllCategory } from '../../../functions/Component';
+import { AccountContext } from '../../../Context/AccountContext';
 import { UploadImage } from '.';
-import { infoUserLogin } from '../../../functions/Organization';
 //----------------------------------
 function MainInformation({ onHandleNext }) {
   const [brand, setBrand] = useState([]);
@@ -30,6 +30,7 @@ function MainInformation({ onHandleNext }) {
   const [brand2, setBrand2] = useState([]);
   const [category2, setCategory2] = useState([]);
   const [images, setImages] = useState([]);
+  const account = useContext(AccountContext);
   const handleChange1 = (event) => {
     setBrand(event.target.value);
     formik.setFieldValue('BrandID', event.target.value);
@@ -45,11 +46,7 @@ function MainInformation({ onHandleNext }) {
     display: 'none'
   });
   useEffect(() => {
-    infoUserLogin().then((res) => {
-      res.map((item) => {
-        formik.setFieldValue('AccountID', item.AccountID);
-      });
-    });
+    formik.setFieldValue('AccountID', account.AccountID);
     getAllBrands().then((res) => {
       setBrand2(res);
     });
