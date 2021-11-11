@@ -24,57 +24,7 @@ const ProductImgStyle = styled('img')({
 TrashBinDetailCard.propTypes = {
   product: PropTypes.object
 };
-const convertState = (state) => {
-  if (state === 'NotApproved') {
-    return (
-      <Label
-        variant="filled"
-        color="error"
-        sx={{
-          zIndex: 9,
-          top: 16,
-          left: 16,
-          position: 'absolute',
-          textTransform: 'uppercase'
-        }}
-      >
-        Not Approved
-      </Label>
-    );
-  }
-  if (state === 'Pending') {
-    return (
-      <Label
-        variant="filled"
-        color="warning"
-        sx={{
-          zIndex: 9,
-          top: 16,
-          left: 16,
-          position: 'absolute',
-          textTransform: 'uppercase'
-        }}
-      >
-        Pending
-      </Label>
-    );
-  }
-  return (
-    <Label
-      variant="filled"
-      color="success"
-      sx={{
-        zIndex: 9,
-        top: 16,
-        left: 16,
-        position: 'absolute',
-        textTransform: 'uppercase'
-      }}
-    >
-      Approved
-    </Label>
-  );
-};
+
 export default function TrashBinDetailCard({ post }) {
   const { PostID, Title, Thumbnail, TrangThai, LinhVuc, Slug } = post;
   return (
@@ -92,7 +42,19 @@ export default function TrashBinDetailCard({ post }) {
         >
           <TrashBinMoreMenu Post={post} />
         </Label>
-        {convertState(TrangThai)}
+        <Label
+          variant="filled"
+          color="error"
+          sx={{
+            zIndex: 9,
+            top: 16,
+            left: 16,
+            position: 'absolute',
+            textTransform: 'uppercase'
+          }}
+        >
+          Deleted
+        </Label>
         <ProductImgStyle alt={Title} src={Thumbnail} />
       </Box>
 
