@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import PropTypes from 'prop-types';
 import {
   Container,
@@ -14,6 +15,7 @@ import {
 } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import parse from 'html-react-parser';
 import Label from '../../Label';
 import Page from '../../Page';
 import { SelectAllCommentAndStar } from '../../../functions/Management';
@@ -97,8 +99,10 @@ export default function Review() {
       const filterStar = res.filter((r) => r.Star);
       const data = {
         Name: filterSlug[0].TenSanPham,
-        Thumbnail: filterSlug[0].Thumbnail
+        Thumbnail: filterSlug[0].Thumbnail,
+        Description: filterSlug[0].Description
       };
+      console.log(data);
       for (let i = 0; i < filterStar.length; i += 1) {
         star += parseInt(filterStar[i].Star, 10);
       }
@@ -144,12 +148,15 @@ export default function Review() {
                           {comment}
                         </Typography>
                       </Stack>
-                      <Stack direction={{ xs: 'row' }} spacing={2}>
+                      <Stack direction={{ xs: 'row' }} spacing={3}>
                         <Typography variant="subtitle1">Number of Ratings: </Typography>
                         <Typography variant="body1" gutterBottom>
                           {starCount}
                         </Typography>
                       </Stack>
+                      <Typography variant="body2" gutterBottom>
+                        {parse(String(product2.Description))}
+                      </Typography>
                     </Stack>
                   </Stack>
                 </Card>
