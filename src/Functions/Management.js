@@ -37,3 +37,7 @@ export async function GetProductWhereProductDetailNull() {
   const res = await axios.get(`Management/GetProductWhereProductDetailNull`);
   return res.data;
 }
+export async function SelectAllCommentAndStar() {
+  const res = await axios.get(`Management/SelectAllCommentAndStar`);
+  return res.data;
+}

@@ -9,3 +9,4 @@ export { default as ProductMoreMenu } from './ProductMoreMenu';
 export { default as MainInformation } from './MainInformation';
 export { default as UploadImage } from './UploadImage';
 export { default as Utilities } from './Utilities';
+export { default as Review } from './Review';

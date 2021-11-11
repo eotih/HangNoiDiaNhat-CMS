@@ -6,6 +6,7 @@ import { useRef, useState } from 'react';
 import editFill from '@iconify/icons-eva/edit-fill';
 import { Link as RouterLink } from 'react-router-dom';
 import trash from '@iconify/icons-eva/trash-2-outline';
+import staroutline from '@iconify/icons-eva/star-outline';
 // import { useFormik, Form, FormikProvider } from 'formik';
 // import InputAdornment from '@mui/material/InputAdornment';
 import external from '@iconify/icons-eva/external-link-fill';
@@ -101,6 +102,12 @@ export default function ProductMoreMenu(Product) {
             <Icon icon={editFill} width={24} height={24} />
           </ListItemIcon>
           <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
+        </MenuItem>
+        <MenuItem to={`review/${Slug}`} component={RouterLink} sx={{ color: 'text.secondary' }}>
+          <ListItemIcon>
+            <Icon icon={staroutline} width={24} height={24} />
+          </ListItemIcon>
+          <ListItemText primary="Review" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
         <MenuItem onClick={handleDelete} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>

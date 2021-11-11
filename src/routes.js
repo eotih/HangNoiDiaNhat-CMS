@@ -25,7 +25,7 @@ import Category from './pages/component/Category';
 import State from './pages/component/State';
 import Brand from './pages/component/Brand';
 import Utilities from './pages/component/Utilities';
-import { AddProduct, EditProduct } from './components/_dashboard/products';
+import { AddProduct, EditProduct, Review } from './components/_dashboard/products';
 import { AddPost, EditPost } from './components/_dashboard/post';
 // Delivery
 import Service from './pages/delivery/Service';
@@ -115,6 +115,7 @@ export default function Router() {
         { path: 'products', element: <Products /> },
         { path: 'products/edit/:slug', element: <EditProduct /> },
         { path: 'products/detail/:slug', element: <ProductDetails /> },
+        { path: 'products/review/:slug', element: <Review /> },
         { path: 'order/detail/:id', element: <OrderDetail /> },
         { path: 'products/add', element: <AddProduct /> }
       ]
