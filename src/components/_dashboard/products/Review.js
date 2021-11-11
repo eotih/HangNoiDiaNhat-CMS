@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 /* eslint-disable import/no-unresolved */
 import PropTypes from 'prop-types';
 import {
@@ -16,6 +17,8 @@ import {
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import parse from 'html-react-parser';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
 import Label from '../../Label';
 import Page from '../../Page';
 import { SelectAllCommentAndStar } from '../../../functions/Management';
@@ -102,7 +105,6 @@ export default function Review() {
         Thumbnail: filterSlug[0].Thumbnail,
         Description: filterSlug[0].Description
       };
-      console.log(data);
       for (let i = 0; i < filterStar.length; i += 1) {
         star += parseInt(filterStar[i].Star, 10);
       }
@@ -196,12 +198,28 @@ export default function Review() {
                             </Stack>
                           </Grid>
                           <Grid item xs={12} md={9}>
-                            <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+                            <Stack direction={{ xs: 'column', md: 'row' }} spacing={3}>
                               <Rating name="read-only" value={product.Star} readOnly size="small" />
                             </Stack>
                             <Typography variant="body1" sx={{ mt: 1 }}>
                               {product.Comment1}
                             </Typography>
+                            <ImageList sx={{ maxWidth: 800 }} cols={6} rowHeight={200}>
+                              {product.HinhAnh.map((image) => (
+                                <Box sx={{ mb: 2 }}>
+                                  <Stack direction="row" spacing={2}>
+                                    <ImageListItem key={image.ImageCommentID}>
+                                      <img
+                                        src={image.Image}
+                                        srcSet={image.Image}
+                                        alt="hinh anh"
+                                        width="200px"
+                                      />
+                                    </ImageListItem>
+                                  </Stack>
+                                </Box>
+                              ))}
+                            </ImageList>
                           </Grid>
                         </Grid>
                         <Divider variant="middle" sx={{ mt: 3, mb: 3 }} />
