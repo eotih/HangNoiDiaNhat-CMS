@@ -42,6 +42,9 @@ function MainInformation({ onHandleNext }) {
   const handleEditorChange = (content) => {
     formik.setFieldValue('Details', content);
   };
+  const handleEditorChangeDescription = (content) => {
+    formik.setFieldValue('Description', content);
+  };
   const Input = styled('input')({
     display: 'none'
   });
@@ -64,6 +67,7 @@ function MainInformation({ onHandleNext }) {
       Price: '',
       ImportPrice: '',
       Quantity: '',
+      Description: '',
       Details: '',
       Name: ''
     },
@@ -112,48 +116,91 @@ function MainInformation({ onHandleNext }) {
                     sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
                     variant="outlined"
                   />
-                  <Typography variant="h7">Product Description</Typography>
-                  <SunEditor
-                    onChange={handleEditorChange}
-                    autoFocus
-                    height="100%"
-                    setOptions={{
-                      showPathLabel: false,
-                      minHeight: '50vh',
-                      maxHeight: '50vh',
-                      placeholder: 'Enter your text here!!!',
-                      buttonList: [
-                        ['undo', 'redo'],
-                        ['font', 'fontSize', 'formatBlock'],
-                        ['paragraphStyle'],
-                        ['bold', 'underline', 'italic', 'strike', 'subscript', 'superscript'],
-                        ['fontColor', 'hiliteColor'],
-                        ['removeFormat'],
-                        '/', // Line break
-                        ['outdent', 'indent'],
-                        ['align', 'horizontalRule', 'list', 'lineHeight'],
-                        ['table', 'link', 'image']
-                      ],
-                      formats: ['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
-                      font: [
-                        'Arial',
-                        'Calibri',
-                        'Comic Sans',
-                        'Courier',
-                        'Garamond',
-                        'Georgia',
-                        'Impact',
-                        'Lucida Console',
-                        'Palatino Linotype',
-                        'Segoe UI',
-                        'Tahoma',
-                        'Times New Roman',
-                        'Trebuchet MS'
-                      ]
-                    }}
-                    // {...getFieldProps('Details')}
-                    variant="outlined"
-                  />
+                  <Typography variant="h7">Product Details</Typography>
+                  <Stack direction={{ xs: 'row' }} spacing={2}>
+                    <SunEditor
+                      onChange={handleEditorChange}
+                      autoFocus
+                      height="100%"
+                      setOptions={{
+                        showPathLabel: false,
+                        minHeight: '50vh',
+                        maxHeight: '50vh',
+                        placeholder: 'Enter your text here!!!',
+                        buttonList: [
+                          ['undo', 'redo'],
+                          ['font', 'fontSize', 'formatBlock'],
+                          ['paragraphStyle'],
+                          ['bold', 'underline', 'italic', 'strike', 'subscript', 'superscript'],
+                          ['fontColor', 'hiliteColor'],
+                          ['removeFormat'],
+                          '/', // Line break
+                          ['outdent', 'indent'],
+                          ['align', 'horizontalRule', 'list', 'lineHeight'],
+                          ['table', 'link', 'image']
+                        ],
+                        formats: ['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+                        font: [
+                          'Arial',
+                          'Calibri',
+                          'Comic Sans',
+                          'Courier',
+                          'Garamond',
+                          'Georgia',
+                          'Impact',
+                          'Lucida Console',
+                          'Palatino Linotype',
+                          'Segoe UI',
+                          'Tahoma',
+                          'Times New Roman',
+                          'Trebuchet MS'
+                        ]
+                      }}
+                      // {...getFieldProps('Details')}
+                      variant="outlined"
+                    />
+                    <SunEditor
+                      onChange={handleEditorChangeDescription}
+                      autoFocus
+                      height="100%"
+                      setOptions={{
+                        showPathLabel: false,
+                        minHeight: '50vh',
+                        maxHeight: '50vh',
+                        placeholder: 'Enter your text here!!!',
+                        buttonList: [
+                          ['undo', 'redo'],
+                          ['font', 'fontSize', 'formatBlock'],
+                          ['paragraphStyle'],
+                          ['bold', 'underline', 'italic', 'strike', 'subscript', 'superscript'],
+                          ['fontColor', 'hiliteColor'],
+                          ['removeFormat'],
+                          '/', // Line break
+                          ['outdent', 'indent'],
+                          ['align', 'horizontalRule', 'list', 'lineHeight'],
+                          ['table', 'link', 'image']
+                        ],
+                        formats: ['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+                        font: [
+                          'Arial',
+                          'Calibri',
+                          'Comic Sans',
+                          'Courier',
+                          'Garamond',
+                          'Georgia',
+                          'Impact',
+                          'Lucida Console',
+                          'Palatino Linotype',
+                          'Segoe UI',
+                          'Tahoma',
+                          'Times New Roman',
+                          'Trebuchet MS'
+                        ]
+                      }}
+                      // {...getFieldProps('Details')}
+                      variant="outlined"
+                    />
+                  </Stack>
                 </Stack>
               </Card>
             </Grid>
