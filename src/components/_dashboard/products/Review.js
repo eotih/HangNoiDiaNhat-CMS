@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable import/no-unresolved */
 import PropTypes from 'prop-types';
+import ReactImageMagnify from 'react-image-magnify';
 import {
   Container,
   Stack,
@@ -117,6 +118,19 @@ export default function Review() {
       setStar(roundHalf);
     });
   }, []);
+  const imageProps = {
+    smallImage: {
+      srcSet: product2.Thumbnail,
+      isFluidWidth: true,
+      src: product2.Thumbnail
+    },
+    largeImage: {
+      src: product2.Thumbnail,
+      width: 1200,
+      height: 1800
+    },
+    enlargedImageContainerStyle: { background: '#fff', zIndex: 7 }
+  };
   return (
     <Page>
       <Container>
@@ -130,13 +144,9 @@ export default function Review() {
             <Grid container>
               <Grid item xs={12}>
                 <Card sx={{ p: 2 }}>
-                  <Stack direction={{ xs: 'column', md: 'row' }} spacing={8}>
+                  <Stack direction={{ xs: 'column', md: 'row' }} spacing={5}>
                     <Grid item xs={12} md={6}>
-                      <Avatar
-                        src={product2.Thumbnail}
-                        variant="rounded"
-                        sx={{ width: '100%', height: 'auto' }}
-                      />
+                      <ReactImageMagnify {...imageProps} />
                     </Grid>
                     <Stack direction={{ xs: 'column' }} spacing={2}>
                       <Typography variant="h4" sx={{ mt: 3 }}>
