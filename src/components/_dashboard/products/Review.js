@@ -101,21 +101,30 @@ export default function Review() {
       const filterSlug = res.filter((r) => r.Slug === slug);
       const filterComments = res.filter((r) => r.Comment1);
       const filterStar = res.filter((r) => r.Star);
-      const data = {
-        Name: filterSlug[0].TenSanPham,
-        Thumbnail: filterSlug[0].Thumbnail,
-        Description: filterSlug[0].Description
-      };
-      for (let i = 0; i < filterStar.length; i += 1) {
-        star += parseInt(filterStar[i].Star, 10);
+      if (filterSlug !== '') {
+        const data = {
+          Name: 'Sản phẩm này chưa được đánh giá',
+          Thumbnail: '',
+          Description: ''
+        };
+        setProduct2(data);
+      } else {
+        const data = {
+          Name: filterSlug[0].TenSanPham,
+          Thumbnail: filterSlug[0].Thumbnail,
+          Description: filterSlug[0].Description
+        };
+        setProduct2(data);
+        for (let i = 0; i < filterStar.length; i += 1) {
+          star += parseInt(filterStar[i].Star, 10);
+        }
+        const average = star / filterStar.length;
+        const roundHalf = Math.round(average * 2) / 2;
+        setProduct(filterSlug);
+        setComment(filterComments.length);
+        setStarCount(filterStar.length);
+        setStar(roundHalf);
       }
-      const average = star / filterStar.length;
-      const roundHalf = Math.round(average * 2) / 2;
-      setProduct(filterSlug);
-      setProduct2(data);
-      setComment(filterComments.length);
-      setStarCount(filterStar.length);
-      setStar(roundHalf);
     });
   }, []);
   const imageProps = {
